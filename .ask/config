@@ -1,9 +1,75 @@
 {
   "deploy_settings": {
     "default": {
-      "skill_id": "",
+      "skill_id": "amzn1.ask.skill.25cbd27a-87a2-4071-ae90-3f91afdd4cfa",
       "was_cloned": false,
-      "merge": {}
+      "merge": {},
+      "resources": {
+        "manifest": {
+          "eTag": "c530d20ede8e55eca35a68505f71659b"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "1350eb45e860479791686c5064c97115"
+          },
+          "de-DE": {
+            "eTag": "14a3cab67549839d11c0f0f0edd5e02a"
+          },
+          "en-AU": {
+            "eTag": "20fdbfaa79c953397c5a3f8c491bcb14"
+          },
+          "en-GB": {
+            "eTag": "2e8bc112f53a2320a9e7b23661b2ec2d"
+          },
+          "en-CA": {
+            "eTag": "0355382c8b1e8eaddf3ae5cd0ed5afc4"
+          },
+          "es-ES": {
+            "eTag": "608ac38f7a8dacc8e9a61954b735a0f6"
+          },
+          "es-US": {
+            "eTag": "4a08c2dce4650b87e4684ab99e38da3b"
+          },
+          "en-IN": {
+            "eTag": "06d0efd21033e9b9c7e92991742c9a2c"
+          },
+          "fr-CA": {
+            "eTag": "7b26143afd392f96e4da1be6fea847f7"
+          },
+          "hi-IN": {
+            "eTag": "f964c557e38664fb7aefe9419f5c4046"
+          },
+          "ja-JP": {
+            "eTag": "4c1cc6db0ec10278c5233337eb611d75"
+          },
+          "es-MX": {
+            "eTag": "4e275d0b1815c474e3d15d8af52da5dc"
+          },
+          "it-IT": {
+            "eTag": "5879a68f17b2a64f4cecd2037a99e8cc"
+          },
+          "fr-FR": {
+            "eTag": "98c15534e72658bb9fbc2f2c48231fd3"
+          },
+          "pt-BR": {
+            "eTag": "731ae2f6bc301655c05c90d5db471bea"
+          }
+        },
+        "lambda": [
+          {
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:127546649164:function:ask-custom-MyFeedbackBot_Skill-v1-default",
+            "awsRegion": "us-east-1",
+            "codeUri": "lambda/custom",
+            "functionName": "ask-custom-MyFeedbackBot_Skill-v1-default",
+            "handler": "index.handler",
+            "revisionId": "e47e925c-d5ac-4996-8a19-edf94042791b",
+            "runtime": "nodejs10.x"
+          }
+        ]
+      }
     }
   }
 }

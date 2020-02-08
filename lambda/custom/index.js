@@ -14,6 +14,8 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
+        console.log("THIS.EVENT = " + JSON.stringify(this.event));
+        
         const speakOutput = handlerInput.t('WELCOME_MSG');
 
         return handlerInput.responseBuilder
@@ -29,6 +31,9 @@ const HelloWorldIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
     },
     handle(handlerInput) {
+        console.log("THIS.EVENT = " + JSON.stringify(this.event));
+        console.log("SHOW THIS IN CLOUD WATCH PLEASE!!!");
+        
         const speakOutput = handlerInput.t('HELLO_MSG');
 
         return handlerInput.responseBuilder
@@ -44,7 +49,9 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('HELP_MSG');
+        console.log("THIS.EVENT = " + JSON.stringify(this.event));
+        
+        const speakOutput = "Jan " + handlerInput.t('HELP_MSG');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -60,6 +67,8 @@ const CancelAndStopIntentHandler = {
                 || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
+        console.log("THIS.EVENT = " + JSON.stringify(this.event));
+        
         const speakOutput = handlerInput.t('GOODBYE_MSG');
 
         return handlerInput.responseBuilder
@@ -78,6 +87,8 @@ const FallbackIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
     },
     handle(handlerInput) {
+        console.log("THIS.EVENT = " + JSON.stringify(this.event));
+        
         const speakOutput = handlerInput.t('FALLBACK_MSG');
 
         return handlerInput.responseBuilder
@@ -96,6 +107,8 @@ const SessionEndedRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
     },
     handle(handlerInput) {
+        console.log("THIS.EVENT = " + JSON.stringify(this.event));
+        
         console.log(`~~~~ Session ended: ${JSON.stringify(handlerInput.requestEnvelope)}`);
         // Any cleanup logic goes here.
         return handlerInput.responseBuilder.getResponse(); // notice we send an empty response
@@ -111,6 +124,8 @@ const IntentReflectorHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
     },
     handle(handlerInput) {
+        console.log("THIS.EVENT = " + JSON.stringify(this.event));
+        
         const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
         const speakOutput = handlerInput.t('REFLECTOR_MSG', {intentName: intentName});
 
@@ -130,6 +145,8 @@ const ErrorHandler = {
         return true;
     },
     handle(handlerInput, error) {
+        console.log("THIS.EVENT = " + JSON.stringify(this.event));
+        
         const speakOutput = handlerInput.t('ERROR_MSG');
         console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
 

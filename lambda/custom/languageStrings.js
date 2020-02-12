@@ -5,7 +5,7 @@
  * that match the request's locale.
  * */
 
-module.exports = {
+/*module.exports = {
     en: {
         translation: {
             WELCOME_MSG: 'Welcome Jan, you can say Hello or Help. Which would you like to try?',
@@ -16,82 +16,46 @@ module.exports = {
             FALLBACK_MSG: 'Sorry, I don\'t know about that. Please try again.',
             ERROR_MSG: 'Sorry, I had trouble doing what you asked. Please try again.'
         }
-    },
-    es: {
-        translation: {
-            WELCOME_MSG: 'Bienvenido, puedes decir Hola o Ayuda. Cual prefieres?',
-            HELLO_MSG: 'Hola Mundo!',
-            HELP_MSG: 'Puedes decirme hola. Cómo te puedo ayudar?',
-            GOODBYE_MSG: 'Hasta luego!',
-            REFLECTOR_MSG: 'Acabas de activar {{intentName}}',
-            FALLBACK_MSG: 'Lo siento, no se nada sobre eso. Por favor inténtalo otra vez.',
-            ERROR_MSG: 'Lo siento, ha habido un error. Por favor inténtalo otra vez.'
-        }
-    },
-    de: {
-        translation: {
-            WELCOME_MSG: 'Wilkommen, du kannst Hallo oder Hilfe sagen. Was würdest du gern tun?',
-            HELLO_MSG: 'Hallo!',
-            HELP_MSG: 'Du kannst hallo zu mir sagen. Wie kann ich dir helfen?',
-            GOODBYE_MSG: 'Tschüss!',
-            REFLECTOR_MSG: 'Du hast gerade {{intentName}} ausgelöst',
-            FALLBACK_MSG: 'Es tut mir leid, ich weiss das nicht. Bitte versuche es erneut.',
-            ERROR_MSG: 'Es tut mir leid, ich konnte das nicht machen. Bitte versuche es erneut.'
-        }
-    },
-    ja: {
-        translation: {
-            WELCOME_MSG: 'ようこそ。こんにちは、または、ヘルプ、と言ってみてください。どうぞ！',
-            HELLO_MSG: 'ハローワールド',
-            HELP_MSG: 'こんにちは、と言ってみてください。どうぞ！',
-            GOODBYE_MSG: 'さようなら',
-            REFLECTOR_MSG: '{{intentName}}がトリガーされました。',
-            FALLBACK_MSG: 'ごめんなさい。ちょっとよくわかりませんでした。もう一度言ってみてください。',
-            ERROR_MSG: 'ごめんなさい。なんだかうまく行かないようです。もう一度言ってみてください。'
-        }
-    },
-    fr: {
-        translation: {
-            WELCOME_MSG: 'Bienvenue sur le génie des salutations, dites-moi bonjour et je vous répondrai',
-            HELLO_MSG: 'Bonjour à tous!',
-            HELP_MSG: 'Dites-moi bonjour et je vous répondrai!',
-            GOODBYE_MSG: 'Au revoir!',
-            REFLECTOR_MSG: 'Vous avez invoqué l\'intention {{intentName}}',
-            FALLBACK_MSG: 'Désolé, je ne sais pas. Pouvez-vous reformuler?',
-            ERROR_MSG: 'Désolé, je n\'ai pas compris. Pouvez-vous reformuler?'
-        }
-    },
-    it: {
-        translation: {
-            WELCOME_MSG: 'Buongiorno! Puoi salutarmi con un ciao, o chiedermi aiuto. Cosa preferisci fare?',
-            HELLO_MSG: 'Ciao!',
-            HELP_MSG: 'Dimmi ciao e io ti risponderò! Come posso aiutarti?',
-            GOODBYE_MSG: 'A presto!',
-            REFLECTOR_MSG: 'Hai invocato l\'intento {{intentName}}',
-            FALLBACK_MSG: 'Perdonami, penso di non aver capito bene. Riprova.',
-            ERROR_MSG: 'Scusa, c\'è stato un errore. Riprova.'
-        }
-    },
-    pt: {
-        translation: {
-            WELCOME_MSG: 'Bem vindo, você pode dizer Olá ou Ajuda. Qual você gostaria de fazer?',
-            HELLO_MSG: 'Olá!',
-            HELP_MSG: 'Você pode dizer olá para mim. Como posso te ajudar?',
-            GOODBYE_MSG: 'Tchau!',
-            REFLECTOR_MSG: 'Você acabou de ativar {{intentName}}',
-            FALLBACK_MSG: 'Desculpe, não sei o que dizer. Por favor tente novamente.',
-            ERROR_MSG: 'Desculpe, não consegui fazer o que você pediu. Por favor tente novamente.'
-        }
-    },
-    hi: {
-        translation: {
-            WELCOME_MSG: 'नमस्ते, आप hello या help कह सकते हैं. आप क्या करना चाहेंगे?',
-            HELLO_MSG: 'नमस्ते दुनिया ',
-            HELP_MSG: 'आप मुझसे hello बोल सकते हो.',
-            GOODBYE_MSG: 'अलविदा ',
-            REFLECTOR_MSG: 'आपने {{intentName}} trigger किया हैं ',
-            FALLBACK_MSG: 'Sorry, मैं वो समझ नहीं पायी. क्या आप दोहरा सकते हैं ',
-            ERROR_MSG: 'Sorry, मैं वो समझ नहीं पायी. क्या आप दोहरा सकते हैं '
-        }
     }
-}
+}*/
+
+module.exports = {
+  translation: {
+    SKILL_NAME: 'Feedbacker',
+    
+    INITIAL_STATE: 'Hey, you want to give feedback regarding one of your smart devices?',
+    LAUNCH_WELCOME_MESSAGE: 'Hey, you want to give feedback regarding one of your smart devices?',
+    LAUNCH_WELCOME_REPROMPT: 'Say yes to start or no to quit.',
+    
+    SKILL_CONFIGURATION_STATE_CONFIRM: 'We saw that you are using our skill for the first time. Would you like to configure the skill at first. To configure the skill say yes, and to directly continue with giving feedback say no',
+    SKILL_CONFIGURATION_STATE_SKIP: "Ok, so we skip the initial configuration and go on with the next step.",
+    SKILL_CONFIGURATION_STATE_ENTER: "Okay please provide your email address and name now",
+    SKILL_CONFIGURATION_STATE_EXIT: "",
+    SKILL_CONFIGURATION_STATE_HELP: "To configure your skill you just need to provide your name and your email address. You can also skip this step by saying skip or stop the conversation by saying stop.",
+
+    SELECT_COMPANY_STATE_ENTER: 'Please tell me at first what company is the device made by',
+    SELECT_COMPANY_STATE_HELP: 'Please tell me at first what company is the device made by',
+    SELECT_COMPANY_STATE_SKIP: 'Please tell me at first what company is the device made by',
+    SELECT_COMPANY_STATE_EXIT: 'Please tell me at first what company is the device made by',
+    
+    SELECT_DEVICE_STATE_ENTER: 'Please select the device you would like to give feedback to. Do you want give Feedback regaring your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band',
+    SELECT_DEVICE_STATE_HELP: "Please tell me the name of your device that you want to talk about. You can also skip this step by saying skip or stop the conversation by saying stop.",
+    SELECT_DEVICE_STATE_SKIP: "Sorry, I really need to know what device we are talking about. Therefore, you cannot skip this step. You can still stop the conversation by saying stop.",
+    SELECT_DEVICE_STATE_EXIT: "",
+    
+    ELICIT_DEVICE_INFORMATION_WELCOME_MESSAGE: 'Please tell me now what device we are talking about.',
+    ELICIT_DEVICE_INFORMATION_WELCOME_REPROMPT: 'For example you could say, I want to give feedback regarding my Fire TV Stick from Amazon',
+    
+    SKILL_CONFIGURATION_NO_MESSAGE: "Okay, so we skip the initial configuration. You can still give your feedback now",
+    SKILL_CONFIGURATION_SKIP_MESSAGE: "Okay, so we skip the initial configuration. You can still give your feedback now",
+        
+    SELECT_FEEDBACK_TYPE_MESSAGE: "What is your concern? Do you want to submit a bug report, a feature request, a question or praise and criticism?",
+    
+    FALLBACK_MESSAGE: "Sorry, I wasn´t able to conclude what to do next. Could you please rephrase your ",
+    EXIT_MESSAGE: 'Ok! See you the next time!',
+    STOP_MESSAGE: 'Ok! Bye!',
+    CONTINUE_MESSAGE: 'Say yes to start or no to quit.',
+    ERROR_MESSAGE: 'Sorry, an error occurred.',
+    YES_MESSAGE: 'Great! Is it an alexa compatible device or a third party device.'
+  }
+};

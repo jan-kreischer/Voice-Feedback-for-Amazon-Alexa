@@ -6,53 +6,11 @@
       "merge": {},
       "resources": {
         "manifest": {
-          "eTag": "c530d20ede8e55eca35a68505f71659b"
+          "eTag": "60e4e9c77c4cab24a00d5846720caeb1"
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "756d35c6766d0a77164b50e8c0b69742"
-          },
-          "de-DE": {
-            "eTag": "1d12a953d078a677149073b5e7ee75e0"
-          },
-          "en-AU": {
-            "eTag": "a02370937716debe3f2babc146b6436c"
-          },
-          "en-GB": {
-            "eTag": "595c0a45238d97d9ae13a1b5c93aaeed"
-          },
-          "en-CA": {
-            "eTag": "77517dcd43b0c68cb4f5d373f7d4fd03"
-          },
-          "es-ES": {
-            "eTag": "b9da111df6066c179c67389911242c07"
-          },
-          "es-US": {
-            "eTag": "1642d5b60ce5a29ca90391be00591790"
-          },
-          "en-IN": {
-            "eTag": "90d92f649c8cba77e2468db75cb0f8da"
-          },
-          "fr-CA": {
-            "eTag": "5fd38a2ccc80efc95f4c4c4f9f680ab3"
-          },
-          "hi-IN": {
-            "eTag": "1d44787971293d63bc828c7147917680"
-          },
-          "ja-JP": {
-            "eTag": "7f8d3ecc669a162737b16643aaa539b3"
-          },
-          "es-MX": {
-            "eTag": "5cd4e62e3275922a97f4cbf53f42e97e"
-          },
-          "it-IT": {
-            "eTag": "cec7141438ebaa47699f1916b0c06f19"
-          },
-          "fr-FR": {
-            "eTag": "d339a6b0135ecb3bc33d71b54f116cdd"
-          },
-          "pt-BR": {
-            "eTag": "44c3d50d646ecc5759aa2246da788bba"
+            "eTag": "54c59ebeb820bf44a1dc526a0056d45e"
           }
         },
         "lambda": [
@@ -65,7 +23,7 @@
             "codeUri": "lambda/custom",
             "functionName": "ask-custom-MyFeedbackBot_Skill-v1-default",
             "handler": "index.handler",
-            "revisionId": "8d78e418-a957-4384-8749-ec8e87f03b27",
+            "revisionId": "abcca5a1-6393-4da6-8502-f153db0e0a59",
             "runtime": "nodejs10.x"
           }
         ]

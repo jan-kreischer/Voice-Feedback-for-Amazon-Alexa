@@ -2,57 +2,64 @@
   "interactionModel": {
     "languageModel": {
       "invocationName": "my feedback bot",
-      "intents": [
-        {
-          "name": "SkillConfiguration",
-          "slots": [{
-              "name": "feedbacker_name",
-              "type": "AMAZON.SearchQuery",
-              "samples": [
-                "My name is {feedbacker_name}"
-              ]
-            },
-            {
-              "name": "feedbacker_email_address",
-              "type": "AMAZON.SearchQuery",
-              "samples": [
-                "It is {feedbacker_email_address}",
-                "My email address is {feedbacker_email_address}"
-              ]
-            }
-          ],
-          "samples": [
-            "My email address is {feedbacker_email_address}",
-            "My name is {feedbacker_name}"
-          ]
-        },
-        {
-          "name": "SelectDevice",
+      "intents": [{
+          "name": "SelectDeviceIntent",
           "slots": [{
             "name": "device_name",
             "type": "DeviceName",
             "samples": [
+              "I would like to provide feedback about {device_name}",
               "regarding {device_name}",
-              "Regarding my {device_name}",
-              "Regarding a {device_name}",
-              "Regarding an {device_name}"
+              "I would like to give feedback regarding {device_name}"
             ]
           }],
           "samples": [
-            "I want to give feedback regarding my {device_name}",
-            "I would like to give feedback regarding {device_name}",
-            "Regarding {device_name}",
-            "Regarding my {device_name}",
-            "Regarding a {device_name}",
-            "Regarding an {device_name}"
+            "I want to give feedback regarding my {device_name}"
           ]
         },
         {
-          "name": "SelectFeedbackType",
+          "name": "SelectFeedbackTypeIntent",
           "slots": [],
           "samples": [
             "please go to the next step."
           ]
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": [
+            "never mind",
+            "forget it",
+            "stop",
+            "cancel"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.YesIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NoIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.SearchAction<object@LocalBusiness>",
+          "samples": []
         },
         {
           "name": "GiveFeedbackIntent",
@@ -82,35 +89,32 @@
           ]
         },
         {
-          "name": "SubmitBugReport",
-          "slots": [],
+          "name": "ElicitDeviceInformationIntent",
+          "slots": [{
+              "name": "device_name",
+              "type": "SmartDevice",
+              "samples": [
+                "Fire TV",
+                "Fire TV Stick",
+                "Nest Protect",
+                "Apple Watch"
+              ]
+            },
+            {
+              "name": "device_company",
+              "type": "SmartDeviceCompany"
+            }
+          ],
           "samples": [
-            "I want to submit my information now"
+            "About an {device_name}",
+            "I want to give feedback regarding my {device_name}",
+            "About my {device_name}",
+            "{device_name}",
+            "I want to talk about {device_name} from {device_company}"
           ]
         },
         {
-          "name": "SubmitFeatureRequest",
-          "slots": [],
-          "samples": [
-            "I want to submit my information now"
-          ]
-        },
-        {
-          "name": "SubmitQuestion",
-          "slots": [],
-          "samples": [
-            "I want to submit my information now"
-          ]
-        },
-        {
-          "name": "SubmitPraise",
-          "slots": [],
-          "samples": [
-            "I want to submit my information now"
-          ]
-        },
-        {
-          "name": "ElicitContactPreferences",
+          "name": "ElicitContactInformationIntent",
           "slots": [{
               "name": "email_address",
               "type": "AMAZON.SearchQuery"
@@ -129,48 +133,40 @@
           ]
         },
         {
-          "name": "SendInformation",
+          "name": "SubmitInformationIntent",
           "slots": [],
           "samples": [
             "I want to submit my information now"
           ]
         },
         {
-          "name": "AMAZON.StartOverIntent",
+          "name": "SkillConfigurationIntent",
+          "slots": [{
+              "name": "feedbacker_name",
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "My name is {feedbacker_name}"
+              ]
+            },
+            {
+              "name": "feedbacker_email_address",
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "It is {feedbacker_email_address}",
+                "My email address is {feedbacker_email_address}"
+              ]
+            }
+          ],
           "samples": [
-            "restart"
+            "My email address is {feedbacker_email_address}",
+            "My name is {feedbacker_name}"
           ]
         },
         {
-          "name": "AMAZON.CancelIntent",
+          "name": "SendInformationIntent",
+          "slots": [],
           "samples": [
-            "cancel"
-          ]
-        },
-        {
-          "name": "AMAZON.HelpIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.StopIntent",
-          "samples": [
-            "stop"
-          ]
-        },
-        {
-          "name": "AMAZON.YesIntent",
-          "samples": [
-            "yes"
-          ]
-        },
-        {
-          "name": "AMAZON.FallbackIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.NoIntent",
-          "samples": [
-            "no"
+            "I want to submit my information now"
           ]
         },
         {
@@ -325,8 +321,9 @@
       ]
     },
     "dialog": {
-      "intents": [{
-          "name": "SelectDevice",
+      "intents": [
+        {
+          "name": "SelectDeviceIntent",
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
@@ -365,7 +362,29 @@
           ]
         },
         {
-          "name": "SkillConfiguration",
+          "name": "ElicitDeviceInformationIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [{
+              "name": "device_name",
+              "type": "SmartDevice",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.772638607118.926275580092"
+              }
+            },
+            {
+              "name": "device_company",
+              "type": "SmartDeviceCompany",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {}
+            }
+          ]
+        },
+        {
+          "name": "SkillConfigurationIntent",
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
@@ -391,12 +410,15 @@
       ],
       "delegationStrategy": "ALWAYS"
     },
-    "prompts": [{
+    "prompts": [
+      {
         "id": "Elicit.Slot.1468393552773.1192548334628",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Please select one of your device I listed that you would like to give feedback"
-        }]
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Please select one of your device I listed that you would like to give feedback"
+          }
+        ]
       },
       {
         "id": "Elicit.Slot.1230705760883.8188548338",

@@ -10,106 +10,18 @@ const sprintf = require('i18next-sprintf-postprocessor');
 const languageStrings = {
   'en': require('./languageStrings')
 }
-/*const baseUrl = 'myfeedbackbot.com:8081';
-
-*/
-/*function httpPost(query, callback) {
-    var options = {
-        host: 'numbersapi.com',
-        path: '/' + encodeURIComponent(query),
-        method: 'GET',
-    };
-
-    var req = http.request(options, res => {
-        res.setEncoding('utf8');
-        var responseString = "";
-        
-        //accept incoming data asynchronously
-        res.on('data', chunk => {
-            responseString = responseString + chunk;
-        });
-        
-        //return the data when streaming is complete
-        res.on('end', () => {
-            console.log(responseString);
-            callback(responseString);
-        });
-
-    });
-    req.end();
-}*/
-
-/*function httpGet(query, callback) {
-    var options = {
-        host: 'numbersapi.com',
-        path: '/' + encodeURIComponent(query),
-        method: 'GET',
-    };
-
-    var req = http.request(options, res => {
-        res.setEncoding('utf8');
-        var responseString = "";
-        
-        //accept incoming data asynchronously
-        res.on('data', chunk => {
-            responseString = responseString + chunk;
-        });
-        
-        //return the data when streaming is complete
-        res.on('end', () => {
-            console.log(responseString);
-            callback(responseString);
-        });
-
-    });
-    req.end();
-}*/
-
-/*const initialSessionAttributes.botState = 'INITIAL_STATE'
-const initialSessionAttributes.device_id = 0
-const initialSessionAttributes.feedback_type_id = 0
-const initialSessionAttributes.feedback_content = ''*/
-/*
-const https = require('https')
-
-const data = JSON.stringify({
-  todo: 'Buy the milk'
-})
-
-const options = {
-  hostname: 'whatever.com',
-  port: 443,
-  path: '/todos',
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Content-Length': data.length
-  }
-}
-
-const req = https.request(options, res => {
-  console.log(`statusCode: ${res.statusCode}`)
-
-  res.on('data', d => {
-    process.stdout.write(d)
-  })
-})
-
-req.on('error', error => {
-  console.error(error)
-})
-
-req.write(data)
-req.end()
-*/
+const baseUrl = 'myfeedbackbot.com:8081';
 
 function postFeedback(product_id, feedbacker_id, feedback_type_id, feedback_content) {
-  const data = JSON.stringify({
+  const datax = {
     product_id: 1,
     feedbacker_id: 1,
     feedback_type_id: 1,
     feedback_content: "I hope alexa can post things to my api."
-  })
+  };
+  datax.product_id = product_id;
+  
+  const data = JSON.stringify(datax);
   
   const options = {
     hostname: 'api.myfeedbackbot.com',
@@ -138,24 +50,12 @@ function postFeedback(product_id, feedbacker_id, feedback_type_id, feedback_cont
   req.end();
 }
 
-
-function slotValue(slot, useId){
-    let value = slot.value;
-    let resolution = (slot.resolutions && slot.resolutions.resolutionsPerAuthority && slot.resolutions.resolutionsPerAuthority.length > 0) ? slot.resolutions.resolutionsPerAuthority[0] : null;
-    if(resolution && resolution.status.code == 'ER_SUCCESS_MATCH'){
-        let resolutionValue = resolution.values[0].value;
-        value = resolutionValue.id && useId ? resolutionValue.id : resolutionValue.name;
-    }
-    return value;
-}
-
 const initialSessionAttributes = {
   botState: 'SKILL_CONFIGURATION_STATE_CONFIRM',
   device_id: 0,
   feedback_type_id: 0,
   feedback_content: ''
 }
-
 
 function saveSessionAttributes(attributesManager, sessionAttributes, speechOutput) {
   sessionAttributes.last_speech_output = speechOutput;
@@ -180,14 +80,6 @@ const LaunchRequest = {
     const requestAttributes = attributesManager.getRequestAttributes();
     var sessionAttributes = {};
 
-  
-    /*sessionAttributes.botState = 'INITIAL_STATE';
-    sessionAttributes.device_name = '';
-    sessionAttributes.device_company = '';
-    
-    sessionAttributes.feedback_type = '';
-    sessionAttributes.feedback_content = '';*/
-    
     var speechOutput = "";
 
     if (Alexa.isNewSession(handlerInput.requestEnvelope)) {
@@ -433,9 +325,63 @@ const SelectDeviceHandler = {
         
         attributesManager.setSessionAttributes(sessionAttributes);
         
-        postFeedback(1,1,1,1);
+        //postFeedback(device_id,1,1,1);
         
         var speakOutput = `Thank you very much. So you want to give feedback regarding your ${device_name}. What type of feedback do you have? Is it a bug report, a feature request, a question or praise and criticism.`;
+
+        sessionAttributes.botState = 'SELECT_FEEDBACK_TYPE_STATE';
+        attributesManager.setSessionAttributes(sessionAttributes);
+        
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    },
+};
+
+const SelectFeedbackTypeHandler = {
+
+    canHandle(handlerInput) {
+        console.log("SelectFeedbackTypeHandler > Tested");
+
+        let stateCanHandleIntent = false;
+        const { attributesManager } = handlerInput;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        
+        if (sessionAttributes.botState) {
+            switch(sessionAttributes.botState) {
+                case 'SELECT_FEEDBACK_TYPE_STATE':
+                    stateCanHandleIntent = true;  
+                    break;
+            }
+        }
+        
+        return stateCanHandleIntent
+            && Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' 
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectFeedbackType';
+    },
+
+    handle(handlerInput) {
+        console.log("SelectFeedbackTypeHandler > Used");
+        console.log(handlerInput);
+        console.log(handlerInput.requestEnvelope);
+        
+        const { attributesManager } = handlerInput;
+        const requestAttributes = attributesManager.getRequestAttributes();
+        const sessionAttributes = attributesManager.getSessionAttributes();
+    
+    
+        const feedback_type_name = handlerInput.requestEnvelope.request.intent.slots.feedback_type.value;
+        sessionAttributes.feedback_type_name = feedback_type_name;
+        
+        const feedback_type_id = handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id;
+        sessionAttributes.device_id = feedback_type_id;
+        
+        attributesManager.setSessionAttributes(sessionAttributes);
+        
+        postFeedback(1, 1, feedback_type_id, 1);
+        
+        var speakOutput = `Thank you very much. So you want to submit a ${feedback_type_name}.`;
 
         sessionAttributes.botState = 'SELECT_FEEDBACK_TYPE_STATE';
         attributesManager.setSessionAttributes(sessionAttributes);
@@ -890,6 +836,7 @@ exports.handler = skillBuilder
     
     SkillConfigurationHandler,
     SelectDeviceHandler,
+    SelectFeedbackTypeHandler,
     GiveFeedbackIntentHandler,
     ElicitContactInformationHandler,
     SubmitInformationHandler,

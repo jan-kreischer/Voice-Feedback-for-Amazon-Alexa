@@ -2,8 +2,7 @@
   "interactionModel": {
     "languageModel": {
       "invocationName": "my feedback bot",
-      "intents": [
-        {
+      "intents": [{
           "name": "SkillConfiguration",
           "slots": [{
               "name": "feedbacker_name",
@@ -30,7 +29,7 @@
           "name": "SelectDevice",
           "slots": [{
             "name": "device_name",
-            "type": "DeviceName",
+            "type": "SmartDevice",
             "samples": [
               "regarding {device_name}",
               "Regarding my {device_name}",
@@ -49,9 +48,18 @@
         },
         {
           "name": "SelectFeedbackType",
-          "slots": [],
+          "slots": [{
+            "name": "feedback_type",
+            "type": "FeedbackType",
+            "samples": [
+              "I want to submit a {feedback_type}"
+            ]
+          }],
           "samples": [
-            "please go to the next step."
+            "I want to submit a bug report",
+            "I want to submit a feature request",
+            "I want to submit a question",
+            "I want to submit a praise"
           ]
         },
         {
@@ -136,6 +144,13 @@
           ]
         },
         {
+          "name": "CheckReplies",
+          "slots": [],
+          "samples": [
+            "I want to check for replies"
+          ]
+        },
+        {
           "name": "AMAZON.StartOverIntent",
           "samples": [
             "restart"
@@ -189,12 +204,6 @@
       ],
       "types": [{
           "values": [{
-              "id": "3",
-              "name": {
-                "value": "Complaint"
-              }
-            },
-            {
               "id": "1",
               "name": {
                 "value": "Bug report",
@@ -208,93 +217,29 @@
               "name": {
                 "value": "Feature request"
               }
+            },
+            {
+              "id": "3",
+              "name": {
+                "value": "Question"
+              }
+            },
+            {
+              "id": "4",
+              "name": {
+                "value": "Praise"
+              }
             }
           ],
           "name": "FeedbackType"
         },
         {
           "values": [{
+              "id": "1",
               "name": {
-                "value": "iPad"
-              }
-            },
-            {
-              "name": {
-                "value": "iPhone"
-              }
-            },
-            {
-              "name": {
-                "value": "Apple Watch"
-              }
-            }
-          ],
-          "name": "SmartDevice"
-        },
-        {
-          "values": [{
-              "name": {
-                "value": "Nest"
-              }
-            },
-            {
-              "name": {
-                "value": "Amazon"
-              }
-            },
-            {
-              "name": {
-                "value": "Google"
-              }
-            },
-            {
-              "name": {
-                "value": "Apple"
-              }
-            }
-          ],
-          "name": "SmartDeviceCompany"
-        },
-        {
-          "values": [{
-              "id": "6",
-              "name": {
-                "value": "xiaomi mi band",
+                "value": "Amazon Echo Dot",
                 "synonyms": [
-                  "mi band"
-                ]
-              }
-            },
-            {
-              "id": "5",
-              "name": {
-                "value": "philips hue light",
-                "synonyms": [
-                  "hue light",
-                  "hue",
-                  "philips hue"
-                ]
-              }
-            },
-            {
-              "id": "4",
-              "name": {
-                "value": "IKEA Livboj Wireless charger",
-                "synonyms": [
-                  "ikea livboj",
-                  "ikea livboj charger",
-                  "Livboj"
-                ]
-              }
-            },
-            {
-              "id": "3",
-              "name": {
-                "value": "IKEA Hektar Lamp",
-                "synonyms": [
-                  "Hektar",
-                  "Hektar Lamp",
-                  "IKEA Hektar"
+                  "Echo Dot"
                 ]
               }
             },
@@ -311,16 +256,30 @@
               }
             },
             {
-              "id": "1",
+              "id": "3",
               "name": {
-                "value": "Amazon Echo Dot",
+                "value": "Philips Hue Light",
                 "synonyms": [
-                  "Echo Dot"
+                  "Hue Light",
+                  "Hue",
+                  "Philips Hue"
+                ]
+              }
+            },
+            {
+              "id": "4",
+              "name": {
+                "value": "Xiaomi Mi Band",
+                "synonyms": [
+                  "Mi Band"
                 ]
               }
             }
+
+
+
           ],
-          "name": "DeviceName"
+          "name": "SmartDevice"
         }
       ]
     },
@@ -331,11 +290,25 @@
           "prompts": {},
           "slots": [{
             "name": "device_name",
-            "type": "DeviceName",
+            "type": "SmartDevice",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
               "elicitation": "Elicit.Slot.1468393552773.1192548334628"
+            }
+          }]
+        },
+        {
+          "name": "SelectFeedbackType",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [{
+            "name": "feedback_type",
+            "type": "FeedbackType",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.1468393552778.1192548334628"
             }
           }]
         },
@@ -396,6 +369,13 @@
         "variations": [{
           "type": "PlainText",
           "value": "Please select one of your device I listed that you would like to give feedback"
+        }]
+      },
+      {
+        "id": "Elicit.Slot.1468393552778.1192548334628",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please tell my if you want to submit a bug report, a feautre request, a question or praise and criticism."
         }]
       },
       {

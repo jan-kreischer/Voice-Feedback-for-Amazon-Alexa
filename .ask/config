@@ -10,7 +10,7 @@
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "bf8945f309177de8d25b5de8a81d6daa"
+            "eTag": "0cd47f53684fef7bf65d20033f20b7bf"
           }
         },
         "lambda": [
@@ -23,7 +23,7 @@
             "codeUri": "lambda/custom",
             "functionName": "ask-custom-MyFeedbackBot_Skill-v1-default",
             "handler": "index.handler",
-            "revisionId": "5d39861f-b39e-4b0c-80d1-ef79d649b16e",
+            "revisionId": "485a645c-ec1f-4986-9eb9-f96de82eed59",
             "runtime": "nodejs10.x"
           }
         ]

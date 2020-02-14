@@ -23,6 +23,9 @@ module.exports = {
   translation: {
     SKILL_NAME: 'Feedbacker',
     
+    SELECT_ACTION_STATE_ENTER: 'Hey do you want to give feedback, check for replies to given feedback or configure your skill?',
+    SELECT_ACTION_STATE_EXIT: '',
+    
     INITIAL_STATE: 'Hey, you want to give feedback regarding one of your smart devices?',
     LAUNCH_WELCOME_MESSAGE: 'Hey, you want to give feedback regarding one of your smart devices?',
     LAUNCH_WELCOME_REPROMPT: 'Say yes to start or no to quit.',
@@ -33,18 +36,42 @@ module.exports = {
     SKILL_CONFIGURATION_STATE_EXIT: "",
     SKILL_CONFIGURATION_STATE_HELP: "To configure your skill you just need to provide your name and your email address. You can also skip this step by saying skip or stop the conversation by saying stop.",
 
-    SELECT_COMPANY_STATE_ENTER: 'Please tell me at first what company is the device made by',
-    SELECT_COMPANY_STATE_HELP: 'Please tell me at first what company is the device made by',
-    SELECT_COMPANY_STATE_SKIP: 'Please tell me at first what company is the device made by',
-    SELECT_COMPANY_STATE_EXIT: 'Please tell me at first what company is the device made by',
-    
-    SELECT_DEVICE_STATE_ENTER: 'Please select the device you would like to give feedback to. Do you want give Feedback regaring your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band',
+    SELECT_DEVICE_STATE_ENTER: 'Please select the device you would like to give feedback to. Do you want give Feedback regarding your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band',
     SELECT_DEVICE_STATE_HELP: "Please tell me the name of your device that you want to talk about. You can also skip this step by saying skip or stop the conversation by saying stop.",
     SELECT_DEVICE_STATE_SKIP: "Sorry, I really need to know what device we are talking about. Therefore, you cannot skip this step. You can still stop the conversation by saying stop.",
     SELECT_DEVICE_STATE_EXIT: "",
     
+    SELECT_FEEDBACK_TYPE_STATE_ENTER: '',
+    SELECT_FEEDBACK_TYPE_STATE_HELP: '',
+    SELECT_FEEDBACK_TYPE_STATE_SKIP: '',
+    SELECT_FEEDBACK_TYPE_STATE_EXIT: '',
+    
+    ADMIT_BUG_REPORT_STATE_ENTER: 'You can tell me your bug report now',
+    ADMIT_BUG_REPORT_STATE_HELP: '',
+    ADMIT_BUG_REPORT_STATE_SKIP: '',
+    ADMIT_BUG_REPORT_STATE_EXIT: '',
+    
+    ADMIT_FEATURE_REQUEST_STATE_ENTER: 'You can tell me your feature request now',
+    ADMIT_FEATURE_REQUEST_STATE_HELP: '',
+    ADMIT_FEATURE_REQUEST_STATE_ENTER: '',
+    ADMIT_FEATURE_REQUEST_STATE_EXIT: '',
+    
+    ADMIT_QUESTION_STATE_ENTER: 'You can tell me your question now',
+    ADMIT_QUESTION_STATE_HELP: '',
+    ADMIT_QUESTION_STATE_SKIP: '',
+    ADMIT_QUESTION_STATE_EXIT: '',
+    
+    ADMIT_PRAISE_STATE_ENTER: 'You can tell me your praise now',
+    ADMIT_PRAISE_STATE_HELP: '',
+    ADMIT_PRAISE_STATE_SKIP: '',
+    ADMIT_PRAISE_STATE_EXIT: '',
+    
+
+    
     ELICIT_DEVICE_INFORMATION_WELCOME_MESSAGE: 'Please tell me now what device we are talking about.',
     ELICIT_DEVICE_INFORMATION_WELCOME_REPROMPT: 'For example you could say, I want to give feedback regarding my Fire TV Stick from Amazon',
+    
+    CHECK_REPLIES_STATE_ENTER: 'Okay, let me check. Alright, you have 3 new replies. One regarding your Xiaomi Mi Band, one regarding your Philips Hue Light and one regarding your Amazon Echo Dot. Which one do you want to hear?',
     
     SKILL_CONFIGURATION_NO_MESSAGE: "Okay, so we skip the initial configuration. You can still give your feedback now",
     SKILL_CONFIGURATION_SKIP_MESSAGE: "Okay, so we skip the initial configuration. You can still give your feedback now",

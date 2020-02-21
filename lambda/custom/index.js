@@ -13,31 +13,31 @@ const languageStrings = {
 const hostUrl = 'api.myfeedbackbot.com';
 
 function httpGet(query, callback) {
-    var options = {
-        host: hostUrl,
-        port: 443,
-        path: '/' + encodeURIComponent(query),
-        method: 'GET',
-    };
+  var options = {
+    host: hostUrl,
+    port: 443,
+    path: '/' + encodeURIComponent(query),
+    method: 'GET',
+  };
 
-    var req = https.request(options, res => {
-        res.setEncoding('utf8');
-        var responseString = "";
-        
-        //accept incoming data asynchronously
-        res.on('data', chunk => {
-            responseString = responseString + chunk;
-        });
-        
-        //return the data when streaming is complete
-        res.on('end', () => {
-            console.log(responseString);
-            callback(responseString);
-            return responseString;
-        });
-        return responseString;
+  var req = https.request(options, res => {
+    res.setEncoding('utf8');
+    var responseString = "";
+
+    //accept incoming data asynchronously
+    res.on('data', chunk => {
+      responseString = responseString + chunk;
     });
-    req.end();
+
+    //return the data when streaming is complete
+    res.on('end', () => {
+      console.log(responseString);
+      callback(responseString);
+      return responseString;
+    });
+    return responseString;
+  });
+  req.end();
 }
 
 function postFeedback(feedbacker_id, product_id, feedback_type_id, feedback_content) {
@@ -76,7 +76,7 @@ function postFeedback(feedbacker_id, product_id, feedback_type_id, feedback_cont
 }
 
 function getUnacknowledgedReplies() {
- httpGet('/alexa/new-replies', (data) => {"DATA" + console.log(data)});
+  httpGet('/alexa/new-replies', (data) => { "DATA" + console.log(data) });
 }
 
 function saveSessionAttributes(attributesManager, sessionAttributes, speechOutput) {
@@ -156,39 +156,39 @@ const SelectActionHandler = {
         }
     }*/
 
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' 
-    && Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectAction';
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectAction';
   },
   async handle(handlerInput) {
-      console.log("SelectActionHandler > Used");
-      console.log(handlerInput);
+    console.log("SelectActionHandler > Used");
+    console.log(handlerInput);
 
-      const { attributesManager } = handlerInput;
-      const requestAttributes = attributesManager.getRequestAttributes();
-      const sessionAttributes = attributesManager.getSessionAttributes();
-      
-      const action_type = handlerInput.requestEnvelope.request.intent.slots.action_type.value;
-      const action_id = handlerInput.requestEnvelope.request.intent.slots.action_type.resolutions.resolutionsPerAuthority[0].values[0].value.id;
-      
-      let speechOutput = '';
-      switch(action_id) {
-        case 1:
-        case '1':
-          sessionAttributes.botState = 'SELECT_DEVICE_STATE';
-          speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_ENTER');
-          break;
-        case 2:
-        case '2':
-          sessionAttributes.botState = 'CHECK_REPLIES_STATE';
-          speechOutput = requestAttributes.t('CHECK_REPLIES_STATE_ENTER');
-          console.log(getUnacknowledgedReplies());
-          break;
-        case 3:
-        case '3':
-          sessionAttributes.botState = 'SKILL_CONFIGURATION_STATE';
-          speechOutput = requestAttributes.t('SKILL_CONFIGURATION_STATE_ENTER');
-          break;
-      }
+    const { attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    const action_type = handlerInput.requestEnvelope.request.intent.slots.action_type.value;
+    const action_id = handlerInput.requestEnvelope.request.intent.slots.action_type.resolutions.resolutionsPerAuthority[0].values[0].value.id;
+
+    let speechOutput = '';
+    switch (action_id) {
+      case 1:
+      case '1':
+        sessionAttributes.botState = 'SELECT_DEVICE_STATE';
+        speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_ENTER');
+        break;
+      case 2:
+      case '2':
+        sessionAttributes.botState = 'CHECK_REPLIES_STATE';
+        speechOutput = requestAttributes.t('CHECK_REPLIES_STATE_ENTER');
+        console.log(getUnacknowledgedReplies());
+        break;
+      case 3:
+      case '3':
+        sessionAttributes.botState = 'SKILL_CONFIGURATION_STATE';
+        speechOutput = requestAttributes.t('SKILL_CONFIGURATION_STATE_ENTER');
+        break;
+    }
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .reprompt(speechOutput)
@@ -367,12 +367,14 @@ const SkillConfigurationHandler = {
     const feedbacker_email_address = handlerInput.requestEnvelope.request.intent.slots.feedbacker_email_address.value;
     sessionAttributes.feedbacker_email_address = feedbacker_email_address;
 
-    sessionAttributes.botState = 'FEEDBACK_LOOP';
+    sessionAttributes.botState = 'SELECT_ACTION_STATE';
     attributesManager.setSessionAttributes(sessionAttributes);
 
+    let speechOutput = requestAttributes.t('SKILL_CONFIGURATION_STATE_EXIT') + requestAttributes.t('SELECT_ACTION_STATE_ENTER');
+
     return handlerInput.responseBuilder
-      .speak('Thank you very much. Your skill is now configured and you can give your feedback now.')
-      .reprompt('Thank you very much. You skill is configured and you can give your feedback now.')
+      .speak(speechOutput)
+      .reprompt(speechOutput)
       .getResponse();
   },
 };
@@ -394,8 +396,8 @@ const SelectDeviceHandler = {
       }
     }
 
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' 
-        && Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectDevice';
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectDevice';
   },
 
   handle(handlerInput) {
@@ -412,7 +414,8 @@ const SelectDeviceHandler = {
     const product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.device_name.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     sessionAttributes.product_id = product_id;
 
-    let speechOutput = `Thank you very much. So you want to give feedback regarding your ${product_name}. What type of feedback do you have? Is it a bug report, a feature request, a question or praise and criticism.`;
+    //let speechOutput = `Thank you very much. So you want to give feedback regarding your ${product_name}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;
+    let speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_EXIT') + requestAttributes.t('SELECT_FEEDBACK_TYPE_STATE_ENTER');
 
     sessionAttributes.botState = 'SELECT_FEEDBACK_TYPE_STATE';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
@@ -460,6 +463,83 @@ const SelectFeedbackTypeHandler = {
 
     const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     sessionAttributes.feedback_type_id = feedback_type_id;
+
+    postFeedback(1, sessionAttributes.product_id, feedback_type_id, 1);
+
+    let speechOutput = '';
+    switch (feedback_type_id) {
+      case 1:
+        speechOutput = requestAttributes.t('ADMIT_BUG_REPORT_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_BUG_REPORT_STATE';
+        break;
+      case 2:
+        speechOutput = requestAttributes.t('ADMIT_FEATURE_REQUEST_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_FEATURE_REQUEST_STATE';
+        break;
+      case 3:
+        speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_QUESTION_STATE';
+        break;
+      case 4:
+        speechOutput = requestAttributes.t('ADMIT_PRAISE_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_PRAISE_STATE';
+        break;
+      case 5:
+        speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_GENERAL_FEEDBACK_STATE';
+        break;
+    }
+
+    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
+
+    return handlerInput.responseBuilder
+      .speak(speechOutput)
+      .reprompt(speechOutput)
+      .getResponse();
+  },
+};
+
+const AdmitBugReportHandler = {
+
+  canHandle(handlerInput) {
+    console.log("AdmitBugReportHandler > Tested");
+
+    let stateCanHandleIntent = false;
+    const { attributesManager } = handlerInput;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    if (sessionAttributes.botState) {
+      switch (sessionAttributes.botState) {
+        case 'ADMIT_BUG_REPORT_STATE':
+          stateCanHandleIntent = true;
+          break;
+      }
+    }
+
+    return stateCanHandleIntent &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectFeedbackType';
+  },
+
+  handle(handlerInput) {
+    console.log("SelectFeedbackTypeHandler > Used");
+    console.log(handlerInput);
+
+    const { attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    const feedback_type_name = handlerInput.requestEnvelope.request.intent.slots.feedback_type.value;
+    sessionAttributes.feedback_type_name = feedback_type_name;
+
+    const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+    sessionAttributes.feedback_type_id = feedback_type_id;
+
+    /*const feedback_type_name = handlerInput.requestEnvelope.request.intent.slots.feedback_type.value;
+    sessionAttributes.feedback_type_name = feedback_type_name;
+
+    const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+    sessionAttributes.feedback_type_id = feedback_type_id;
     
     postFeedback(1, sessionAttributes.product_id, feedback_type_id, 1);
 
@@ -481,7 +561,78 @@ const SelectFeedbackTypeHandler = {
         speechOutput = requestAttributes.t('ADMIT_PRAISE_STATE_ENTER');
         sessionAttributes.botState = 'ADMIT_PRAISE_STATE';
         break;
+      case 5:
+        speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_GENERAL_FEEDBACK_STATE';
+        break;
+    }*/
+    let speechOutput = 'test';
+    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
+
+    return handlerInput.responseBuilder
+      .speak(speechOutput)
+      .reprompt(speechOutput)
+      .getResponse();
+  },
+};
+
+const AdmitFeatureRequestHandler = {
+
+  canHandle(handlerInput) {
+    console.log("AdmitFeatureRequestHandler > Tested");
+
+    let stateCanHandleIntent = false;
+    const { attributesManager } = handlerInput;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    if (sessionAttributes.botState) {
+      switch (sessionAttributes.botState) {
+        case 'ADMIT_FEATURE_REQUEST_STATE':
+          stateCanHandleIntent = true;
+          break;
+      }
     }
+
+    return stateCanHandleIntent;
+  },
+
+  handle(handlerInput) {
+    console.log("AdmitQuestionHandler > Used");
+    console.log(handlerInput);
+
+    const { attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    sessionAttributes.feedback_content = feedback_content;
+
+    /*const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+    sessionAttributes.feedback_type_id = feedback_type_id;*/
+
+    /*let speechOutput = '';
+    switch(feedback_type_id) {
+      case 1:
+        speechOutput = requestAttributes.t('ADMIT_BUG_REPORT_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_BUG_REPORT_STATE';
+        break;
+      case 2:
+        speechOutput = requestAttributes.t('ADMIT_FEATURE_REQUEST_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_FEATURE_REQUEST_STATE';
+        break;
+      case 3:
+        speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_QUESTION_STATE';
+        break;
+      case 4:
+        speechOutput = requestAttributes.t('ADMIT_PRAISE_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_PRAISE_STATE';
+        break;
+    }*/
+
+    postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
+    let speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_EXIT');
+    sessionAttributes.botState('END');
 
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
@@ -492,47 +643,203 @@ const SelectFeedbackTypeHandler = {
   },
 };
 
-
-/*const GiveFeedbackIntentHandler = {
+const AdmitQuestionHandler = {
 
   canHandle(handlerInput) {
-    // handle feedback only after the bot has been started
+    console.log("AdmitQuestionHandler > Tested");
+
     let stateCanHandleIntent = false;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    if (sessionAttributes.botState &&
-      sessionAttributes.botState === 'FEEDBACK_LOOP') {
-      console.log("GiveFeedbackIntentHandler can handle this intent");
-      stateCanHandleIntent = true;
+    if (sessionAttributes.botState) {
+      switch (sessionAttributes.botState) {
+        case 'ADMIT_QUESTION_STATE':
+          stateCanHandleIntent = true;
+          break;
+      }
     }
-    return stateCanHandleIntent &&
-      handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
-      (handlerInput.requestEnvelope.request.intent.name === 'GiveFeedbackIntent' ||
-        handlerInput.requestEnvelope.request.intent.name === 'GiveFeedback')
+
+    return stateCanHandleIntent;
   },
 
   handle(handlerInput) {
+    console.log("AdmitQuestionHandler > Used");
+    console.log(handlerInput);
+
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const feedback_type = handlerInput.requestEnvelope.request.intent.slots.feedback_type.value;
-    sessionAttributes.feedback_type = feedback_type;
     const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
     sessionAttributes.feedback_content = feedback_content;
 
-    sessionAttributes.botState = 'ELICIT_CONTACT_INFORMATION';
-    attributesManager.setSessionAttributes(sessionAttributes);
+    /*const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+    sessionAttributes.feedback_type_id = feedback_type_id;*/
+
+    /*let speechOutput = '';
+    switch(feedback_type_id) {
+      case 1:
+        speechOutput = requestAttributes.t('ADMIT_BUG_REPORT_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_BUG_REPORT_STATE';
+        break;
+      case 2:
+        speechOutput = requestAttributes.t('ADMIT_FEATURE_REQUEST_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_FEATURE_REQUEST_STATE';
+        break;
+      case 3:
+        speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_QUESTION_STATE';
+        break;
+      case 4:
+        speechOutput = requestAttributes.t('ADMIT_PRAISE_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_PRAISE_STATE';
+        break;
+    }*/
+
+    postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
+    let speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_EXIT');
+    sessionAttributes.botState('END');
+
+    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
-      .speak('Thank you i received your feedback. To enable the developer to contact you wee need your contact information. Do you allow the developer to contact you in case of any backquestions? Yes or no?')
-      .reprompt('Thank you i received your feedback. To enable the developer to contact you wee need your contact information. Do you allow the developer to contact you in case of any ba')
+      .speak(speechOutput)
+      .reprompt(speechOutput)
       .getResponse();
   },
-};*/
+};
 
-const ElicitContactInformationHandler = {
+const AdmitCriticismHandler = {
+
+  canHandle(handlerInput) {
+    console.log("AdmitQuestionHandler > Tested");
+
+    let stateCanHandleIntent = false;
+    const { attributesManager } = handlerInput;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    if (sessionAttributes.botState) {
+      switch (sessionAttributes.botState) {
+        case 'ADMIT_QUESTION_STATE':
+          stateCanHandleIntent = true;
+          break;
+      }
+    }
+
+    return stateCanHandleIntent;
+  },
+
+  handle(handlerInput) {
+    console.log("AdmitQuestionHandler > Used");
+    console.log(handlerInput);
+
+    const { attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    sessionAttributes.feedback_content = feedback_content;
+
+    let speechOutput = requestAttributes.t('ADMIT_CRITICISM_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
+    sessionAttributes.botState('');
+
+    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
+
+    return handlerInput.responseBuilder
+      .speak(speechOutput)
+      .reprompt(speechOutput)
+      .getResponse();
+  },
+};
+
+const AdmitGeneralFeedbackHandler = {
+
+  canHandle(handlerInput) {
+    console.log("AdmitGeneralFeedbackHandler > Tested");
+
+    let stateCanHandleIntent = false;
+    const { attributesManager } = handlerInput;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    if (sessionAttributes.botState) {
+      switch (sessionAttributes.botState) {
+        case 'ADMIT_GENERAL_FEEDBACK_STATE':
+          stateCanHandleIntent = true;
+          break;
+      }
+    }
+
+    return stateCanHandleIntent;
+  },
+
+  handle(handlerInput) {
+    console.log("AdmitGeneralFeedbackHandler > Used");
+    console.log(handlerInput);
+
+    const { attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    sessionAttributes.feedback_content = feedback_content;
+
+    let speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
+    sessionAttributes.botState('SELECT_CONTACT_PREFERENCES_STATE');
+
+    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
+
+    return handlerInput.responseBuilder
+      .speak(speechOutput)
+      .reprompt(speechOutput)
+      .getResponse();
+  },
+};
+
+const SelectContactPreferencesHandler = {
+
+  canHandle(handlerInput) {
+    console.log("SelectContactPreferencesHandler  > Tested");
+
+    let stateCanHandleIntent = false;
+    const { attributesManager } = handlerInput;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    if (sessionAttributes.botState) {
+      switch (sessionAttributes.botState) {
+        case 'SELECT_CONTACT_PREFERENCES_STATE':
+          stateCanHandleIntent = true;
+          break;
+      }
+    }
+
+    return stateCanHandleIntent;
+  },
+
+  handle(handlerInput) {
+    console.log("SelectContactPreferencesHandler > Used");
+    console.log(handlerInput);
+
+    const { attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    sessionAttributes.feedback_content = feedback_content;
+
+    let speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
+    sessionAttributes.botState('SELECT_CONTACT_PREFERENCES_STATE');
+
+    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
+
+    return handlerInput.responseBuilder
+      .speak(speechOutput)
+      .reprompt(speechOutput)
+      .getResponse();
+  },
+};
+
+/*const ElicitContactInformationHandler = {
 
   canHandle(handlerInput) {
     console.log("ElicitContactInformationHandler > Tested");
@@ -574,9 +881,9 @@ const ElicitContactInformationHandler = {
       .reprompt('Thank you very much. Do you want me to send your feedback to the developers now')
       .getResponse();
   },
-};
+};*/
 
-const SubmitInformationHandler = {
+/*const SubmitInformationHandler = {
 
   canHandle(handlerInput) {
     console.log("SubmitInformationHandler TESTED")
@@ -614,7 +921,7 @@ const SubmitInformationHandler = {
       .reprompt('Thank you I received your feedback.')
       .getResponse();
   },
-};
+};*/
 
 //========== SKILL CONFIGURATION ==========
 const CheckRepliesHandler = {
@@ -634,8 +941,8 @@ const CheckRepliesHandler = {
       }
     }
 
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-        && Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectDevice';
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectDevice';
 
   },
 
@@ -654,11 +961,11 @@ const CheckRepliesHandler = {
     const device_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.device_name.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     sessionAttributes.device_id = device_id;
 
-    var speechOutput = `Thank you very much. So you want to give feedback regarding your ${device_name}. What type of feedback do you have? Is it a bug report, a feature request, a question or praise and criticism.`;
+    var speechOutput = `Thank you very much. So you want to give feedback regarding your ${device_name}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;
 
     sessionAttributes.botState = 'SELECT_FEEDBACK_TYPE_STATE';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
-    
+
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .reprompt(speechOutput)
@@ -828,7 +1135,7 @@ const RestartIntentHandler = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    var speechOutput = "Restart Message"
+    var speechOutput = requestAttributes.t('RESTART_MESSAGE') + requestAttributes.t('SELECT_ACTION_STATE_ENTER');
 
     saveSessionAttributes(attributesManager, initialSessionAttributes, speechOutput);
 
@@ -879,9 +1186,16 @@ const FallbackIntentHandler = {
   },
   handle(handlerInput) {
     console.log("FallbackIntentHandler > Used")
+    console.log(handlerInput);
+
+    const { attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+
+    let speechOutput = requestAttributes.t('FALLBACK_INTENT_MESSAGE');
+
     return handlerInput.responseBuilder
-      .speak('')
-      .reprompt('Fallback Intent')
+      .speak(speechOutput)
+      .reprompt(speechOutput)
       .getResponse();
   },
 };
@@ -897,14 +1211,17 @@ const UnhandledIntentHandler = {
   },
   handle(handlerInput) {
     console.log("UnhandledIntentHandler > Used")
+    console.log(handlerInput);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
+    let speechOutput = requestAttributes.t('UNHANDLED_INTENT_MESSAGE');
+
     return handlerInput.responseBuilder
-      .speak('Unhandled Intent')
-      .reprompt('Unhandled Intent')
+      .speak(speechOutput)
+      .reprompt(speechOutput)
       .getResponse();
   },
 };
@@ -982,17 +1299,24 @@ exports.handler = skillBuilder
     SelectActionHandler,
     SelectDeviceHandler,
     SelectFeedbackTypeHandler,
+
+    AdmitBugReportHandler,
+    AdmitFeatureRequestHandler,
+    AdmitQuestionHandler,
+    AdmitCriticismHandler,
+    AdmitGeneralFeedbackHandler,
+
     //GiveFeedbackIntentHandler,
-    ElicitContactInformationHandler,
-    SubmitInformationHandler,
-    
+    SelectContactPreferencesHandler,
+    //SubmitInformationHandler,
+
     CheckRepliesHandler,
-    
+
     SkillConfigurationHandler,
-    
+
     YesIntentHandler,
     NoIntentHandler,
-    
+
     RepeatIntentHandler,
     HelpIntentHandler,
 

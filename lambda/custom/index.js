@@ -408,15 +408,15 @@ const SelectDeviceHandler = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const product_name = handlerInput.requestEnvelope.request.intent.slots.device_name.value;
+    const product_name = handlerInput.requestEnvelope.request.intent.slots.product_name.value;
     sessionAttributes.product_name = product_name;
 
-    const product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.device_name.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+    const product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product_name.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     sessionAttributes.product_id = product_id;
 
     //let speechOutput = `Thank you very much. So you want to give feedback regarding your ${product_name}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;
     let speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_EXIT') + product_name + '. ' + requestAttributes.t('SELECT_FEEDBACK_TYPE_STATE_ENTER');
-    
+
     sessionAttributes.botState = 'SELECT_FEEDBACK_TYPE_STATE';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
@@ -565,7 +565,7 @@ const AdmitFeatureRequestHandler = {
   },
 
   handle(handlerInput) {
-    console.log("AdmitQuestionHandler > Used");
+    console.log("AdmitFeatureRequestHandler > Used");
     console.log(handlerInput);
 
     const { attributesManager } = handlerInput;
@@ -577,7 +577,7 @@ const AdmitFeatureRequestHandler = {
 
     postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
     let speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_EXIT');
-    sessionAttributes.botState('END');
+    sessionAttributes.botState = 'SELECT_CONTACT_PREFERENCES_STATE';
 
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
@@ -619,9 +619,9 @@ const AdmitQuestionHandler = {
     const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
     sessionAttributes.feedback_content = feedback_content;
 
-    postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
+    //postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
     let speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_EXIT');
-    sessionAttributes.botState('END');
+    sessionAttributes.botState = 'END';
 
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
@@ -664,7 +664,7 @@ const AdmitCriticismHandler = {
     sessionAttributes.feedback_content = feedback_content;
 
     let speechOutput = requestAttributes.t('ADMIT_CRITICISM_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
-    sessionAttributes.botState('');
+    sessionAttributes.botState = 'SELECT_CONTACT_PREFERENCES_STATE';
 
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
@@ -707,7 +707,7 @@ const AdmitGeneralFeedbackHandler = {
     sessionAttributes.feedback_content = feedback_content;
 
     let speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
-    sessionAttributes.botState('SELECT_CONTACT_PREFERENCES_STATE');
+    sessionAttributes.botState = 'SELECT_CONTACT_PREFERENCES_STATE';
 
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
@@ -877,13 +877,13 @@ const CheckRepliesHandler = {
     const sessionAttributes = attributesManager.getSessionAttributes();
 
 
-    const device_name = handlerInput.requestEnvelope.request.intent.slots.device_name.value;
-    sessionAttributes.device_name = device_name;
+    const product_name = handlerInput.requestEnvelope.request.intent.slots.product_name.value;
+    sessionAttributes.product_name = product_name;
 
-    const device_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.device_name.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-    sessionAttributes.device_id = device_id;
+    const product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product_name.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+    sessionAttributes.product_id = product_id;
 
-    var speechOutput = `Thank you very much. So you want to give feedback regarding your ${device_name}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;
+    var speechOutput = `Thank you very much. So you want to give feedback regarding your ${product_name}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;
 
     sessionAttributes.botState = 'SELECT_FEEDBACK_TYPE_STATE';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
@@ -942,10 +942,10 @@ const HelpIntentHandler = {
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
     const requestAttributes = attributesManager.getRequestAttributes();
-    
+
     let help_message = sessionAttributes.botState + '_HELP';
     console.log(help_message);
-    
+
     var speechOutput = requestAttributes.t(help_message) || requestAttributes.t('HELP_MESSAGE');
     /*switch (sessionAttributes.botState) {
       case 'SKILL_CONFIGURATION_STATE':
@@ -968,7 +968,7 @@ const HelpIntentHandler = {
         speechOutput = 'You dont need to provide contact information. You can skip this step by saying skip';
         break;
     }*/
-    
+
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
@@ -1049,7 +1049,8 @@ const SkipIntentHandler = {
 };
 
 /**
- * 
+ * Availability: [ALL-States],
+ * Effect: Restarts the skill but does not reset the session
  */
 const RestartIntentHandler = {
   canHandle(handlerInput) {

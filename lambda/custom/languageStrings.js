@@ -1,6 +1,6 @@
 module.exports = {
   translation: {
-    SELECT_ACTION_STATE_ENTER: 'Do you want to give feedback, check for replies to given feedback or configure your skill?',
+    SELECT_ACTION_STATE_ENTER: 'Do you want to give feedback, check for replies or configure your skill?',
     SELECT_ACTION_STATE_HELP: 'Please select at first what you want to do. Do you either want to give feedback, check for replies or configure your skill?',
     SELECT_ACTION_STATE_SKIP: 'Sorry, you cannot skip this step.',
     SELECT_ACTION_STATE_EXIT: '',
@@ -11,17 +11,17 @@ module.exports = {
     SKILL_CONFIGURATION_STATE_EXIT: "Thank you very much. You skill is configured now.",
     SKILL_CONFIGURATION_STATE_HELP: "To configure your skill you just need to provide your name and your email address. You can also skip this step by saying skip or stop the conversation by saying stop.",
 
-    SELECT_DEVICE_STATE_ENTER: 'Do you want to give feedback regarding your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band?',
+    SELECT_DEVICE_STATE_ENTER: 'Okay, do you want to give feedback regarding your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band?',
     SELECT_DEVICE_STATE_HELP: "Please tell me the name of your device, that you want to talk about. Do you want to talk about your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band? You can also stop the conversation by saying stop.",
     SELECT_DEVICE_STATE_SKIP: "Sorry, I really need to know what device we are talking about. Therefore, you cannot skip this step. You can still stop the conversation by saying stop.",
-    SELECT_DEVICE_STATE_EXIT: "Thank you very much. So you want to give feedback regarding your ",
+    SELECT_DEVICE_STATE_EXIT: "Thank you very much. So you want to talk about your ",
     
     SELECT_FEEDBACK_TYPE_STATE_ENTER: `What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback?`,
     SELECT_FEEDBACK_TYPE_STATE_HELP: 'Do you want to give feedback regarding an error that you encountered then you have to say bug report. If its regarding a new interesting feature that you would like to have it is a feature request. It can also be a question or cirticism. If you are not sure just say general feedback',
     SELECT_FEEDBACK_TYPE_STATE_SKIP: '',
     SELECT_FEEDBACK_TYPE_STATE_EXIT: '',
     
-    ADMIT_BUG_REPORT_STATE_ENTER: 'Okay, so you want to report an error. Three  Information are the most important to use to effecticly process address your bug',
+    ADMIT_BUG_REPORT_STATE_ENTER: 'Okay, so you want to report an error you encountered. A description, the context, steps to reporudce and criticality are the most important information. Can you please describe the error at first?',
     ADMIT_BUG_REPORT_STATE_HELP: 'admit bug report state help',
     ADMIT_BUG_REPORT_STATE_SKIP: '',
     ADMIT_BUG_REPORT_STATE_EXIT: '',
@@ -64,7 +64,7 @@ module.exports = {
     FALLBACK_MESSAGE: "Sorry, I wasn´t able to conclude what to do next. Could you please rephrase your ",
     EXIT_MESSAGE: 'Ok! See you the next time!',
     HELP_MESSAGE: 'Sorry, I can´t help you with this.',
-    STOP_MESSAGE: 'Ok, you know where to find me whenever you want to give feedback! Goodybye.',
+    STOP_MESSAGE: 'Ok, you know where to find me whenever you want to give feedback! Goodbye.',
     CONTINUE_MESSAGE: 'Say yes to start or no to quit. ',
     ERROR_MESSAGE: 'Sorry, an error occurred. ',
     RESTART_MESSAGE: "Okay, let's start all over again. ",

@@ -427,7 +427,7 @@ const SelectDeviceHandler = {
   },
 };
 
-const SelectFeedbackTypeHandler = {
+/*const SelectFeedbackTypeHandler = {
 
   canHandle(handlerInput) {
     console.log("SelectFeedbackTypeHandler > Tested");
@@ -496,7 +496,7 @@ const SelectFeedbackTypeHandler = {
       .reprompt(speechOutput)
       .getResponse();
   },
-};
+};*/
 
 const SubmitBugReportHandler = {
 
@@ -515,9 +515,9 @@ const SubmitBugReportHandler = {
       }
     }
 
-    return stateCanHandleIntent &&       
-           Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-           Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitBugReport';
+    return stateCanHandleIntent &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitBugReport';
   },
 
   handle(handlerInput) {
@@ -530,14 +530,14 @@ const SubmitBugReportHandler = {
 
     const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
     sessionAttributes.feedback_content = feedback_content;
-    
+
     const feedback_context = handlerInput.requestEnvelope.request.intent.slots.feedback_context.value;
     sessionAttributes.feedback_content = feedback_context;
 
     const feedback_steps_to_reproduce = handlerInput.requestEnvelope.request.intent.slots.feedback_steps_to_reproduce.value;
     sessionAttributes.feedback_steps_to_reproduce = feedback_steps_to_reproduce;
 
-    let speechOutput = 'Thanks do you allow the developers to contact you regarding your bug?';
+    let speechOutput = 'Please say yes if you allow the developers to contact you in case of questions? Otherwise your feedback will be send anonymously.';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
@@ -547,12 +547,12 @@ const SubmitBugReportHandler = {
   },
 };
 
-const AdmitFeatureRequestHandler = {
+const SubmitFeatureRequestHandler = {
 
   canHandle(handlerInput) {
-    console.log("AdmitFeatureRequestHandler > Tested");
+    console.log("SubmitFeatureRequestHandler > Tested");
 
-    let stateCanHandleIntent = false;
+    let stateCanHandleIntent = true;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
 
@@ -564,11 +564,13 @@ const AdmitFeatureRequestHandler = {
       }
     }
 
-    return stateCanHandleIntent;
+    return stateCanHandleIntent &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitFeatureRequest';
   },
 
   handle(handlerInput) {
-    console.log("AdmitFeatureRequestHandler > Used");
+    console.log("SubmitFeatureRequestHandler > Used");
     console.log(handlerInput);
 
     const { attributesManager } = handlerInput;
@@ -591,12 +593,12 @@ const AdmitFeatureRequestHandler = {
   },
 };
 
-const AdmitQuestionHandler = {
+const SubmitQuestionHandler = {
 
   canHandle(handlerInput) {
-    console.log("AdmitQuestionHandler > Tested");
+    console.log("SubmitQuestionHandler > Tested");
 
-    let stateCanHandleIntent = false;
+    let stateCanHandleIntent = true;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
 
@@ -608,11 +610,13 @@ const AdmitQuestionHandler = {
       }
     }
 
-    return stateCanHandleIntent;
+    return stateCanHandleIntent &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitQuestion';
   },
 
   handle(handlerInput) {
-    console.log("AdmitQuestionHandler > Used");
+    console.log("SubmitQuestionHandler > Used");
     console.log(handlerInput);
 
     const { attributesManager } = handlerInput;
@@ -635,12 +639,12 @@ const AdmitQuestionHandler = {
   },
 };
 
-const AdmitCriticismHandler = {
+const SubmitCriticismHandler = {
 
   canHandle(handlerInput) {
-    console.log("AdmitCriticismHandler > Tested");
+    console.log("SubmitCriticismHandler > Tested");
 
-    let stateCanHandleIntent = false;
+    let stateCanHandleIntent = true;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
 
@@ -652,11 +656,13 @@ const AdmitCriticismHandler = {
       }
     }
 
-    return stateCanHandleIntent;
+    return stateCanHandleIntent &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitCriticism';
   },
 
   handle(handlerInput) {
-    console.log("AdmitCriticismHandler > Used");
+    console.log("SubmitCriticismHandler > Used");
     console.log(handlerInput);
 
     const { attributesManager } = handlerInput;
@@ -678,12 +684,12 @@ const AdmitCriticismHandler = {
   },
 };
 
-const AdmitGeneralFeedbackHandler = {
+const SubmitGeneralFeedbackHandler = {
 
   canHandle(handlerInput) {
-    console.log("AdmitGeneralFeedbackHandler > Tested");
+    console.log("SubmitGeneralFeedbackHandler > Tested");
 
-    let stateCanHandleIntent = false;
+    let stateCanHandleIntent = true;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
 
@@ -695,11 +701,13 @@ const AdmitGeneralFeedbackHandler = {
       }
     }
 
-    return stateCanHandleIntent;
+    return stateCanHandleIntent &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitGeneralFeedback';
   },
 
   handle(handlerInput) {
-    console.log("AdmitGeneralFeedbackHandler > Used");
+    console.log("SubmitGeneralFeedbackHandler > Used");
     console.log(handlerInput);
 
     const { attributesManager } = handlerInput;
@@ -1227,19 +1235,16 @@ exports.handler = skillBuilder
 
     SelectActionHandler,
     SelectDeviceHandler,
-    
+
     SubmitBugReportHandler,
-        
-    SelectFeedbackTypeHandler,
+    SubmitFeatureRequestHandler,
+    SubmitQuestionHandler,
+    SubmitCriticismHandler,
+    SubmitGeneralFeedbackHandler,
+    
+    //SelectFeedbackTypeHandler,
 
-    AdmitFeatureRequestHandler,
-    AdmitQuestionHandler,
-    AdmitCriticismHandler,
-    AdmitGeneralFeedbackHandler,
-
-    //GiveFeedbackIntentHandler,
     SelectContactPreferencesHandler,
-    //SubmitInformationHandler,
 
     CheckRepliesHandler,
 

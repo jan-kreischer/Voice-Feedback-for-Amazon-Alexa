@@ -62,28 +62,6 @@
             "Regarding an {product_name}"
           ]
         },
-        {
-          "name": "SelectFeedbackType",
-          "slots": [{
-            "name": "feedback_type",
-            "type": "FeedbackType",
-            "samples": [
-              "I want to submit a {feedback_type}",
-              "I have a {feedback_type}",
-              "I have {feedback_type}",
-              "My feedback is a {feedback_type}",
-              "It is a {feedback_type}",
-              "A {feedback_type}"
-            ]
-          }],
-          "samples": [
-            "I want to submit a {feedback_type}",
-            "I have a {feedback_type}",
-            "I have {feedback_type}",
-            "My feedback is a {feedback_type}",
-            "It is a {feedback_type}"
-          ]
-        },
 
         {
           "name": "SubmitBugReport",
@@ -115,6 +93,7 @@
             }
           ],
           "samples": [
+            "bug report",
             "I want to report an error",
             "report an error",
             "I want to submit a bug report",
@@ -128,11 +107,18 @@
             "name": "feedback_content",
             "type": "AMAZON.SearchQuery",
             "samples": [
-              "It is {feedback_content}"
+              "{feedback_content}"
+            ]
+          }, {
+            "name": "feedback_context",
+            "type": "AMAZON.SearchQuery",
+            "samples": [
+              "{feedback_content}"
             ]
           }],
           "samples": [
-            "My feature request is {feedback_content}"
+            "Feature request",
+            "I want to submit a feature request"
           ]
         },
         {
@@ -154,8 +140,8 @@
             ]
           }],
           "samples": [
-            "I want to submit a question",
-            "I have a question"
+            "question",
+            "I want to submit a question"
           ]
         },
         {
@@ -171,12 +157,13 @@
               "name": "feedback_content",
               "type": "AMAZON.SearchQuery",
               "samples": [
-                "My praise is {feedback_content}"
+                "{feedback_content}"
               ]
             }
           ],
           "samples": [
-            "I want to submit a praise"
+            "criticism",
+            "I want to submit criticism"
           ]
         },
         {
@@ -189,9 +176,8 @@
             ]
           }],
           "samples": [
-            "My feedback is {feedback_content}",
-            "I think {feedback_content}",
-            "I have to say {feedback_content}"
+            "general feedback",
+            "I want to submit general feedback"
           ]
         },
         {
@@ -513,7 +499,11 @@
       ]
     },
     "dialog": {
-      "intents": [{
+      "intents": [
+
+
+
+        {
           "name": "SelectAction",
           "confirmationRequired": false,
           "prompts": {},
@@ -527,6 +517,9 @@
             }
           }]
         },
+
+
+
         {
           "name": "SelectDevice",
           "confirmationRequired": false,
@@ -541,20 +534,9 @@
             }
           }]
         },
-        {
-          "name": "SelectFeedbackType",
-          "confirmationRequired": false,
-          "prompts": {},
-          "slots": [{
-            "name": "feedback_type",
-            "type": "FeedbackType",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Slot.1468393552778.1192548334628"
-            }
-          }]
-        },
+
+
+
         {
           "name": "SubmitBugReport",
           "confirmationRequired": false,
@@ -565,8 +547,8 @@
               "elicitationRequired": true,
               "confirmationRequired": true,
               "prompts": {
-                "elicitation": "Elicit.Slot.6209057296395.8309565705920",
-                "confirmation": "Confirm.Slot.6209057296395.1467345973047"
+                "elicitation": "Elicit.Slot.BugReport.Content",
+                "confirmation": "Confirm.Slot.BugReport.Content"
               }
             },
             {
@@ -575,8 +557,8 @@
               "elicitationRequired": true,
               "confirmationRequired": true,
               "prompts": {
-                "elicitation": "Elicit.Slot.6209057296395.5867683508983",
-                "confirmation": "Confirm.Slot.6209057296395.9464655226028"
+                "elicitation": "Elicit.Slot.BugReport.Context",
+                "confirmation": "Confirm.Slot.BugReport.Context"
               }
             },
             {
@@ -585,7 +567,7 @@
               "elicitationRequired": true,
               "confirmationRequired": false,
               "prompts": {
-                "elicitation": "Elicit.Slot.6209057296395.1991597321670"
+                "elicitation": "Elicit.Slot.BugReport.StepsToReproduce"
               }
             },
             {
@@ -594,12 +576,15 @@
               "elicitationRequired": true,
               "confirmationRequired": false,
               "prompts": {
-                "elicitation": "Elicit.Slot.6209057296395.6741580577935"
+                "elicitation": "Elicit.Slot.BugReport.Criticality"
               }
             }
           ],
           "delegationStrategy": "ALWAYS"
         },
+
+
+
         {
           "name": "SubmitFeatureRequest",
           "confirmationRequired": false,
@@ -608,38 +593,52 @@
             "name": "feedback_content",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
+            "confirmationRequired": true,
+            "prompts": {
+              "elicitation": "Elicit.Slot.FeatureRequest.Content",
+              "confirmation": "Confirm.Slot.FeatureRequest.Content"
+            }
+          }, {
+            "name": "feedback_context",
+            "type": "AMAZON.SearchQuery",
+            "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.144449455628.1500685925151"
+              "elicitation": "Elicit.Slot.FeatureRequest.Context"
             }
           }],
           "delegationStrategy": "ALWAYS"
         },
+
+
+
         {
           "name": "SubmitCriticism",
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
-              "name": "feedback_star_rating",
-              "type": "StarRating",
-              "elicitationRequired": true,
-              "confirmationRequired": false,
-              "prompts": {
-                "elicitation": "Elicit.Slot.1458550322272.712725976957"
-              }
-            },
-            {
-              "name": "feedback_content",
-              "type": "AMAZON.SearchQuery",
-              "elicitationRequired": true,
-              "confirmationRequired": false,
-              "prompts": {
-                "elicitation": "Elicit.Slot.1458550322272.707179796039"
-              }
+            "name": "feedback_content",
+            "type": "AMAZON.SearchQuery",
+            "elicitationRequired": true,
+            "confirmationRequired": true,
+            "prompts": {
+              "elicitation": "Elicit.Slot.Criticism.Content",
+              "confirmation": "Confirm.Slot.Criticism.Content"
             }
-          ],
+          }, {
+            "name": "feedback_star_rating",
+            "type": "StarRating",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.Criticism.StarRating"
+            }
+          }],
           "delegationStrategy": "ALWAYS"
         },
+
+
+
         {
           "name": "SubmitQuestion",
           "confirmationRequired": false,
@@ -650,8 +649,8 @@
             "elicitationRequired": true,
             "confirmationRequired": true,
             "prompts": {
-              "confirmation": "Confirm.Slot.2073793629274.9447812980462",
-              "elicitation": "Elicit.Slot.2073793629274.957055977659"
+              "elicitation": "Elicit.Slot.Question.Content",
+              "confirmation": "Confirm.Slot.Question.Content"
             }
           }, {
             "name": "feedback_criticality",
@@ -659,11 +658,14 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.2073793629274.656705452332"
+              "elicitation": "Elicit.Slot.Question.Importance"
             }
           }],
           "delegationStrategy": "ALWAYS"
         },
+
+
+
         {
           "name": "SubmitGeneralFeedback",
           "confirmationRequired": false,
@@ -674,12 +676,15 @@
             "elicitationRequired": true,
             "confirmationRequired": true,
             "prompts": {
-              "confirmation": "Confirm.Slot.1439404603791.824145019456",
-              "elicitation": "Elicit.Slot.448730650163.1208828371702"
+              "confirmation": "Confirm.Slot.GeneralFeedback.Content",
+              "elicitation": "Elicit.Slot.GeneralFeedback.Content"
             }
           }],
           "delegationStrategy": "ALWAYS"
         },
+
+
+
         {
           "name": "SkillConfiguration",
           "confirmationRequired": false,
@@ -704,6 +709,9 @@
             }
           ]
         }
+
+
+
       ],
       "delegationStrategy": "ALWAYS"
     },
@@ -726,108 +734,6 @@
         }]
       },
 
-
-
-      {
-        "id": "Elicit.Slot.6209057296395.8309565705920",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Please describe the error you encountered as precise as possible."
-        }]
-      },
-      {
-        "id": "Confirm.Slot.6209057296395.1467345973047",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Did i get you right that your error is quote '{feedback_content}'"
-        }]
-      },
-      {
-        "id": "Elicit.Slot.6209057296395.5867683508983",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Please describe the context of the error as precise as possible. "
-        }]
-      },
-      {
-        "id": "Confirm.Slot.6209057296395.9464655226028",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Did i get you right that your error context is quote '{feedback_context}'"
-        }]
-      },
-      {
-        "id": "Elicit.Slot.6209057296395.1991597321670",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Please describe the steps to reproduce this error as precise as possible."
-        }]
-      },
-      {
-        "id": "Elicit.Slot.6209057296395.6741580577935",
-        "variations": [{
-          "type": "PlainText",
-          "value": "How critical would you rate your error on a scale from one to five. Five represents the most critical rating."
-        }]
-      },
-
-
-
-      {
-        "id": "Confirm.Slot.2073793629274.9447812980462",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Did i get you right that your question is quote '{feedback_content}'"
-        }]
-      },
-      {
-        "id": "Elicit.Slot.2073793629274.957055977659",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Okay, I am listening. Please tell me your question."
-        }]
-      },
-      {
-        "id": "Elicit.Slot.2073793629274.656705452332",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Can you please rate on a scale from one to five, how important the question is to you. One means not very important and five means very important."
-        }]
-      },
-
-
-      {
-        "id": "Elicit.Slot.1458550322272.712725976957",
-        "variations": [{
-          "type": "PlainText",
-          "value": "On a scale from one to five, how would you overall rate the product."
-        }]
-      },
-      {
-        "id": "Elicit.Slot.144449455628.1500685925151",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Please tell me about the feature you would like to have"
-        }]
-      },
-
-
-
-      {
-        "id": "Elicit.Slot.1458550322272.707179796039",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Please tell me your praise"
-        }]
-      },
-
-      {
-        "id": "Elicit.Slot.1468393552778.1192548334628",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Please tell my if you want to submit a bug report, a feautre request, a question or criticism. If you are not sure you just select general feedback."
-        }]
-      },
       {
         "id": "Elicit.Slot.448730650163.667451457424",
         "variations": [{
@@ -846,7 +752,131 @@
 
 
       {
-        "id": "Elicit.Slot.448730650163.1208828371702",
+        "id": "Elicit.Slot.BugReport.Content",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please describe the error you encountered as precise as possible."
+        }]
+      },
+      {
+        "id": "Confirm.Slot.BugReport.Content",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did i get you right that your error is quote '{feedback_content}'"
+        }]
+      },
+      {
+        "id": "Elicit.Slot.BugReport.Context",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please describe the context of the error as precise as possible. "
+        }]
+      },
+      {
+        "id": "Confirm.Slot.BugReport.Context",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did i get you right that your error context is quote '{feedback_context}'"
+        }]
+      },
+      {
+        "id": "Elicit.Slot.BugReport.StepsToReproduce",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please describe the steps to reproduce this error as precise as possible."
+        }]
+      },
+      {
+        "id": "Elicit.Slot.BugReport.Criticality",
+        "variations": [{
+          "type": "PlainText",
+          "value": "How critical would you rate your error on a scale from one to five. Five represents the most critical rating."
+        }]
+      },
+
+
+
+      {
+        "id": "Elicit.Slot.FeatureRequest.Content",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please tell me about the feature you would like to have"
+        }]
+      },
+      {
+        "id": "Confirm.Slot.FeatureRequest.Content",
+        "variations": [{
+          "type": "PlainText",
+          "value": "You said '{feedback_content}'. Is this correct?"
+        }]
+      },
+      {
+        "id": "Elicit.Slot.FeatureRequest.Context",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please describe the context in which the feature or the new functionality will be used."
+        }]
+      },
+      {
+        "id": "Elicit.Slot.FeatureRequest.StarRating",
+        "variations": [{
+          "type": "PlainText",
+          "value": "On a scale from one to five, how would you overall rate the product."
+        }]
+      },
+
+
+
+      {
+        "id": "Elicit.Slot.Question.Content",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Okay, I am listening. Please tell me your question."
+        }]
+      },
+      {
+        "id": "Elicit.Slot.Question.Importance",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Can you please rate on a scale from one to five, how important the question is to you. One means not very important and five means very important."
+        }]
+      },
+      {
+        "id": "Confirm.Slot.Question.Content",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did i get you right that your question is quote '{feedback_content}'"
+        }]
+      },
+
+
+
+      {
+        "id": "Elicit.Slot.Criticism.Content",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please tell me your praise"
+        }]
+      },
+      {
+        "id": "Confirm.Slot.Criticism.Content",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did i get you right that your criticism is quote '{feedback_content}'"
+        }]
+      },
+      {
+        "id": "Elicit.Slot.Criticism.StarRating",
+        "variations": [{
+          "type": "PlainText",
+          "value": "On a scale from one to five"
+        }]
+      },
+
+
+
+      {
+        "id": "Elicit.Slot.GeneralFeedback.Content",
         "variations": [{
             "type": "PlainText",
             "value": "I am waiting for your feedback"
@@ -858,10 +888,20 @@
         ]
       },
       {
-        "id": "Confirm.Slot.1439404603791.824145019456",
+        "id": "Confirm.Slot.GeneralFeedback.Content",
         "variations": [{
           "type": "PlainText",
           "value": "Did I get you right that your feedback is quote '{feedback_content}'"
+        }]
+      },
+
+
+
+      {
+        "id": "Elicit.Slot.1468393552778.1192548334628",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please tell my if you want to submit a bug report, a feautre request, a question or criticism. If you are not sure you just select general feedback."
         }]
       },
 
@@ -886,6 +926,9 @@
           }
         ]
       }
+
+
+
     ]
   },
   "version": "29"

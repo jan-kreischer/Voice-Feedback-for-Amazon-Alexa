@@ -415,7 +415,7 @@ const SelectDeviceHandler = {
     sessionAttributes.product_id = product_id;
 
     //let speechOutput = `Thank you very much. So you want to give feedback regarding your ${product_name}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;
-    let speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_EXIT') + requestAttributes.t('SELECT_FEEDBACK_TYPE_STATE_ENTER');
+    let speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_EXIT') + product_name + '.' + requestAttributes.t('SELECT_FEEDBACK_TYPE_STATE_ENTER');
 
     sessionAttributes.botState = 'SELECT_FEEDBACK_TYPE_STATE';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
@@ -464,8 +464,6 @@ const SelectFeedbackTypeHandler = {
     const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     sessionAttributes.feedback_type_id = feedback_type_id;
 
-    postFeedback(1, sessionAttributes.product_id, feedback_type_id, 1);
-
     let speechOutput = '';
     switch (feedback_type_id) {
       case 1:
@@ -473,6 +471,7 @@ const SelectFeedbackTypeHandler = {
         sessionAttributes.botState = 'ADMIT_BUG_REPORT_STATE';
         break;
       case 2:
+        console.log("case 2 invoked!");
         speechOutput = requestAttributes.t('ADMIT_FEATURE_REQUEST_STATE_ENTER');
         sessionAttributes.botState = 'ADMIT_FEATURE_REQUEST_STATE';
         break;
@@ -481,8 +480,8 @@ const SelectFeedbackTypeHandler = {
         sessionAttributes.botState = 'ADMIT_QUESTION_STATE';
         break;
       case 4:
-        speechOutput = requestAttributes.t('ADMIT_PRAISE_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_PRAISE_STATE';
+        speechOutput = requestAttributes.t('ADMIT_CRITICISM_STATE_ENTER');
+        sessionAttributes.botState = 'ADMIT_CRITICISM_STATE';
         break;
       case 5:
         speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_ENTER');
@@ -535,37 +534,6 @@ const AdmitBugReportHandler = {
     const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     sessionAttributes.feedback_type_id = feedback_type_id;
 
-    /*const feedback_type_name = handlerInput.requestEnvelope.request.intent.slots.feedback_type.value;
-    sessionAttributes.feedback_type_name = feedback_type_name;
-
-    const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-    sessionAttributes.feedback_type_id = feedback_type_id;
-    
-    postFeedback(1, sessionAttributes.product_id, feedback_type_id, 1);
-
-    let speechOutput = '';
-    switch(feedback_type_id) {
-      case 1:
-        speechOutput = requestAttributes.t('ADMIT_BUG_REPORT_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_BUG_REPORT_STATE';
-        break;
-      case 2:
-        speechOutput = requestAttributes.t('ADMIT_FEATURE_REQUEST_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_FEATURE_REQUEST_STATE';
-        break;
-      case 3:
-        speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_QUESTION_STATE';
-        break;
-      case 4:
-        speechOutput = requestAttributes.t('ADMIT_PRAISE_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_PRAISE_STATE';
-        break;
-      case 5:
-        speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_GENERAL_FEEDBACK_STATE';
-        break;
-    }*/
     let speechOutput = 'test';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
@@ -606,29 +574,6 @@ const AdmitFeatureRequestHandler = {
 
     const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
     sessionAttributes.feedback_content = feedback_content;
-
-    /*const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-    sessionAttributes.feedback_type_id = feedback_type_id;*/
-
-    /*let speechOutput = '';
-    switch(feedback_type_id) {
-      case 1:
-        speechOutput = requestAttributes.t('ADMIT_BUG_REPORT_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_BUG_REPORT_STATE';
-        break;
-      case 2:
-        speechOutput = requestAttributes.t('ADMIT_FEATURE_REQUEST_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_FEATURE_REQUEST_STATE';
-        break;
-      case 3:
-        speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_QUESTION_STATE';
-        break;
-      case 4:
-        speechOutput = requestAttributes.t('ADMIT_PRAISE_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_PRAISE_STATE';
-        break;
-    }*/
 
     postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
     let speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_EXIT');
@@ -674,29 +619,6 @@ const AdmitQuestionHandler = {
     const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
     sessionAttributes.feedback_content = feedback_content;
 
-    /*const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-    sessionAttributes.feedback_type_id = feedback_type_id;*/
-
-    /*let speechOutput = '';
-    switch(feedback_type_id) {
-      case 1:
-        speechOutput = requestAttributes.t('ADMIT_BUG_REPORT_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_BUG_REPORT_STATE';
-        break;
-      case 2:
-        speechOutput = requestAttributes.t('ADMIT_FEATURE_REQUEST_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_FEATURE_REQUEST_STATE';
-        break;
-      case 3:
-        speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_QUESTION_STATE';
-        break;
-      case 4:
-        speechOutput = requestAttributes.t('ADMIT_PRAISE_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_PRAISE_STATE';
-        break;
-    }*/
-
     postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
     let speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_EXIT');
     sessionAttributes.botState('END');
@@ -713,7 +635,7 @@ const AdmitQuestionHandler = {
 const AdmitCriticismHandler = {
 
   canHandle(handlerInput) {
-    console.log("AdmitQuestionHandler > Tested");
+    console.log("AdmitCriticismHandler > Tested");
 
     let stateCanHandleIntent = false;
     const { attributesManager } = handlerInput;
@@ -721,7 +643,7 @@ const AdmitCriticismHandler = {
 
     if (sessionAttributes.botState) {
       switch (sessionAttributes.botState) {
-        case 'ADMIT_QUESTION_STATE':
+        case 'ADMIT_CRITICISM_STATE':
           stateCanHandleIntent = true;
           break;
       }
@@ -731,7 +653,7 @@ const AdmitCriticismHandler = {
   },
 
   handle(handlerInput) {
-    console.log("AdmitQuestionHandler > Used");
+    console.log("AdmitCriticismHandler > Used");
     console.log(handlerInput);
 
     const { attributesManager } = handlerInput;
@@ -1017,13 +939,15 @@ const HelpIntentHandler = {
   handle(handlerInput) {
     console.log("HelpIntentHandler > Used");
 
-    //const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
     const requestAttributes = attributesManager.getRequestAttributes();
-
-    var speechOutput = '';
-    switch (sessionAttributes.botState) {
+    
+    let help_message = sessionAttributes.botState + '_HELP';
+    console.log(help_message);
+    
+    var speechOutput = requestAttributes.t(help_message) || requestAttributes.t('HELP_MESSAGE');
+    /*switch (sessionAttributes.botState) {
       case 'SKILL_CONFIGURATION_STATE':
         speechOutput = requestAttributes.t('SKILL_CONFIGURATION_STATE_HELP')
         break;
@@ -1043,11 +967,13 @@ const HelpIntentHandler = {
       case 'ELICIT_CONTACT_INFORMATION':
         speechOutput = 'You dont need to provide contact information. You can skip this step by saying skip';
         break;
-    }
+    }*/
+    
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .reprompt(speechOutput)
+      .withShouldEndSession(false)
       .getResponse();
   }
 };

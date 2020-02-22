@@ -141,7 +141,7 @@
           ]
         },
         {
-          "name": "SubmitPraise",
+          "name": "SubmitCriticism",
           "slots": [{
               "name": "feedback_star_rating",
               "type": "StarRating",
@@ -208,11 +208,9 @@
           ]
         },
         {
-          "name": "SendInformation",
+          "name": "xxxxxxxxxx",
           "slots": [],
-          "samples": [
-            "I want to submit my information now"
-          ]
+          "samples": []
         },
         {
           "name": "CheckReplies",
@@ -403,7 +401,14 @@
               "name": {
                 "value": "Bug report",
                 "synonyms": [
-                  "Error"
+                  "Error",
+                  "Problem",
+                  "Issue",
+                  "Fault",
+                  "Defect",
+                  "Mistake",
+                  "Deficiency",
+                  "Glitch"
                 ]
               }
             },
@@ -425,7 +430,18 @@
             {
               "id": "4",
               "name": {
-                "value": "Praise"
+                "value": "Criticism",
+                "synonyms": [
+                  "Praise",
+                  "Critique",
+                  "Opinion",
+                  "Appraisal",
+                  "Appreciation",
+                  "Commentary",
+                  "evaluation",
+                  "examination",
+                  "notice"
+                ]
               }
             },
             {
@@ -573,7 +589,7 @@
           "delegationStrategy": "ALWAYS"
         },
         {
-          "name": "SubmitPraise",
+          "name": "SubmitCriticism",
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
@@ -687,6 +703,9 @@
           "value": "Do you want to give feedback, check for replies or configure the skill?"
         }]
       },
+
+
+
       {
         "id": "Confirm.Slot.1305346242046.1467345973047",
         "variations": [{
@@ -807,13 +826,6 @@
         "variations": [{
           "type": "PlainText",
           "value": "What device are we talking about?"
-        }]
-      },
-      {
-        "id": "Elicit.Slot.772638607118.10473564913",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Do you know the manufacturer of the device?"
         }]
       },
       {

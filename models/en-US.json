@@ -97,7 +97,7 @@
               "name": "feedback_context",
               "type": "AMAZON.SearchQuery",
               "samples": [
-                "The context is {feedback_context}"
+                "{feedback_context}"
               ]
             },
             {
@@ -115,6 +115,9 @@
             }
           ],
           "samples": [
+            "I want to report an error",
+            "report an error",
+            "I want to submit a bug report",
             "The error is {feedback_content}",
             "My error is that {feedback_content}"
           ]
@@ -562,17 +565,18 @@
               "elicitationRequired": true,
               "confirmationRequired": true,
               "prompts": {
-                "confirmation": "Confirm.Slot.6209057296395.1467345973047",
-                "elicitation": "Elicit.Slot.6209057296395.8309565705920"
+                "elicitation": "Elicit.Slot.6209057296395.8309565705920",
+                "confirmation": "Confirm.Slot.6209057296395.1467345973047"
               }
             },
             {
               "name": "feedback_context",
               "type": "AMAZON.SearchQuery",
               "elicitationRequired": true,
-              "confirmationRequired": false,
+              "confirmationRequired": true,
               "prompts": {
-                "elicitation": "Elicit.Slot.6209057296395.5867683508983"
+                "elicitation": "Elicit.Slot.6209057296395.5867683508983",
+                "confirmation": "Confirm.Slot.6209057296395.9464655226028"
               }
             },
             {
@@ -742,7 +746,14 @@
         "id": "Elicit.Slot.6209057296395.5867683508983",
         "variations": [{
           "type": "PlainText",
-          "value": "Please describe the context of the error as precise as possible."
+          "value": "Please describe the context of the error as precise as possible. "
+        }]
+      },
+      {
+        "id": "Confirm.Slot.6209057296395.9464655226028",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did i get you right that your error context is quote '{feedback_context}'"
         }]
       },
       {

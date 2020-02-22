@@ -498,12 +498,12 @@ const SelectFeedbackTypeHandler = {
   },
 };
 
-const AdmitBugReportHandler = {
+const SubmitBugReportHandler = {
 
   canHandle(handlerInput) {
-    console.log("AdmitBugReportHandler > Tested");
+    console.log("SubmitBugReportHandler > Tested");
 
-    let stateCanHandleIntent = false;
+    let stateCanHandleIntent = true;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
 
@@ -515,26 +515,29 @@ const AdmitBugReportHandler = {
       }
     }
 
-    return stateCanHandleIntent &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectFeedbackType';
+    return stateCanHandleIntent &&       
+           Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+           Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitBugReport';
   },
 
   handle(handlerInput) {
-    console.log("SelectFeedbackTypeHandler > Used");
+    console.log("SubmitBugReportHandler > Used");
     console.log(handlerInput);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const feedback_type_name = handlerInput.requestEnvelope.request.intent.slots.feedback_type.value;
-    sessionAttributes.feedback_type_name = feedback_type_name;
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    sessionAttributes.feedback_content = feedback_content;
+    
+    const feedback_context = handlerInput.requestEnvelope.request.intent.slots.feedback_context.value;
+    sessionAttributes.feedback_content = feedback_context;
 
-    const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-    sessionAttributes.feedback_type_id = feedback_type_id;
+    const feedback_steps_to_reproduce = handlerInput.requestEnvelope.request.intent.slots.feedback_steps_to_reproduce.value;
+    sessionAttributes.feedback_steps_to_reproduce = feedback_steps_to_reproduce;
 
-    let speechOutput = 'test';
+    let speechOutput = 'Thanks do you allow the developers to contact you regarding your bug?';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
@@ -1224,9 +1227,11 @@ exports.handler = skillBuilder
 
     SelectActionHandler,
     SelectDeviceHandler,
+    
+    SubmitBugReportHandler,
+        
     SelectFeedbackTypeHandler,
 
-    AdmitBugReportHandler,
     AdmitFeatureRequestHandler,
     AdmitQuestionHandler,
     AdmitCriticismHandler,

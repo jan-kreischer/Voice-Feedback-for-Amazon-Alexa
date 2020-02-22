@@ -162,6 +162,7 @@ const SelectActionHandler = {
   async handle(handlerInput) {
     console.log("SelectActionHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
@@ -356,6 +357,7 @@ const SkillConfigurationHandler = {
 
   handle(handlerInput) {
     console.log("SkillConfigurationHandler > Used");
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
@@ -403,6 +405,7 @@ const SelectDeviceHandler = {
   handle(handlerInput) {
     console.log("SelectDeviceHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
@@ -427,76 +430,59 @@ const SelectDeviceHandler = {
   },
 };
 
-/*const SelectFeedbackTypeHandler = {
+const FeedbackHandler = {
 
   canHandle(handlerInput) {
-    console.log("SelectFeedbackTypeHandler > Tested");
+    console.log("FeedbackHandler > Tested");
 
-    let stateCanHandleIntent = false;
+    /*let stateCanHandleIntent = true;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
 
     if (sessionAttributes.botState) {
       switch (sessionAttributes.botState) {
-        case 'SELECT_FEEDBACK_TYPE_STATE':
+        case 'ADMIT_BUG_REPORT_STATE':
           stateCanHandleIntent = true;
           break;
       }
-    }
+    }*/
 
-    return stateCanHandleIntent &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectFeedbackType';
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      (Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitBugReport' ||
+        Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitFeatureRequestReport' ||
+        Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitQuestion' ||
+        Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitCriticism' ||
+        Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitGeneralFeedback');
   },
 
   handle(handlerInput) {
-    console.log("SelectFeedbackTypeHandler > Used");
+    console.log("FeedbackHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
-    const { attributesManager } = handlerInput;
+    /*const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
+    sessionAttributes.feedback_content = feedback_content;
 
-    const feedback_type_name = handlerInput.requestEnvelope.request.intent.slots.feedback_type.value;
-    sessionAttributes.feedback_type_name = feedback_type_name;
+    const feedback_context = handlerInput.requestEnvelope.request.intent.slots.context.value;
+    sessionAttributes.content = context;
 
-    const feedback_type_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.feedback_type.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-    sessionAttributes.feedback_type_id = feedback_type_id;
+    const steps_to_reproduce = handlerInput.requestEnvelope.request.intent.slots.steps_to_reproduce.value;
+    sessionAttributes.feedback_steps_to_reproduce = feedback_steps_to_reproduce;
 
-    let speechOutput = '';
-    switch (feedback_type_id) {
-      case 1:
-        speechOutput = requestAttributes.t('ADMIT_BUG_REPORT_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_BUG_REPORT_STATE';
-        break;
-      case 2:
-        console.log("case 2 invoked!");
-        speechOutput = requestAttributes.t('ADMIT_FEATURE_REQUEST_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_FEATURE_REQUEST_STATE';
-        break;
-      case 3:
-        speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_QUESTION_STATE';
-        break;
-      case 4:
-        speechOutput = requestAttributes.t('ADMIT_CRITICISM_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_CRITICISM_STATE';
-        break;
-      case 5:
-        speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_ENTER');
-        sessionAttributes.botState = 'ADMIT_GENERAL_FEEDBACK_STATE';
-        break;
-    }
-
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
+    let speechOutput = 'Please say yes if you allow the developers to contact you in case of questions? Otherwise your feedback will be send anonymously.';
+    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);*/
+    let speechOutput = 'Thank you very much your feedback got submitted';
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .reprompt(speechOutput)
       .getResponse();
   },
-};*/
+};
 
 const SubmitBugReportHandler = {
 
@@ -523,18 +509,20 @@ const SubmitBugReportHandler = {
   handle(handlerInput) {
     console.log("SubmitBugReportHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
+
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
     sessionAttributes.feedback_content = feedback_content;
 
-    const feedback_context = handlerInput.requestEnvelope.request.intent.slots.feedback_context.value;
-    sessionAttributes.feedback_content = feedback_context;
+    const feedback_context = handlerInput.requestEnvelope.request.intent.slots.context.value;
+    sessionAttributes.content = context;
 
-    const feedback_steps_to_reproduce = handlerInput.requestEnvelope.request.intent.slots.feedback_steps_to_reproduce.value;
+    const steps_to_reproduce = handlerInput.requestEnvelope.request.intent.slots.steps_to_reproduce.value;
     sessionAttributes.feedback_steps_to_reproduce = feedback_steps_to_reproduce;
 
     let speechOutput = 'Please say yes if you allow the developers to contact you in case of questions? Otherwise your feedback will be send anonymously.';
@@ -572,12 +560,13 @@ const SubmitFeatureRequestHandler = {
   handle(handlerInput) {
     console.log("SubmitFeatureRequestHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
     sessionAttributes.feedback_content = feedback_content;
 
     postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
@@ -618,12 +607,13 @@ const SubmitQuestionHandler = {
   handle(handlerInput) {
     console.log("SubmitQuestionHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
     sessionAttributes.feedback_content = feedback_content;
 
     //postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
@@ -664,12 +654,13 @@ const SubmitCriticismHandler = {
   handle(handlerInput) {
     console.log("SubmitCriticismHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
     sessionAttributes.feedback_content = feedback_content;
 
     let speechOutput = requestAttributes.t('ADMIT_CRITICISM_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
@@ -709,12 +700,13 @@ const SubmitGeneralFeedbackHandler = {
   handle(handlerInput) {
     console.log("SubmitGeneralFeedbackHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
     sessionAttributes.feedback_content = feedback_content;
 
     let speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
@@ -752,12 +744,13 @@ const SelectContactPreferencesHandler = {
   handle(handlerInput) {
     console.log("SelectContactPreferencesHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
+    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
     sessionAttributes.feedback_content = feedback_content;
 
     let speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
@@ -882,6 +875,7 @@ const CheckRepliesHandler = {
   handle(handlerInput) {
     console.log("SelectDeviceHandler > Used");
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
@@ -1124,6 +1118,7 @@ const FallbackIntentHandler = {
   handle(handlerInput) {
     console.log("FallbackIntentHandler > Used")
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
@@ -1149,6 +1144,7 @@ const UnhandledIntentHandler = {
   handle(handlerInput) {
     console.log("UnhandledIntentHandler > Used")
     console.log(handlerInput);
+    console.log(handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
@@ -1234,24 +1230,27 @@ exports.handler = skillBuilder
     LaunchRequest,
 
     SelectActionHandler,
+
     SelectDeviceHandler,
 
-    SubmitBugReportHandler,
-    SubmitFeatureRequestHandler,
-    SubmitQuestionHandler,
-    SubmitCriticismHandler,
-    SubmitGeneralFeedbackHandler,
-    
+    FeedbackHandler,
+
+    //SubmitBugReportHandler,
+    //SubmitFeatureRequestHandler,
+    //SubmitQuestionHandler,
+    //SubmitCriticismHandler,
+    //SubmitGeneralFeedbackHandler,
+
     //SelectFeedbackTypeHandler,
 
-    SelectContactPreferencesHandler,
+    //SelectContactPreferencesHandler,
 
     CheckRepliesHandler,
 
     SkillConfigurationHandler,
 
-    YesIntentHandler,
-    NoIntentHandler,
+    //YesIntentHandler,
+    //NoIntentHandler,
 
     RepeatIntentHandler,
     HelpIntentHandler,

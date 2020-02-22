@@ -44,7 +44,7 @@
           "name": "SelectDevice",
           "slots": [{
             "name": "product_name",
-            "type": "SmartDevice",
+            "type": "Product",
             "samples": [
               "regarding {product_name}",
               "Regarding my {product_name}",
@@ -66,54 +66,89 @@
         {
           "name": "SubmitBugReport",
           "slots": [{
-              "name": "feedback_content",
+              "name": "content",
               "type": "AMAZON.SearchQuery",
               "samples": [
-                "The error is {feedback_content}"
+                "The error is {content}"
               ]
             }, {
-              "name": "feedback_context",
+              "name": "context",
               "type": "AMAZON.SearchQuery",
               "samples": [
-                "{feedback_context}"
+                "{context}"
               ]
             },
             {
-              "name": "feedback_steps_to_reproduce",
+              "name": "steps_to_reproduce",
               "type": "AMAZON.SearchQuery",
               "samples": [
-                "The steps to reporduce are {feedback_content}"
+                "The steps to reporduce are {content}"
               ]
             }, {
-              "name": "feedback_criticality",
-              "type": "Criticality",
+              "name": "criticality",
+              "type": "LikertScale",
               "samples": [
-                "I would rate it as a {feedback_criticality}"
+                "I would rate it as a {criticality}"
+              ]
+            }, {
+              "name": "contact_permission",
+              "type": "BinaryAnswer",
+              "samples": [
+                "Yes",
+                "No"
               ]
             }
           ],
           "samples": [
-            "bug report",
+            "Bug report",
             "I want to report an error",
             "report an error",
             "I want to submit a bug report",
-            "The error is {feedback_content}",
-            "My error is that {feedback_content}"
+            "Error",
+            "Problem",
+            "Issue",
+            "Fault",
+            "Defect",
+            "Mistake",
+            "Deficiency",
+            "Glitch"
           ]
         },
+
+
+
         {
           "name": "SubmitFeatureRequest",
           "slots": [{
-            "name": "feedback_content",
+            "name": "content",
             "type": "AMAZON.SearchQuery",
             "samples": [
-              "{feedback_content}"
+              "{content}"
             ]
           }, {
-            "name": "feedback_context",
+            "name": "context",
             "type": "AMAZON.SearchQuery",
             "samples": [
-              "{feedback_content}"
+              "{context}"
+            ]
+          }, {
+            "name": "problem",
+            "type": "AMAZON.SearchQuery",
+            "samples": [
+              "{problem}"
+            ]
+          }, {
+            "name": "solution",
+            "type": "AMAZON.SearchQuery",
+            "samples": [
+              "{solution}"
+            ]
+          }, {
+            "name": "contact_permission",
+            "type": "BinaryAnswer",
+            "samples": [
+              "Yes",
+              "No"
             ]
           }],
           "samples": [
@@ -121,22 +156,32 @@
             "I want to submit a feature request"
           ]
         },
+
+
+
         {
           "name": "SubmitQuestion",
           "slots": [{
-            "name": "feedback_content",
+            "name": "content",
             "type": "AMAZON.SearchQuery",
             "samples": [
-              "My question is {feedback_content}",
-              "I am asking myself {feedback_content}",
-              "Why {feedback_content}"
+              "My question is {content}",
+              "I am asking myself {content}",
+              "Why {content}"
             ]
           }, {
-            "name": "feedback_criticality",
-            "type": "Criticality",
+            "name": "importance",
+            "type": "LikertScale",
             "samples": [
-              "I would say {feedback_criticality}",
-              "I would rate it as a {feedback_criticality}"
+              "I would say {importance}",
+              "I would rate it as a {importance}"
+            ]
+          }, {
+            "name": "contact_permission",
+            "type": "BinaryAnswer",
+            "samples": [
+              "Yes",
+              "No"
             ]
           }],
           "samples": [
@@ -144,65 +189,79 @@
             "I want to submit a question"
           ]
         },
+
+
+
         {
           "name": "SubmitCriticism",
           "slots": [{
-              "name": "feedback_star_rating",
-              "type": "StarRating",
+              "name": "star_rating",
+              "type": "LikertScale",
               "samples": [
-                "I would say {feedback_star_rating}"
+                "I would say {star_rating}"
               ]
             },
             {
-              "name": "feedback_content",
+              "name": "content",
               "type": "AMAZON.SearchQuery",
               "samples": [
-                "{feedback_content}"
+                "{content}"
+              ]
+            }, {
+              "name": "contact_permission",
+              "type": "BinaryAnswer",
+              "samples": [
+                "Yes",
+                "No"
               ]
             }
           ],
           "samples": [
             "criticism",
-            "I want to submit criticism"
+            "Praise",
+            "Critique",
+            "Opinion",
+            "Appraisal",
+            "Appreciation",
+            "Commentary",
+            "evaluation",
+            "examination",
+            "notice",
+            "I want to submit criticism",
+            "I have a praise",
+            "I have critique",
+            "I would like to express my opinion",
+            "I want to submit an appraisal",
+            "I would like to express appreciation",
+
+            "I want to comment on that",
+            "I would like to leave a comment",
+
+            "evaluation",
+            "examination",
+            "notice"
           ]
         },
         {
           "name": "SubmitGeneralFeedback",
           "slots": [{
-            "name": "feedback_content",
+            "name": "content",
             "type": "AMAZON.SearchQuery",
             "samples": [
-              "{feedback_content}"
+              "{content}"
+            ]
+          }, {
+            "name": "contact_permission",
+            "type": "BinaryAnswer",
+            "samples": [
+              "Yes",
+              "No"
             ]
           }],
           "samples": [
             "general feedback",
             "I want to submit general feedback"
           ]
-        },
-        {
-          "name": "ElicitContactPreferences",
-          "slots": [{
-              "name": "email_address",
-              "type": "AMAZON.SearchQuery"
-            },
-            {
-              "name": "telephone_number",
-              "type": "AMAZON.SearchQuery"
-            }
-          ],
-          "samples": [
-            "Yes i can be contacted via alexa",
-            "My telephone number is {telephone_number}",
-            "My email address is {email_address}",
-            "No i dont allow the company to contact me",
-            "Yes i allow the comapany to contact me"
-          ]
-        },
-        {
-          "name": "xxxxxxxxxx",
-          "slots": [],
-          "samples": []
         },
         {
           "name": "CheckReplies",
@@ -265,6 +324,15 @@
       ],
       "types": [{
           "values": [{
+              "id": "0",
+              "name": {
+                "value": "zero",
+                "synonyms": [
+                  "0"
+                ]
+              }
+            },
+            {
               "id": "1",
               "name": {
                 "value": "one",
@@ -272,45 +340,9 @@
                   "1"
                 ]
               }
-            },
-            {
-              "id": "2",
-              "name": {
-                "value": "two",
-                "synonyms": [
-                  "2"
-                ]
-              }
-            },
-            {
-              "id": "3",
-              "name": {
-                "value": "three",
-                "synonyms": [
-                  "3"
-                ]
-              }
-            },
-            {
-              "id": "4",
-              "name": {
-                "value": "four",
-                "synonyms": [
-                  "4"
-                ]
-              }
-            },
-            {
-              "id": "5",
-              "name": {
-                "value": "five",
-                "synonyms": [
-                  "5"
-                ]
-              }
             }
           ],
-          "name": "StarRating"
+          "name": "BinaryAnswer"
         },
         {
           "values": [{
@@ -359,7 +391,7 @@
               }
             }
           ],
-          "name": "Criticality"
+          "name": "LikertScale"
         },
         {
           "values": [{
@@ -389,64 +421,6 @@
             }
           ],
           "name": "ActionType"
-        },
-        {
-          "values": [{
-              "id": "1",
-              "name": {
-                "value": "Bug report",
-                "synonyms": [
-                  "Error",
-                  "Problem",
-                  "Issue",
-                  "Fault",
-                  "Defect",
-                  "Mistake",
-                  "Deficiency",
-                  "Glitch"
-                ]
-              }
-            },
-            {
-              "id": "2",
-              "name": {
-                "value": "Feature request",
-                "synonyms": [
-                  "new feature"
-                ]
-              }
-            },
-            {
-              "id": "3",
-              "name": {
-                "value": "Question"
-              }
-            },
-            {
-              "id": "4",
-              "name": {
-                "value": "Criticism",
-                "synonyms": [
-                  "Praise",
-                  "Critique",
-                  "Opinion",
-                  "Appraisal",
-                  "Appreciation",
-                  "Commentary",
-                  "evaluation",
-                  "examination",
-                  "notice"
-                ]
-              }
-            },
-            {
-              "id": "5",
-              "name": {
-                "value": "General Feedback"
-              }
-            }
-          ],
-          "name": "FeedbackType"
         },
         {
           "values": [{
@@ -494,7 +468,7 @@
 
 
           ],
-          "name": "SmartDevice"
+          "name": "Product"
         }
       ]
     },
@@ -526,7 +500,7 @@
           "prompts": {},
           "slots": [{
             "name": "product_name",
-            "type": "SmartDevice",
+            "type": "Product",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -542,7 +516,7 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
-              "name": "feedback_content",
+              "name": "content",
               "type": "AMAZON.SearchQuery",
               "elicitationRequired": true,
               "confirmationRequired": true,
@@ -552,7 +526,7 @@
               }
             },
             {
-              "name": "feedback_context",
+              "name": "context",
               "type": "AMAZON.SearchQuery",
               "elicitationRequired": true,
               "confirmationRequired": true,
@@ -562,7 +536,7 @@
               }
             },
             {
-              "name": "feedback_steps_to_reproduce",
+              "name": "steps_to_reproduce",
               "type": "AMAZON.SearchQuery",
               "elicitationRequired": true,
               "confirmationRequired": false,
@@ -571,12 +545,21 @@
               }
             },
             {
-              "name": "feedback_criticality",
-              "type": "Criticality",
+              "name": "criticality",
+              "type": "LikertScale",
               "elicitationRequired": true,
               "confirmationRequired": false,
               "prompts": {
                 "elicitation": "Elicit.Slot.BugReport.Criticality"
+              }
+            },
+            {
+              "name": "contact_permission",
+              "type": "BinaryAnswer",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.BugReport.ContactPermission"
               }
             }
           ],
@@ -590,7 +573,7 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
-            "name": "feedback_content",
+            "name": "content",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
             "confirmationRequired": true,
@@ -599,12 +582,36 @@
               "confirmation": "Confirm.Slot.FeatureRequest.Content"
             }
           }, {
-            "name": "feedback_context",
+            "name": "context",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
               "elicitation": "Elicit.Slot.FeatureRequest.Context"
+            }
+          }, {
+            "name": "problem",
+            "type": "AMAZON.SearchQuery",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.FeatureRequest.Problem"
+            }
+          }, {
+            "name": "solution",
+            "type": "AMAZON.SearchQuery",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.FeatureRequest.Solution"
+            }
+          }, {
+            "name": "contact_permission",
+            "type": "BinaryAnswer",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.BugReport.ContactPermission"
             }
           }],
           "delegationStrategy": "ALWAYS"
@@ -617,7 +624,7 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
-            "name": "feedback_content",
+            "name": "content",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
             "confirmationRequired": true,
@@ -626,12 +633,20 @@
               "confirmation": "Confirm.Slot.Criticism.Content"
             }
           }, {
-            "name": "feedback_star_rating",
-            "type": "StarRating",
+            "name": "star_rating",
+            "type": "LikertScale",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.Criticism.StarRating"
+              "elicitation": "Elicit.Slot.Criticism.LikertScale"
+            }
+          }, {
+            "name": "contact_permission",
+            "type": "BinaryAnswer",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.BugReport.ContactPermission"
             }
           }],
           "delegationStrategy": "ALWAYS"
@@ -644,7 +659,7 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
-            "name": "feedback_content",
+            "name": "content",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
             "confirmationRequired": true,
@@ -653,12 +668,20 @@
               "confirmation": "Confirm.Slot.Question.Content"
             }
           }, {
-            "name": "feedback_criticality",
-            "type": "Criticality",
+            "name": "importance",
+            "type": "LikertScale",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
               "elicitation": "Elicit.Slot.Question.Importance"
+            }
+          }, {
+            "name": "contact_permission",
+            "type": "BinaryAnswer",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.BugReport.ContactPermission"
             }
           }],
           "delegationStrategy": "ALWAYS"
@@ -671,13 +694,21 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
-            "name": "feedback_content",
+            "name": "content",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
             "confirmationRequired": true,
             "prompts": {
               "confirmation": "Confirm.Slot.GeneralFeedback.Content",
               "elicitation": "Elicit.Slot.GeneralFeedback.Content"
+            }
+          }, {
+            "name": "contact_permission",
+            "type": "BinaryAnswer",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.BugReport.ContactPermission"
             }
           }],
           "delegationStrategy": "ALWAYS"
@@ -762,7 +793,7 @@
         "id": "Confirm.Slot.BugReport.Content",
         "variations": [{
           "type": "PlainText",
-          "value": "Did i get you right that your error is quote '{feedback_content}'"
+          "value": "Did i get you right that your error is quote '{content}'"
         }]
       },
       {
@@ -776,7 +807,7 @@
         "id": "Confirm.Slot.BugReport.Context",
         "variations": [{
           "type": "PlainText",
-          "value": "Did i get you right that your error context is quote '{feedback_context}'"
+          "value": "Did i get you right that your error context is quote '{context}'"
         }]
       },
       {
@@ -793,6 +824,13 @@
           "value": "How critical would you rate your error on a scale from one to five. Five represents the most critical rating."
         }]
       },
+      {
+        "id": "Elicit.Slot.BugReport.ContactPermission",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Do you allow the developers to contact you in case of further questions. If not your transcribed feedback would be sent anonymously. "
+        }]
+      },
 
 
 
@@ -807,7 +845,7 @@
         "id": "Confirm.Slot.FeatureRequest.Content",
         "variations": [{
           "type": "PlainText",
-          "value": "You said '{feedback_content}'. Is this correct?"
+          "value": "You said '{content}'. Is this correct?"
         }]
       },
       {
@@ -818,10 +856,17 @@
         }]
       },
       {
-        "id": "Elicit.Slot.FeatureRequest.StarRating",
+        "id": "Elicit.Slot.FeatureRequest.Problem",
         "variations": [{
           "type": "PlainText",
-          "value": "On a scale from one to five, how would you overall rate the product."
+          "value": "Make your feature request better by describing the problem you are facing:"
+        }]
+      },
+      {
+        "id": "Elicit.Slot.FeatureRequest.Solution",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please propose a solution to the problem you are facing:"
         }]
       },
 
@@ -845,7 +890,7 @@
         "id": "Confirm.Slot.Question.Content",
         "variations": [{
           "type": "PlainText",
-          "value": "Did i get you right that your question is quote '{feedback_content}'"
+          "value": "Did i get you right that your question is quote '{content}'"
         }]
       },
 
@@ -862,11 +907,11 @@
         "id": "Confirm.Slot.Criticism.Content",
         "variations": [{
           "type": "PlainText",
-          "value": "Did i get you right that your criticism is quote '{feedback_content}'"
+          "value": "Did i get you right that your criticism is quote '{content}'"
         }]
       },
       {
-        "id": "Elicit.Slot.Criticism.StarRating",
+        "id": "Elicit.Slot.Criticism.LikertScale",
         "variations": [{
           "type": "PlainText",
           "value": "On a scale from one to five"
@@ -891,7 +936,7 @@
         "id": "Confirm.Slot.GeneralFeedback.Content",
         "variations": [{
           "type": "PlainText",
-          "value": "Did I get you right that your feedback is quote '{feedback_content}'"
+          "value": "Did I get you right that your feedback is quote '{content}'"
         }]
       },
 

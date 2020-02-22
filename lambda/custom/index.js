@@ -415,8 +415,8 @@ const SelectDeviceHandler = {
     sessionAttributes.product_id = product_id;
 
     //let speechOutput = `Thank you very much. So you want to give feedback regarding your ${product_name}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;
-    let speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_EXIT') + product_name + '.' + requestAttributes.t('SELECT_FEEDBACK_TYPE_STATE_ENTER');
-
+    let speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_EXIT') + product_name + '. ' + requestAttributes.t('SELECT_FEEDBACK_TYPE_STATE_ENTER');
+    
     sessionAttributes.botState = 'SELECT_FEEDBACK_TYPE_STATE';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
@@ -1090,10 +1090,9 @@ const StopIntentHandler = {
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
 
-    //attributesManager.setSessionAttributes({})
-
+    let speechOutput = requestAttributes.t('STOP_MESSAGE');
     return handlerInput.responseBuilder
-      .speak('Ok, goodbye!')
+      .speak(speechOutput)
       .withShouldEndSession(true)
       .getResponse()
 

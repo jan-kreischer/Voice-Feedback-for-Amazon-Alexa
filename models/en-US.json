@@ -69,6 +69,7 @@
             "samples": [
               "I want to submit a {feedback_type}",
               "I have a {feedback_type}",
+              "I have {feedback_type}",
               "My feedback is a {feedback_type}",
               "It is a {feedback_type}",
               "A {feedback_type}"
@@ -799,7 +800,7 @@
         "id": "Elicit.Slot.1468393552778.1192548334628",
         "variations": [{
           "type": "PlainText",
-          "value": "Please tell my if you want to submit a bug report, a feautre request, a question or praise and criticism."
+          "value": "Please tell my if you want to submit a bug report, a feautre request, a question or criticism? If you are not sure you just select general feedback."
         }]
       },
       {

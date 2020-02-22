@@ -11,8 +11,8 @@ module.exports = {
     SKILL_CONFIGURATION_STATE_EXIT: "Thank you very much. You skill is configured now.",
     SKILL_CONFIGURATION_STATE_HELP: "To configure your skill you just need to provide your name and your email address. You can also skip this step by saying skip or stop the conversation by saying stop.",
 
-    SELECT_DEVICE_STATE_ENTER: 'Please select the device you would like to give feedback to. Do you want give Feedback regarding your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band',
-    SELECT_DEVICE_STATE_HELP: "Please tell me the name of your device that you want to talk about. Do you want talk about your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band? You can also stop the conversation by saying stop.",
+    SELECT_DEVICE_STATE_ENTER: 'Do you want to give feedback regarding your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band?',
+    SELECT_DEVICE_STATE_HELP: "Please tell me the name of your device, that you want to talk about. Do you want to talk about your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band? You can also stop the conversation by saying stop.",
     SELECT_DEVICE_STATE_SKIP: "Sorry, I really need to know what device we are talking about. Therefore, you cannot skip this step. You can still stop the conversation by saying stop.",
     SELECT_DEVICE_STATE_EXIT: "Thank you very much. So you want to give feedback regarding your ",
     
@@ -64,7 +64,7 @@ module.exports = {
     FALLBACK_MESSAGE: "Sorry, I wasn´t able to conclude what to do next. Could you please rephrase your ",
     EXIT_MESSAGE: 'Ok! See you the next time!',
     HELP_MESSAGE: 'Sorry, I can´t help you with this.',
-    STOP_MESSAGE: 'Ok! Bye!',
+    STOP_MESSAGE: 'Ok, you know where to find me whenever you want to give feedback! Goodybye.',
     CONTINUE_MESSAGE: 'Say yes to start or no to quit. ',
     ERROR_MESSAGE: 'Sorry, an error occurred. ',
     RESTART_MESSAGE: "Okay, let's start all over again. ",

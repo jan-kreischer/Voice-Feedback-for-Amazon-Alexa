@@ -10,51 +10,45 @@ const languageStrings = {
 };
 const hostUrl = 'api.myfeedbackbot.com';
 
-/*function httpGet(query, callback) {
-  var options = {
-    host: hostUrl,
-    port: 443,
-    path: '/' + encodeURIComponent(query),
+function getFeedbackerName(apiAccessToken, callback) {
+  return getInformationFromAlexaApi("/v2/accounts/~current/settings/Profile.name", apiAccessToken, callback);
+}
+
+function getFeedbackerEmailAddress(apiAccessToken, callback) {
+  return getInformationFromAlexaApi("/v2/accounts/~current/settings/Profile.email", apiAccessToken, callback);
+}
+
+function getFeedbackerTelephoneNumber(apiAccessToken, callback) {
+  return getInformationFromAlexaApi("/v2/accounts/~current/settings/Profile.mobileNumber", callback);
+}
+
+function getInformationFromAlexaApi(path, apiAccessToken, callback) {
+  let options = {
     method: 'GET',
+
+    protocol: 'https:',
+    hostname: 'api.eu.amazonalexa.com',
+    port: 443,
+    path: path,
+
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + apiAccessToken
+    }
   };
-
-  var req = https.request(options, res => {
-    res.setEncoding('utf8');
-    var responseString = "";
-
-    //accept incoming data asynchronously
-    res.on('data', chunk => {
-      responseString = responseString + chunk;
-    });
-
-    //return the data when streaming is complete
-    res.on('end', () => {
-      console.log(responseString);
-      callback(responseString);
-      return responseString;
-    });
-    return responseString;
-  });
-  req.end();
-}*/
+  return httpsGet(options, callback);
+}
 
 function httpsGet(options, callback) {
-  let url = 'https://api.eu.amazonalexa.com/v2/accounts/~current/settings/Profile.name';
-  console.log(options.url);
-  console.log(url);
-  let req = https.get(options.url, options, res => {
-    console.log("request re: " + res);
+  let req = https.get(options, res => {
     res.setEncoding('utf8');
     var responseString = "";
 
-    //accept incoming data asynchronously
     res.on('data', chunk => {
       responseString = responseString + chunk;
     });
 
-    //return the data when streaming is complete
     res.on('end', () => {
-      console.log(responseString);
       callback(responseString);
       return responseString;
     });
@@ -63,60 +57,6 @@ function httpsGet(options, callback) {
   });
   req.end();
 }
-
-function getFeedbackerName(apiEndpoint, apiAccessToken) {
-  let options = {
-    method: 'GET',
-
-    url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
-    host: apiEndpoint,
-    port: 443,
-    path: "/v2/accounts/~current/settings/Profile.name",
-
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + apiAccessToken
-    }
-  };
-  return "Jan Bauer"
-}
-
-function getFeedbackerEmailAddress(apiEndpoint, apiAccessToken) {
-  let options = {
-    method: 'GET',
-
-    url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
-    host: apiEndpoint,
-    port: 443,
-    path: "/v2/accounts/~current/settings/Profile.name",
-
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + apiAccessToken
-    }
-  };
-  return "jan.kr.bauer@gmail.com"
-}
-
-
-
-function getFeedbackerTelephoneNumber(apiEndpoint, apiAccessToken) {
-  let options = {
-    method: 'GET',
-
-    url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
-    host: apiEndpoint,
-    port: 443,
-    path: "/v2/accounts/~current/settings/Profile.name",
-
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + apiAccessToken
-    }
-  };
-  return httpsGet(options, (data) => { console.log(data) })
-}
-
 
 function postFeedback(feedbacker_id, product_id, feedback_type_id, feedback_content) {
   var feedback = {};
@@ -158,7 +98,7 @@ function getUnacknowledgedReplies() {
 }
 
 function postFeedbacker() {
-  
+
 }
 
 function saveSessionAttributes(attributesManager, sessionAttributes, speechOutput) {
@@ -196,50 +136,19 @@ const LaunchRequest = {
     const requestAttributes = attributesManager.getRequestAttributes();
     var sessionAttributes = {};
 
-    const apiEndpoint = handlerInput.requestEnvelope.context.System.apiEndpoint;
     const apiAccessToken = handlerInput.requestEnvelope.context.System.apiAccessToken;
-    console.log("apiEndpoint" + apiEndpoint);
-    console.log("Mach jetzt endlich!");
-    /*let options = {
-      method: 'GET',
 
-      url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
-      host: apiEndpoint,
-      hostname: apiEndpoint,
-      port: 443,
-      path: "/v2/accounts/~current/settings/Profile.name",
 
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + apiAccessToken
-      }
-    };*/
-    let options = {
-      method: 'GET',
 
-      url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
-      port: 443,
-      path: "/v2/accounts/~current/settings/Profile.name",
+    var feedbacker_name, feedbacker_email_address, feedbacker_telephone_number;
 
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + apiAccessToken
-      }
-    };
+    getFeedbackerName(apiAccessToken, function (name) { feedbacker_name = name });
+    getFeedbackerEmailAddress(apiAccessToken, function(email_address) { feedbacker_email_address = email_address });
+    getFeedbackerTelephoneNumber(apiAccessToken, function(telephone_number) { feedbacker_telephone_number = telephone_number });
 
-    /*const options = {
-    hostname: hostUrl,
-    port: 443,
-    path: '/feedback',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': data.length
-    }
-  }*/
-
-    console.log(options);
-    httpsGet(options, () => { console.log("end") });
+    console.log("FeedbackerName: " + feedbacker_name);
+    console.log("FeedbackerEmailAddress: " + feedbacker_email_address);
+    console.log("FeedbackerTelephoneNumber: " + feedbacker_telephone_number);
 
     var speechOutput = "";
 
@@ -248,21 +157,6 @@ const LaunchRequest = {
 
     saveSessionAttributes(attributesManager, initialSessionAttributes, speechOutput);
 
-    /*.withSimpleCard(
-      "This is the Title of the Card",
-      "This is the card content. This card just has plain text content.\r\nThe content is formated with line breaks to improve readability."
-    )*/
-    /*"permissions": [
-      "alexa::profile:name:read",
-      "alexa::profile:mobile_number:read"
-    ]*/
-    /*handlerInput.responseBuilder
-    "card": {
-      "type": "AskForPermissionsConsent",
-      "permissions": [
-        "read::alexa:device:all:address"
-      ]
-    }*/
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .withAskForPermissionsConsentCard([
@@ -323,7 +217,7 @@ const SelectActionHandler = {
   }
 };
 
-const SkillConfigurationHandler = {
+/*const SkillConfigurationHandler = {
 
   canHandle(handlerInput) {
     console.log("SkillConfigurationHandler > Tested");
@@ -368,7 +262,7 @@ const SkillConfigurationHandler = {
       .reprompt(speechOutput)
       .getResponse();
   },
-};
+};*/
 
 const SelectDeviceHandler = {
 
@@ -436,26 +330,6 @@ const FeedbackHandler = {
     console.log("FeedbackHandler > Used");
     console.log(handlerInput);
     console.log(handlerInput.requestEnvelope);
-
-    /*const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
-    sessionAttributes.feedback_content = feedback_content;
-
-    const feedback_context = handlerInput.requestEnvelope.request.intent.slots.context.value;
-    sessionAttributes.content = context;
-
-    const steps_to_reproduce = handlerInput.requestEnvelope.request.intent.slots.steps_to_reproduce.value;
-    sessionAttributes.feedback_steps_to_reproduce = feedback_steps_to_reproduce;
-
-    let speechOutput = 'Please say yes if you allow the developers to contact you in case of questions? Otherwise your feedback will be send anonymously.';
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);*/
-
-    getFeedbackerName();
-    getFeedbackerEmailAddress();
-    getFeedbackerTelephoneNumber();
 
     let speechOutput = 'Thank you very much your feedback got submitted';
 
@@ -832,7 +706,7 @@ exports.handler = skillBuilder
 
     CheckRepliesHandler,
 
-    SkillConfigurationHandler,
+    //SkillConfigurationHandler,
 
     RepeatIntentHandler,
     HelpIntentHandler,

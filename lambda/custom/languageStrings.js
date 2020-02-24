@@ -1,6 +1,6 @@
 module.exports = {
   translation: {
-    SELECT_ACTION_STATE_ENTER: 'Do you want to give feedback, check for replies or configure your skill?',
+    SELECT_ACTION_STATE_ENTER: 'Do you want to give feedback, check for replies or hear our privacy information?',
     SELECT_ACTION_STATE_HELP: 'Please select at first what you want to do. Do you either want to give feedback, check for replies or configure your skill?',
     SELECT_ACTION_STATE_SKIP: 'Sorry, you cannot skip this step.',
     SELECT_ACTION_STATE_EXIT: '',
@@ -16,40 +16,13 @@ module.exports = {
     SELECT_DEVICE_STATE_SKIP: "Sorry, I really need to know what device we are talking about. Therefore, you cannot skip this step. You can still stop the conversation by saying stop.",
     SELECT_DEVICE_STATE_EXIT: "Thank you very much. So you want to talk about your ",
     
-    SELECT_FEEDBACK_TYPE_STATE_ENTER: `What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback?`,
-    SELECT_FEEDBACK_TYPE_STATE_HELP: 'Do you want to give feedback regarding an error that you encountered then you have to say bug report. If its regarding a new interesting feature that you would like to have it is a feature request. It can also be a question or cirticism. If you are not sure just say general feedback',
-    SELECT_FEEDBACK_TYPE_STATE_SKIP: '',
-    SELECT_FEEDBACK_TYPE_STATE_EXIT: '',
+    SELECT_FEEDBACK_TYPE_STATE_ENTER: "What type of feedback do you have? Do you want to report a bug, tell us about functionality that you would like to have, a question, criticism or general feedback?",
     
-    ADMIT_BUG_REPORT_STATE_ENTER: 'Okay, so you want to report an error you encountered. A description, the context, steps to reporudce and criticality are the most important information. Can you please describe the error at first?',
-    ADMIT_BUG_REPORT_STATE_HELP: 'admit bug report state help',
-    ADMIT_BUG_REPORT_STATE_SKIP: '',
     ADMIT_BUG_REPORT_STATE_EXIT: '',
-    
-    ADMIT_FEATURE_REQUEST_STATE_ENTER: 'Okay, so you found an interesting new feature that we should implement? ',
-    ADMIT_FEATURE_REQUEST_STATE_HELP: 'admit feature request state help',
-    ADMIT_FEATURE_REQUEST_STATE_ENTER: '',
     ADMIT_FEATURE_REQUEST_STATE_EXIT: '',
-    
-    ADMIT_QUESTION_STATE_ENTER: 'You can tell me your question now',
-    ADMIT_QUESTION_STATE_HELP: 'admit question state help',
-    ADMIT_QUESTION_STATE_SKIP: '',
     ADMIT_QUESTION_STATE_EXIT: 'Alright, your question will be send to the developers and they will reach out to you and help you to resolve your issue.',
-    
-    ADMIT_CRITICISM_STATE_ENTER: 'You are welcome to share your criticism with me',
-    ADMIT_CRITICISM_STATE_HELP: 'admit criticism state help',
-    ADMIT_CRITICISM_STATE_SKIP: '',
     ADMIT_CRITICISM_STATE_EXIT: '',
-    
-    ADMIT_GENERAL_FEEDBACK_STATE_ENTER: 'Okay, I am listening. Please tell me your you feedback.',
-    ADMIT_GENERAL_FEEDBACK_STATE_HELP: 'You can now tell me your feedback',
-    ADMIT_GENERAL_FEEDBACK_STATE_SKIP: '',
     ADMIT_GENERAL_FEEDBACK_STATE_EXIT: 'Thank you very much for your feedback. ',
-    
-    SELECT_CONTACT_PREFERENCES_STATE_ENTER: 'Do you allow the developers to contact you in case of further questions. If not your transcribed feedback would be sent anonymously. ',
-    SELECT_CONTACT_PREFERENCES_STATE_HELP: 'select contact preferences state help',
-    SELECT_CONTACT_PREFERENCES_STATE_SKIP: 'Okay, your feedback will be submitted anonymously.',
-    SELECT_CONTACT_PREFERENCES_STATE_EXIT: 'Thank you verym much, your feedback was send to the developers',
     
     CHECK_REPLIES_STATE_ENTER: 'Okay, let me check. Alright, you have 3 new replies. One regarding your Xiaomi Mi Band, one regarding your Philips Hue Light and one regarding your Amazon Echo Dot. Which one do you want to hear?',
     CHECK_REPLIES_STATE_HELP: 'check replies state help',

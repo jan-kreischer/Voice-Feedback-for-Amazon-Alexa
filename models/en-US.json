@@ -69,7 +69,7 @@
               "name": "content",
               "type": "AMAZON.SearchQuery",
               "samples": [
-                "The error is {content}"
+                "{content}"
               ]
             }, {
               "name": "context",
@@ -82,13 +82,13 @@
               "name": "steps_to_reproduce",
               "type": "AMAZON.SearchQuery",
               "samples": [
-                "The steps to reporduce are {content}"
+                "{steps_to_reproduce}"
               ]
             }, {
               "name": "criticality",
               "type": "LikertScale",
               "samples": [
-                "I would rate it as a {criticality}"
+                "{criticality}"
               ]
             }, {
               "name": "contact_permission",
@@ -101,12 +101,20 @@
           ],
           "samples": [
             "Bug report",
+            "I have a bug report",
+            "I want to submit a bug report",
+            
+            "Error",
+            "I encountered an error",
             "I want to report an error",
             "report an error",
-            "I want to submit a bug report",
-            "Error",
+
+
             "Problem",
+            "I want to report problem",
+            
             "Issue",
+            "I want to report an issue",
             "Fault",
             "Defect",
             "Mistake",
@@ -326,18 +334,20 @@
           "values": [{
               "id": "0",
               "name": {
-                "value": "zero",
+                "value": "no",
                 "synonyms": [
-                  "0"
+                  "0",
+                  "no"
                 ]
               }
             },
             {
               "id": "1",
               "name": {
-                "value": "one",
+                "value": "yes",
                 "synonyms": [
-                  "1"
+                  "1",
+                  "one"
                 ]
               }
             }

@@ -2,17 +2,15 @@
 /* eslint-disable  no-console */
 /* eslint-disable  no-restricted-syntax */
 const Alexa = require('ask-sdk-core');
-var http = require('http');
-var https = require('https');
-
+const https = require('https');
 const i18n = require('i18next');
 const sprintf = require('i18next-sprintf-postprocessor');
 const languageStrings = {
   'en': require('./languageStrings')
-}
+};
 const hostUrl = 'api.myfeedbackbot.com';
 
-function httpGet(query, callback) {
+/*function httpGet(query, callback) {
   var options = {
     host: hostUrl,
     port: 443,
@@ -38,7 +36,87 @@ function httpGet(query, callback) {
     return responseString;
   });
   req.end();
+}*/
+
+function httpsGet(options, callback) {
+  let url = 'https://api.eu.amazonalexa.com/v2/accounts/~current/settings/Profile.name';
+  console.log(options.url);
+  console.log(url);
+  let req = https.get(options.url, options, res => {
+    console.log("request re: " + res);
+    res.setEncoding('utf8');
+    var responseString = "";
+
+    //accept incoming data asynchronously
+    res.on('data', chunk => {
+      responseString = responseString + chunk;
+    });
+
+    //return the data when streaming is complete
+    res.on('end', () => {
+      console.log(responseString);
+      callback(responseString);
+      return responseString;
+    });
+    console.log("Response string:" + responseString);
+    return responseString;
+  });
+  req.end();
 }
+
+function getFeedbackerName(apiEndpoint, apiAccessToken) {
+  let options = {
+    method: 'GET',
+
+    url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
+    host: apiEndpoint,
+    port: 443,
+    path: "/v2/accounts/~current/settings/Profile.name",
+
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + apiAccessToken
+    }
+  };
+  return "Jan Bauer"
+}
+
+function getFeedbackerEmailAddress(apiEndpoint, apiAccessToken) {
+  let options = {
+    method: 'GET',
+
+    url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
+    host: apiEndpoint,
+    port: 443,
+    path: "/v2/accounts/~current/settings/Profile.name",
+
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + apiAccessToken
+    }
+  };
+  return "jan.kr.bauer@gmail.com"
+}
+
+
+
+function getFeedbackerTelephoneNumber(apiEndpoint, apiAccessToken) {
+  let options = {
+    method: 'GET',
+
+    url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
+    host: apiEndpoint,
+    port: 443,
+    path: "/v2/accounts/~current/settings/Profile.name",
+
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + apiAccessToken
+    }
+  };
+  return httpsGet(options, (data) => { console.log(data) })
+}
+
 
 function postFeedback(feedbacker_id, product_id, feedback_type_id, feedback_content) {
   var feedback = {};
@@ -76,7 +154,11 @@ function postFeedback(feedbacker_id, product_id, feedback_type_id, feedback_cont
 }
 
 function getUnacknowledgedReplies() {
-  httpGet('/alexa/new-replies', (data) => { "DATA" + console.log(data) });
+  /*httpGet('/alexa/new-replies', (data) => { "DATA" + console.log(data) });*/
+}
+
+function postFeedbacker() {
+  
 }
 
 function saveSessionAttributes(attributesManager, sessionAttributes, speechOutput) {
@@ -114,27 +196,80 @@ const LaunchRequest = {
     const requestAttributes = attributesManager.getRequestAttributes();
     var sessionAttributes = {};
 
+    const apiEndpoint = handlerInput.requestEnvelope.context.System.apiEndpoint;
+    const apiAccessToken = handlerInput.requestEnvelope.context.System.apiAccessToken;
+    console.log("apiEndpoint" + apiEndpoint);
+    console.log("Mach jetzt endlich!");
+    /*let options = {
+      method: 'GET',
+
+      url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
+      host: apiEndpoint,
+      hostname: apiEndpoint,
+      port: 443,
+      path: "/v2/accounts/~current/settings/Profile.name",
+
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + apiAccessToken
+      }
+    };*/
+    let options = {
+      method: 'GET',
+
+      url: apiEndpoint + "/v2/accounts/~current/settings/Profile.name",
+      port: 443,
+      path: "/v2/accounts/~current/settings/Profile.name",
+
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + apiAccessToken
+      }
+    };
+
+    /*const options = {
+    hostname: hostUrl,
+    port: 443,
+    path: '/feedback',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': data.length
+    }
+  }*/
+
+    console.log(options);
+    httpsGet(options, () => { console.log("end") });
+
     var speechOutput = "";
 
-    /*if (Alexa.isNewSession(handlerInput.requestEnvelope)) {
-        speechOutput = requestAttributes.t('SKILL_CONFIGURATION_STATE_CONFIRM');
-        sessionAttributes.botState = "SKILL_CONFIGURATION_STATE_CONFIRM";
-    }
-    else {
-        speechOutput = requestAttributes.t('INITIAL_STATE');
-        sessionAttributes.botState = 'INITIAL_STATE';
-    }*/
     speechOutput = requestAttributes.t('SELECT_ACTION_STATE_ENTER');
     sessionAttributes.botState = 'SELECT_ACTION_STATE';
 
-
-    //sessionAttributes.last_speech_output = speechOutput;
-    //attributesManager.setSessionAttributes(sessionAttributes);
-
     saveSessionAttributes(attributesManager, initialSessionAttributes, speechOutput);
 
+    /*.withSimpleCard(
+      "This is the Title of the Card",
+      "This is the card content. This card just has plain text content.\r\nThe content is formated with line breaks to improve readability."
+    )*/
+    /*"permissions": [
+      "alexa::profile:name:read",
+      "alexa::profile:mobile_number:read"
+    ]*/
+    /*handlerInput.responseBuilder
+    "card": {
+      "type": "AskForPermissionsConsent",
+      "permissions": [
+        "read::alexa:device:all:address"
+      ]
+    }*/
     return handlerInput.responseBuilder
       .speak(speechOutput)
+      .withAskForPermissionsConsentCard([
+        "alexa::profile:name:read",
+        "alexa::profile:email:read",
+        "alexa::profile:mobile_number:read"
+      ])
       .reprompt(speechOutput)
       .getResponse();
   },
@@ -146,15 +281,6 @@ const SelectActionHandler = {
 
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
-
-    /*let stateCanHandleIntent = false;
-    if (sessionAttributes.botState) {
-        switch(sessionAttributes.botState) {
-            case 'SELECT_ACTION':
-                stateCanHandleIntent = true;  
-                break;
-        }
-    }*/
 
     return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
       Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectAction';
@@ -195,143 +321,6 @@ const SelectActionHandler = {
       .reprompt(speechOutput)
       .getResponse();
   }
-}
-
-
-const YesIntentHandler = {
-  canHandle(handlerInput) {
-    console.log("YesIntentHandler > Tested");
-
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    let stateCanHandleIntent = false;
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'INITIAL_STATE':
-        case 'SKILL_CONFIGURATION_STATE_CONFIRM':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }
-
-    return stateCanHandleIntent &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.YesIntent';
-  },
-
-  handle(handlerInput) {
-    console.log("YesIntentHandler > Used");
-    console.log(handlerInput.requestEnvelope);
-    console.log(handlerInput);
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    var speechOutput = "";
-    switch (sessionAttributes.botState) {
-      case 'SKILL_CONFIGURATION_STATE_CONFIRM':
-        speechOutput = requestAttributes.t('SKILL_CONFIGURATION_STATE_ENTER');
-        sessionAttributes.botState = 'SKILL_CONFIGURATION_STATE';
-        break;
-
-      case 'REQUEST_CONTACT_PREFERENCES_STATE':
-        speechOutput = requestAttributes.t('Do you want to be informed by alexa or by email. Say yes for alexa and via traditional channels like email or telephone');
-        sessionAttributes.botState = 'SKILL_CONFIGURATION_STATE';
-        break;
-    }
-
-    sessionAttributes.last_speech_output = speechOutput;
-    attributesManager.setSessionAttributes(sessionAttributes);
-
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .reprompt(speechOutput)
-      .getResponse();
-  },
-};
-
-
-
-const NoIntentHandler = {
-  canHandle(handlerInput) {
-    console.log("NoIntentHandler > Used");
-
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    var stateCanHandleIntent = false;
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'SKILL_CONFIGURATION_STATE_CONFIRM':
-        case 'CONTACT_PREFERENCES_STATE_CONFIRM':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }
-
-    return stateCanHandleIntent &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.NoIntent';
-  },
-  handle(handlerInput) {
-    console.log("NoIntentHandler > Used");
-    console.log(handlerInput.requestEnvelope);
-    console.log(handlerInput);
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    var sessionAttributes = attributesManager.getSessionAttributes();
-
-    var speechOutput = "";
-    var shouldSessionEnd = false;
-
-    switch (sessionAttributes.botState) {
-      case 'INITIAL_STATE':
-        sessionAttributes.botState = 'ENDED';
-        speechOutput = "Ok. See you the next time!";
-        shouldSessionEnd = true;
-        break;
-
-
-      case 'SKILL_CONFIGURATION_STATE_CONFIRM':
-        speechOutput = requestAttributes.t('SKILL_CONFIGURATION_STATE_SKIP') + " " + requestAttributes.t('SELECT_DEVICE_STATE_ENTER');
-        shouldSessionEnd = false;
-        sessionAttributes.botState = 'SELECT_DEVICE_STATE';
-        break;
-
-      case 'SKILL_CONFIGURATION':
-        speechOutput = "Okay so we skip the configuration. You can give your feedback now";
-        shouldSessionEnd = false;
-        sessionAttributes.botState = 'FEEDBACK_LOOP';
-        break;
-
-
-      case 'FEEDBACK_LOOP':
-        speechOutput = "blablabla";
-        sessionAttributes.botState = 'FEEDBACK_LOOP';
-        break;
-
-
-      case 'ELICIT_CONTACT_INFORMATION':
-        speechOutput = "Okay, the informaion is compelte now. I will submit your feedback now.";
-        sessionAttributes.botState = 'SUBMIT_INFORMATION';
-        break;
-
-      default:
-        break;
-    }
-
-    //sessionAttributes.last_speech_output = speechOutput;
-    //attributesManager.setSessionAttributes(sessionAttributes);
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
-
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .reprompt(speechOutput)
-      .getResponse();
-  },
 };
 
 const SkillConfigurationHandler = {
@@ -435,21 +424,9 @@ const FeedbackHandler = {
   canHandle(handlerInput) {
     console.log("FeedbackHandler > Tested");
 
-    /*let stateCanHandleIntent = true;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'ADMIT_BUG_REPORT_STATE':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }*/
-
     return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
       (Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitBugReport' ||
-        Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitFeatureRequestReport' ||
+        Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitFeatureRequest' ||
         Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitQuestion' ||
         Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitCriticism' ||
         Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitGeneralFeedback');
@@ -475,6 +452,11 @@ const FeedbackHandler = {
 
     let speechOutput = 'Please say yes if you allow the developers to contact you in case of questions? Otherwise your feedback will be send anonymously.';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);*/
+
+    getFeedbackerName();
+    getFeedbackerEmailAddress();
+    getFeedbackerTelephoneNumber();
+
     let speechOutput = 'Thank you very much your feedback got submitted';
 
     return handlerInput.responseBuilder
@@ -483,371 +465,6 @@ const FeedbackHandler = {
       .getResponse();
   },
 };
-
-const SubmitBugReportHandler = {
-
-  canHandle(handlerInput) {
-    console.log("SubmitBugReportHandler > Tested");
-
-    let stateCanHandleIntent = true;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'ADMIT_BUG_REPORT_STATE':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }
-
-    return stateCanHandleIntent &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitBugReport';
-  },
-
-  handle(handlerInput) {
-    console.log("SubmitBugReportHandler > Used");
-    console.log(handlerInput);
-    console.log(handlerInput.requestEnvelope);
-
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
-    sessionAttributes.feedback_content = feedback_content;
-
-    const feedback_context = handlerInput.requestEnvelope.request.intent.slots.context.value;
-    sessionAttributes.content = context;
-
-    const steps_to_reproduce = handlerInput.requestEnvelope.request.intent.slots.steps_to_reproduce.value;
-    sessionAttributes.feedback_steps_to_reproduce = feedback_steps_to_reproduce;
-
-    let speechOutput = 'Please say yes if you allow the developers to contact you in case of questions? Otherwise your feedback will be send anonymously.';
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
-
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .reprompt(speechOutput)
-      .getResponse();
-  },
-};
-
-const SubmitFeatureRequestHandler = {
-
-  canHandle(handlerInput) {
-    console.log("SubmitFeatureRequestHandler > Tested");
-
-    let stateCanHandleIntent = true;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'ADMIT_FEATURE_REQUEST_STATE':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }
-
-    return stateCanHandleIntent &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitFeatureRequest';
-  },
-
-  handle(handlerInput) {
-    console.log("SubmitFeatureRequestHandler > Used");
-    console.log(handlerInput);
-    console.log(handlerInput.requestEnvelope);
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
-    sessionAttributes.feedback_content = feedback_content;
-
-    postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
-    let speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_EXIT');
-    sessionAttributes.botState = 'SELECT_CONTACT_PREFERENCES_STATE';
-
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
-
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .reprompt(speechOutput)
-      .getResponse();
-  },
-};
-
-const SubmitQuestionHandler = {
-
-  canHandle(handlerInput) {
-    console.log("SubmitQuestionHandler > Tested");
-
-    let stateCanHandleIntent = true;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'ADMIT_QUESTION_STATE':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }
-
-    return stateCanHandleIntent &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitQuestion';
-  },
-
-  handle(handlerInput) {
-    console.log("SubmitQuestionHandler > Used");
-    console.log(handlerInput);
-    console.log(handlerInput.requestEnvelope);
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
-    sessionAttributes.feedback_content = feedback_content;
-
-    //postFeedback(1, sessionAttributes.product_id, sessionAttributes.feedback_type_id, sessionAttributes.feedback_content);
-    let speechOutput = requestAttributes.t('ADMIT_QUESTION_STATE_EXIT');
-    sessionAttributes.botState = 'END';
-
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
-
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .reprompt(speechOutput)
-      .getResponse();
-  },
-};
-
-const SubmitCriticismHandler = {
-
-  canHandle(handlerInput) {
-    console.log("SubmitCriticismHandler > Tested");
-
-    let stateCanHandleIntent = true;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'ADMIT_CRITICISM_STATE':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }
-
-    return stateCanHandleIntent &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitCriticism';
-  },
-
-  handle(handlerInput) {
-    console.log("SubmitCriticismHandler > Used");
-    console.log(handlerInput);
-    console.log(handlerInput.requestEnvelope);
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
-    sessionAttributes.feedback_content = feedback_content;
-
-    let speechOutput = requestAttributes.t('ADMIT_CRITICISM_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
-    sessionAttributes.botState = 'SELECT_CONTACT_PREFERENCES_STATE';
-
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
-
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .reprompt(speechOutput)
-      .getResponse();
-  },
-};
-
-const SubmitGeneralFeedbackHandler = {
-
-  canHandle(handlerInput) {
-    console.log("SubmitGeneralFeedbackHandler > Tested");
-
-    let stateCanHandleIntent = true;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'ADMIT_GENERAL_FEEDBACK_STATE':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }
-
-    return stateCanHandleIntent &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SubmitGeneralFeedback';
-  },
-
-  handle(handlerInput) {
-    console.log("SubmitGeneralFeedbackHandler > Used");
-    console.log(handlerInput);
-    console.log(handlerInput.requestEnvelope);
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
-    sessionAttributes.feedback_content = feedback_content;
-
-    let speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
-    sessionAttributes.botState = 'SELECT_CONTACT_PREFERENCES_STATE';
-
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
-
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .reprompt(speechOutput)
-      .getResponse();
-  },
-};
-
-const SelectContactPreferencesHandler = {
-
-  canHandle(handlerInput) {
-    console.log("SelectContactPreferencesHandler  > Tested");
-
-    let stateCanHandleIntent = false;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'SELECT_CONTACT_PREFERENCES_STATE':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }
-
-    return stateCanHandleIntent;
-  },
-
-  handle(handlerInput) {
-    console.log("SelectContactPreferencesHandler > Used");
-    console.log(handlerInput);
-    console.log(handlerInput.requestEnvelope);
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    const feedback_content = handlerInput.requestEnvelope.request.intent.slots.content.value;
-    sessionAttributes.feedback_content = feedback_content;
-
-    let speechOutput = requestAttributes.t('ADMIT_GENERAL_FEEDBACK_STATE_EXIT') + requestAttributes.t('SELECT_CONTACT_PREFERENCES_STATE_ENTER');
-    sessionAttributes.botState('SELECT_CONTACT_PREFERENCES_STATE');
-
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
-
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .reprompt(speechOutput)
-      .getResponse();
-  },
-};
-
-/*const ElicitContactInformationHandler = {
-
-  canHandle(handlerInput) {
-    console.log("ElicitContactInformationHandler > Tested");
-    // handle feedback only after the bot has been started
-    let stateCanHandleIntent = false;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState &&
-      sessionAttributes.botState === 'ELICIT_CONTACT_INFORMATION') {
-      console.log("ElicitContactInformationHandler can handle this intent");
-      stateCanHandleIntent = true;
-    }
-    return stateCanHandleIntent &&
-      handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
-      (handlerInput.requestEnvelope.request.intent.name === 'ElicitContactInformationIntent' ||
-        handlerInput.requestEnvelope.request.intent.name === 'ElicitContactInformation');
-  },
-
-  handle(handlerInput) {
-    console.log("ElicitContactInformationHandler > Used");
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    //const feedback_type = handlerInput.requestEnvelope.request.intent.slots.feedback_type.value;
-    //sessionAttributes.feedback_type = feedback_type;
-    //const feedback_type = handlerInput.requestEnvelope.request.intent.slots.feedback_type.;
-    //sessionAttributes.feedback_type = feedback_type;
-    //const feedback_content = handlerInput.requestEnvelope.request.intent.slots.feedback_content.value;
-    //sessionAttributes.feedback_content = feedback_content;
-
-    sessionAttributes.botState = 'SUBMIT_INFORMATION';
-    attributesManager.setSessionAttributes(sessionAttributes);
-
-    return handlerInput.responseBuilder
-      .speak('Thank you very much. Do you want me to send your feedback to the developers now')
-      .reprompt('Thank you very much. Do you want me to send your feedback to the developers now')
-      .getResponse();
-  },
-};*/
-
-/*const SubmitInformationHandler = {
-
-  canHandle(handlerInput) {
-    console.log("SubmitInformationHandler TESTED")
-
-    let stateCanHandleIntent = false;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState && sessionAttributes.botState === 'SUBMIT_INFORMATION') {
-      stateCanHandleIntent = true;
-    }
-    return stateCanHandleIntent;
-  },
-
-  handle(handlerInput) {
-    console.log("SubmitInformationHandler STARTED")
-
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    var feedback_content = sessionAttributes.feedback_content || "Empty feedback content";
-    var feedbacker_id = 0;
-    var product_id = 0;
-    var url = "https://api.myfeedbackbot.com/feedback"
-    this.http.post < global.any > (url, { 'feedback_content': feedback_content, 'feedbacker_id': feedbacker_id, 'product_id': product_id }).subscribe(data => {
-      console.log(data);
-    });
-
-    sessionAttributes.botState = 'END';
-    attributesManager.setSessionAttributes(sessionAttributes);
-
-    return handlerInput.responseBuilder
-      .speak('Thank you i received your feedback. ')
-      .reprompt('Thank you I received your feedback.')
-      .getResponse();
-  },
-};*/
 
 //========== SKILL CONFIGURATION ==========
 const CheckRepliesHandler = {
@@ -952,28 +569,6 @@ const HelpIntentHandler = {
     console.log(help_message);
 
     var speechOutput = requestAttributes.t(help_message) || requestAttributes.t('HELP_MESSAGE');
-    /*switch (sessionAttributes.botState) {
-      case 'SKILL_CONFIGURATION_STATE':
-        speechOutput = requestAttributes.t('SKILL_CONFIGURATION_STATE_HELP')
-        break;
-
-      case 'SELECT_DEVICE_STATE':
-        speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_HELP')
-        break;
-
-      case 'ELICIT_DEVICE_INFORMATION':
-        speechOutput = 'We really need your device information, so you cannot skip this step. But you can cancel giving feedback by saying cancel.';
-        break;
-
-      case 'FEEDBACK_LOOP':
-        speechOutput = 'You can always cancel giving feedback by saying stop';
-        break;
-
-      case 'ELICIT_CONTACT_INFORMATION':
-        speechOutput = 'You dont need to provide contact information. You can skip this step by saying skip';
-        break;
-    }*/
-
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
@@ -1235,22 +830,9 @@ exports.handler = skillBuilder
 
     FeedbackHandler,
 
-    //SubmitBugReportHandler,
-    //SubmitFeatureRequestHandler,
-    //SubmitQuestionHandler,
-    //SubmitCriticismHandler,
-    //SubmitGeneralFeedbackHandler,
-
-    //SelectFeedbackTypeHandler,
-
-    //SelectContactPreferencesHandler,
-
     CheckRepliesHandler,
 
     SkillConfigurationHandler,
-
-    //YesIntentHandler,
-    //NoIntentHandler,
 
     RepeatIntentHandler,
     HelpIntentHandler,

@@ -14,33 +14,6 @@
           ]
         },
         {
-          "name": "SkillConfiguration",
-          "slots": [{
-              "name": "feedbacker_name",
-              "type": "AMAZON.SearchQuery",
-              "samples": [
-                "My name is {feedbacker_name}"
-              ]
-            },
-            {
-              "name": "feedbacker_email_address",
-              "type": "AMAZON.SearchQuery",
-              "samples": [
-                "It is {feedbacker_email_address}",
-                "My email address is {feedbacker_email_address}",
-                "The email address is {feedbacker_email_address}",
-                "My email is {feedbacker_email_address}",
-                "The adress is {feedbacker_email_address}",
-                "My address is {feedbacker_email_address}"
-              ]
-            }
-          ],
-          "samples": [
-            "My email address is {feedbacker_email_address}",
-            "My name is {feedbacker_name}"
-          ]
-        },
-        {
           "name": "SelectDevice",
           "slots": [{
             "name": "product_name",
@@ -62,7 +35,6 @@
             "Regarding an {product_name}"
           ]
         },
-
         {
           "name": "SubmitBugReport",
           "slots": [{
@@ -103,7 +75,7 @@
             "Bug report",
             "I have a bug report",
             "I want to submit a bug report",
-            
+
             "Error",
             "I encountered an error",
             "I want to report an error",
@@ -112,7 +84,7 @@
 
             "Problem",
             "I want to report problem",
-            
+
             "Issue",
             "I want to report an issue",
             "Fault",
@@ -416,16 +388,9 @@
             {
               "id": "2",
               "name": {
-                "value": "check replies"
-              }
-            },
-            {
-              "id": "3",
-              "name": {
-                "value": "configure",
+                "value": "check replies",
                 "synonyms": [
-                  "configure my skill",
-                  "configure the skill"
+                  "submit feedback"
                 ]
               }
             }
@@ -722,33 +687,6 @@
             }
           }],
           "delegationStrategy": "ALWAYS"
-        },
-
-
-
-        {
-          "name": "SkillConfiguration",
-          "confirmationRequired": false,
-          "prompts": {},
-          "slots": [{
-              "name": "feedbacker_name",
-              "type": "AMAZON.SearchQuery",
-              "elicitationRequired": true,
-              "confirmationRequired": false,
-              "prompts": {
-                "elicitation": "Elicit.Slot.1237915719388.1447635500505"
-              }
-            },
-            {
-              "name": "feedbacker_email_address",
-              "type": "AMAZON.SearchQuery",
-              "elicitationRequired": true,
-              "confirmationRequired": false,
-              "prompts": {
-                "elicitation": "Elicit.Slot.1237915719388.227565361399"
-              }
-            }
-          ]
         }
 
 
@@ -810,7 +748,7 @@
         "id": "Elicit.Slot.BugReport.Context",
         "variations": [{
           "type": "PlainText",
-          "value": "Please describe the context of the error as precise as possible. "
+          "value": "To give us a little bit more background information, can you lease describe the situation in which the error occurred"
         }]
       },
       {
@@ -824,7 +762,7 @@
         "id": "Elicit.Slot.BugReport.StepsToReproduce",
         "variations": [{
           "type": "PlainText",
-          "value": "Please describe the steps to reproduce this error as precise as possible."
+          "value": "Please describe what steps you have taken with the device before the error occurred."
         }]
       },
       {
@@ -958,32 +896,7 @@
           "type": "PlainText",
           "value": "Please tell my if you want to submit a bug report, a feautre request, a question or criticism. If you are not sure you just select general feedback."
         }]
-      },
-
-
-
-      {
-        "id": "Elicit.Slot.1237915719388.1447635500505",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Can you please tell me your name?"
-        }]
-      },
-      {
-        "id": "Elicit.Slot.1237915719388.227565361399",
-        "variations": [{
-            "type": "PlainText",
-            "value": "Thanks, and what is your email address?"
-          },
-          {
-            "type": "PlainText",
-            "value": "Can you please tell me your email address"
-          }
-        ]
       }
-
-
-
     ]
   },
   "version": "29"

@@ -26,9 +26,9 @@
           "summary": "I will help you to give feedback regarding your smart home devices. Reporting errors and requesting new functionality will become easy and intuitive.",
           "description": "Sample Full Description",
           "examplePhrases": [
-            "Alexa open my feedback bot",
-            "Alexa tell my feedback bot that I want to give feedback",
-            "Alexa tell my feedback bot that I want to report an error"
+            "Alexa, open my feedback bot",
+            "Alexa, tell my feedback bot that I want to give feedback",
+            "Alexa, tell my feedback bot that I want to report an error"
           ],
           "keywords": []
         }

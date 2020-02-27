@@ -203,6 +203,11 @@ const LaunchRequest = {
     saveSessionAttributes(attributesManager, initialSessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
+      .addDelegateDirective({
+        name: 'SelectAction',
+        confirmationStatus: 'NONE',
+        slots: {}
+      })
       .speak(speechOutput)
       .withAskForPermissionsConsentCard([
         "alexa::profile:name:read",
@@ -256,6 +261,24 @@ const SelectActionHandler = {
         break;
     }
     return handlerInput.responseBuilder
+      /*.addDelegateDirective({
+        name: 'SelectAction',
+        confirmationStatus: 'NONE',
+        slots: {{
+            "name": "action_type",
+            "type": "ActionType",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.340514330560.1260777800361"
+            }
+          }}
+      })*/
+      .addElicitSlotDirective('product', {
+        name: 'SelectDevice',
+        confirmationStatus: 'NONE',
+        slots: {}
+      })
       .speak(speechOutput)
       .reprompt(speechOutput)
       .getResponse();
@@ -292,19 +315,24 @@ const SelectDeviceHandler = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const product_name = handlerInput.requestEnvelope.request.intent.slots.product_name.value;
+    const product_name = handlerInput.requestEnvelope.request.intent.slots.product.value;
     sessionAttributes.product_name = product_name;
 
-    const product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product_name.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+    const product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     sessionAttributes.product_id = product_id;
 
-    //let speechOutput = `Thank you very much. So you want to give feedback regarding your ${product_name}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;
+    //let speechOutput = `Thank you very much. So you want to give feedback regarding your ${product}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;
     let speechOutput = requestAttributes.t('SELECT_DEVICE_STATE_EXIT') + product_name + '. ' + requestAttributes.t('SELECT_FEEDBACK_TYPE_STATE_ENTER');
 
     sessionAttributes.botState = 'SELECT_FEEDBACK_TYPE_STATE';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
+      /*.addDelegateDirective({
+        name: 'SelectDevice',
+        confirmationStatus: 'NONE',
+        slots: {}
+      })*/
       .speak(speechOutput)
       .reprompt(speechOutput)
       .getResponse();
@@ -386,7 +414,7 @@ const FeedbackHandler = {
 
     let product_id = sessionAttributes.product_id || 1;
     let speechOutput = requestAttributes.t('FEEDBACK_SUBMIT_MESSAGE');
-    
+
     var feedback;
     switch (intent) {
       case 'SubmitBugReport':
@@ -497,10 +525,10 @@ const CheckRepliesHandler = {
     const sessionAttributes = attributesManager.getSessionAttributes();
 
 
-    const product_name = handlerInput.requestEnvelope.request.intent.slots.product_name.value;
+    const product_name = handlerInput.requestEnvelope.request.intent.slots.product.value;
     sessionAttributes.product_name = product_name;
 
-    const product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product_name.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+    const product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     sessionAttributes.product_id = product_id;
 
     var speechOutput = `Thank you very much. So you want to give feedback regarding your ${product_name}. What type of feedback do you have? Is it a bug report, a feature request, a question, criticism or general feedback.`;

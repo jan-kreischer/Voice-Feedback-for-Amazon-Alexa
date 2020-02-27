@@ -16,23 +16,24 @@
         {
           "name": "SelectDevice",
           "slots": [{
-            "name": "product_name",
+            "name": "product",
             "type": "Product",
             "samples": [
-              "regarding {product_name}",
-              "Regarding my {product_name}",
-              "Regarding a {product_name}",
-              "Regarding an {product_name}"
+              "{product}",
+              "regarding {product}",
+              "Regarding my {product}",
+              "Regarding a {product}",
+              "Regarding an {product}"
             ]
           }],
           "samples": [
             "I want to give feedback",
-            "I want to give feedback regarding my {product_name}",
-            "I would like to give feedback regarding {product_name}",
-            "Regarding {product_name}",
-            "Regarding my {product_name}",
-            "Regarding a {product_name}",
-            "Regarding an {product_name}"
+            "I want to give feedback regarding my {product}",
+            "I would like to give feedback regarding {product}",
+            "Regarding {product}",
+            "Regarding my {product}",
+            "Regarding a {product}",
+            "Regarding an {product}"
           ]
         },
         {
@@ -175,27 +176,25 @@
         {
           "name": "SubmitCriticism",
           "slots": [{
-              "name": "star_rating",
-              "type": "LikertScale",
-              "samples": [
-                "I would say {star_rating}"
-              ]
-            },
-            {
-              "name": "content",
-              "type": "AMAZON.SearchQuery",
-              "samples": [
-                "{content}"
-              ]
-            }, {
-              "name": "contact_permission",
-              "type": "BinaryAnswer",
-              "samples": [
-                "Yes",
-                "No"
-              ]
-            }
-          ],
+            "name": "content",
+            "type": "AMAZON.SearchQuery",
+            "samples": [
+              "{content}"
+            ]
+          }, {
+            "name": "star_rating",
+            "type": "LikertScale",
+            "samples": [
+              "I would say {star_rating}"
+            ]
+          }, {
+            "name": "contact_permission",
+            "type": "BinaryAnswer",
+            "samples": [
+              "Yes",
+              "No"
+            ]
+          }],
           "samples": [
             "criticism",
             "Praise",
@@ -247,7 +246,8 @@
           "name": "CheckReplies",
           "slots": [],
           "samples": [
-            "I want to check for replies"
+            "I want to check for replies",
+            "check replies"
           ]
         },
         {
@@ -474,14 +474,19 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
-            "name": "product_name",
+            "name": "product",
             "type": "Product",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.1468393552773.1192548334628"
-            }
-          }]
+              "elicitation": "Elicit.Slot.Select.Product"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Select.Product"
+            }]
+          }],
+          "delegationStrategy": "ALWAYS"
         },
 
 
@@ -706,12 +711,21 @@
       },
 
       {
-        "id": "Elicit.Slot.1468393552773.1192548334628",
+        "id": "Elicit.Slot.Select.Product",
         "variations": [{
           "type": "PlainText",
           "value": "Okay, do you want to give feedback regarding your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band?"
         }]
       },
+      {
+        "id": "Slot.Validation.Select.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Sorry this product is not supported. I either understood the name wrong or the device is not supported. Can you please repeat the name."
+        }]
+      },
+
+
 
       {
         "id": "Elicit.Slot.448730650163.667451457424",
@@ -848,7 +862,7 @@
         "id": "Elicit.Slot.Criticism.Content",
         "variations": [{
           "type": "PlainText",
-          "value": "Please tell me your praise"
+          "value": "Please tell me your criticism."
         }]
       },
       {

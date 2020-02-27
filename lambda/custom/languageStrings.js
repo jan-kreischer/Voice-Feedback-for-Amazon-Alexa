@@ -1,6 +1,6 @@
 module.exports = {
   translation: {
-    SELECT_ACTION_STATE_ENTER: 'Do you want to give feedback or check for replies?',
+    SELECT_ACTION_STATE_ENTER: 'Do you want to give feedback or check for replies received from the developers?',
     SELECT_ACTION_STATE_HELP: 'Please select at first what you want to do. Do you either want to give feedback, check for replies or configure your skill?',
     SELECT_ACTION_STATE_EXIT: '',
     

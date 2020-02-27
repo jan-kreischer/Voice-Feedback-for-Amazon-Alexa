@@ -470,7 +470,7 @@
           "prompts": {},
           "slots": [{
               "name": "product",
-              "type": "AMAZON.DeviceType",
+              "type": "Product",
               "elicitationRequired": true,
               "confirmationRequired": false,
               "prompts": {

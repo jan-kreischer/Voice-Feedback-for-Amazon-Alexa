@@ -3,42 +3,18 @@
     "languageModel": {
       "invocationName": "my feedback bot",
       "intents": [{
-          "name": "SelectAction",
-          "slots": [{
-            "name": "action_type",
-            "type": "ActionType"
-          }],
-          "samples": [
-            "I want to {action_type}",
-            "{action_type}"
-          ]
-        },
-        {
-          "name": "SelectDevice",
-          "slots": [{
-            "name": "product",
-            "type": "Product",
-            "samples": [
-              "{product}",
-              "regarding {product}",
-              "Regarding my {product}",
-              "Regarding a {product}",
-              "Regarding an {product}"
-            ]
-          }],
-          "samples": [
-            "I want to give feedback",
-            "I want to give feedback regarding my {product}",
-            "I would like to give feedback regarding {product}",
-            "Regarding {product}",
-            "Regarding my {product}",
-            "Regarding a {product}",
-            "Regarding an {product}"
-          ]
-        },
-        {
           "name": "SubmitBugReport",
           "slots": [{
+              "name": "product",
+              "type": "Product",
+              "samples": [
+                "{product}",
+                "regarding {product}",
+                "Regarding my {product}",
+                "Regarding a {product}",
+                "Regarding an {product}"
+              ]
+            }, {
               "name": "content",
               "type": "AMAZON.SearchQuery",
               "samples": [
@@ -73,26 +49,48 @@
             }
           ],
           "samples": [
+            "Bug",
             "Bug report",
-            "I have a bug report",
-            "I want to submit a bug report",
-
             "Error",
-            "I encountered an error",
-            "I want to report an error",
-            "report an error",
-
-
-            "Problem",
-            "I want to report problem",
-
             "Issue",
-            "I want to report an issue",
+            "Problem",
             "Fault",
             "Defect",
-            "Mistake",
             "Deficiency",
-            "Glitch"
+            "Glitch",
+
+            "to report a bug",
+            "to submit a bug report",
+            "to report an error",
+            "to report an issue",
+            "to report a problem",
+            "to report a fault",
+            "to report a defect",
+            "to report a deficiency",
+            "to report a glitch",
+
+            "I want to report a bug",
+            "I want to submit a bug report",
+            "I want to report an error",
+            "I want to report an issue",
+            "I want to report a problem",
+            "I want to report a fault",
+            "I want to report a defect",
+            "I want to report a deficiency",
+            "I want to report a glitch",
+
+            "that I want to report a bug",
+            "that I want to submit a bug report",
+            "that I want to report an error",
+            "that I want to report an issue",
+            "that I want to report a problem",
+            "that I want to report a fault",
+            "that I want to report a defect",
+            "that I want to report a deficiency",
+            "that I want to report a glitch",
+
+            "I want to report an error regarding my {product}",
+            "I want to report an error regarding the {product}"
           ]
         },
 
@@ -101,6 +99,16 @@
         {
           "name": "SubmitFeatureRequest",
           "slots": [{
+            "name": "product",
+            "type": "Product",
+            "samples": [
+              "{product}",
+              "regarding {product}",
+              "Regarding my {product}",
+              "Regarding a {product}",
+              "Regarding an {product}"
+            ]
+          }, {
             "name": "content",
             "type": "AMAZON.SearchQuery",
             "samples": [
@@ -143,6 +151,16 @@
         {
           "name": "SubmitQuestion",
           "slots": [{
+            "name": "product",
+            "type": "Product",
+            "samples": [
+              "{product}",
+              "regarding {product}",
+              "Regarding my {product}",
+              "Regarding a {product}",
+              "Regarding an {product}"
+            ]
+          }, {
             "name": "content",
             "type": "AMAZON.SearchQuery",
             "samples": [
@@ -176,6 +194,16 @@
         {
           "name": "SubmitCriticism",
           "slots": [{
+            "name": "product",
+            "type": "Product",
+            "samples": [
+              "{product}",
+              "regarding {product}",
+              "Regarding my {product}",
+              "Regarding a {product}",
+              "Regarding an {product}"
+            ]
+          }, {
             "name": "content",
             "type": "AMAZON.SearchQuery",
             "samples": [
@@ -224,6 +252,16 @@
         {
           "name": "SubmitGeneralFeedback",
           "slots": [{
+            "name": "product",
+            "type": "Product",
+            "samples": [
+              "{product}",
+              "regarding {product}",
+              "Regarding my {product}",
+              "Regarding a {product}",
+              "Regarding an {product}"
+            ]
+          }, {
             "name": "content",
             "type": "AMAZON.SearchQuery",
             "samples": [
@@ -379,28 +417,6 @@
           "values": [{
               "id": "1",
               "name": {
-                "value": "give feedback",
-                "synonyms": [
-                  "submit feedback"
-                ]
-              }
-            },
-            {
-              "id": "2",
-              "name": {
-                "value": "check replies",
-                "synonyms": [
-                  "submit feedback"
-                ]
-              }
-            }
-          ],
-          "name": "ActionType"
-        },
-        {
-          "values": [{
-              "id": "1",
-              "name": {
                 "value": "Amazon Echo Dot",
                 "synonyms": [
                   "Echo Dot"
@@ -448,54 +464,23 @@
       ]
     },
     "dialog": {
-      "intents": [
-
-
-
-        {
-          "name": "SelectAction",
-          "confirmationRequired": false,
-          "prompts": {},
-          "slots": [{
-            "name": "action_type",
-            "type": "ActionType",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Slot.340514330560.1260777800361"
-            }
-          }]
-        },
-
-
-
-        {
-          "name": "SelectDevice",
-          "confirmationRequired": false,
-          "prompts": {},
-          "slots": [{
-            "name": "product",
-            "type": "Product",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Slot.Select.Product"
-            },
-            "validations": [{
-              "type": "hasEntityResolutionMatch",
-              "prompt": "Slot.Validation.Select.Product"
-            }]
-          }],
-          "delegationStrategy": "ALWAYS"
-        },
-
-
-
-        {
+      "intents": [{
           "name": "SubmitBugReport",
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
+              "name": "product",
+              "type": "AMAZON.DeviceType",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.Product"
+              },
+              "validations": [{
+                "type": "hasEntityResolutionMatch",
+                "prompt": "Slot.Validation.Product"
+              }]
+            }, {
               "name": "content",
               "type": "AMAZON.SearchQuery",
               "elicitationRequired": true,
@@ -539,8 +524,12 @@
               "elicitationRequired": true,
               "confirmationRequired": false,
               "prompts": {
-                "elicitation": "Elicit.Slot.BugReport.ContactPermission"
-              }
+                "elicitation": "Elicit.Slot.Feedback.ContactPermission"
+              },
+              "validations": [{
+                "type": "hasEntityResolutionMatch",
+                "prompt": "Slot.Validation.Feedback.ContactPermission"
+              }]
             }
           ],
           "delegationStrategy": "ALWAYS"
@@ -553,6 +542,18 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
+            "name": "product",
+            "type": "Product",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.Product"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Product"
+            }]
+          }, {
             "name": "content",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
@@ -591,8 +592,12 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.BugReport.ContactPermission"
-            }
+              "elicitation": "Elicit.Slot.Feedback.ContactPermission"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Feedback.ContactPermission"
+            }]
           }],
           "delegationStrategy": "ALWAYS"
         },
@@ -604,6 +609,18 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
+            "name": "product",
+            "type": "Product",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.Product"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Product"
+            }]
+          }, {
             "name": "content",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
@@ -626,8 +643,12 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.BugReport.ContactPermission"
-            }
+              "elicitation": "Elicit.Slot.Feedback.ContactPermission"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Feedback.ContactPermission"
+            }]
           }],
           "delegationStrategy": "ALWAYS"
         },
@@ -639,6 +660,18 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
+            "name": "product",
+            "type": "Product",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.Product"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Product"
+            }]
+          }, {
             "name": "content",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
@@ -661,8 +694,12 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.BugReport.ContactPermission"
-            }
+              "elicitation": "Elicit.Slot.Feedback.ContactPermission"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Feedback.ContactPermission"
+            }]
           }],
           "delegationStrategy": "ALWAYS"
         },
@@ -674,6 +711,18 @@
           "confirmationRequired": false,
           "prompts": {},
           "slots": [{
+            "name": "product",
+            "type": "Product",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.Product"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Product"
+            }]
+          }, {
             "name": "content",
             "type": "AMAZON.SearchQuery",
             "elicitationRequired": true,
@@ -688,7 +737,7 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.BugReport.ContactPermission"
+              "elicitation": "Elicit.Slot.Feedback.ContactPermission"
             }
           }],
           "delegationStrategy": "ALWAYS"
@@ -700,45 +749,18 @@
       "delegationStrategy": "ALWAYS"
     },
 
-    "prompts": [
-
-      {
-        "id": "Elicit.Slot.340514330560.1260777800361",
+    "prompts": [{
+        "id": "Elicit.Slot.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Do you want to give feedback, check for replies or configure your skill?"
-        }]
-      },
-
-      {
-        "id": "Elicit.Slot.Select.Product",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Okay, do you want to give feedback regarding your Amazon Echo Dot, Amazon Fire TV Stick, Philips Hue Light or Xiaomi Mi Band?"
+          "value": "Okay let's elicit the necessary information together. Please tell me the name of the Alexa compatible device you are referring to"
         }]
       },
       {
-        "id": "Slot.Validation.Select.Product",
+        "id": "Slot.Validation.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Sorry this product is not supported. I either understood the name wrong or the device is not supported. Can you please repeat the name."
-        }]
-      },
-
-
-
-      {
-        "id": "Elicit.Slot.448730650163.667451457424",
-        "variations": [{
-          "type": "PlainText",
-          "value": "What type of feedback did you give - do you think it is more about a new feature that you would like to have or about an error you encountered"
-        }]
-      },
-      {
-        "id": "Elicit.Slot.772638607118.926275580092",
-        "variations": [{
-          "type": "PlainText",
-          "value": "What device are we talking about?"
+          "value": "Sorry I dont know this device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
         }]
       },
 
@@ -786,13 +808,7 @@
           "value": "How critical would you rate your error on a scale from one to five. Five represents the most critical rating."
         }]
       },
-      {
-        "id": "Elicit.Slot.BugReport.ContactPermission",
-        "variations": [{
-          "type": "PlainText",
-          "value": "Do you allow the developers to contact you in case of further questions. If not your transcribed feedback would be sent anonymously. "
-        }]
-      },
+
 
 
 
@@ -905,10 +921,18 @@
 
 
       {
-        "id": "Elicit.Slot.1468393552778.1192548334628",
+        "id": "Elicit.Slot.Feedback.ContactPermission",
         "variations": [{
           "type": "PlainText",
-          "value": "Please tell my if you want to submit a bug report, a feautre request, a question or criticism. If you are not sure you just select general feedback."
+          "value": "Do you allow the developers to contact you in case of further questions. If not your transcribed feedback would be sent anonymously. "
+        }]
+      },
+
+      {
+        "id": "Slot.Validation.Feedback.ContactPermission",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please answer with yes or no to make it clear."
         }]
       }
     ]

@@ -322,6 +322,24 @@
           ]
         },
         {
+          "name": "ReadReplies",
+          "slots": [{
+            "name": "product_with_reply",
+            "type": "ProductWithReply",
+            "samples": [
+              "{product_with_reply}",
+              "regarding {product_with_reply}",
+              "Regarding my {product_with_reply}",
+              "Regarding a {product_with_reply}",
+              "Regarding an {product_with_reply}"
+            ]
+          }],
+          "samples": [
+            "Regarding my {product_with_reply}",
+            "For my {product_with_reply}"
+          ]
+        },
+        {
           "name": "AMAZON.StartOverIntent",
           "samples": [
             "restart"
@@ -371,6 +389,49 @@
             "repeat this please",
             "repeat that please"
           ]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.MoreIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateSettingsIntent",
+          "samples": []
+        }, {
+          "name": "AMAZON.NextIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.PageUpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.PageDownIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.PreviousIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ScrollRightIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ScrollUpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ScrollDownIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ScrollLeftIntent",
+          "samples": []
         }
       ],
       "types": [{
@@ -448,13 +509,23 @@
         },
         {
           "values": [{
-            "id": "1",
+            "id": "999999",
             "name": {
-              "value": "Amazon Echo",
+              "value": "999999",
               "synonyms": []
             }
           }],
           "name": "Product"
+        },
+        {
+          "values": [{
+            "id": "999999",
+            "name": {
+              "value": "999999",
+              "synonyms": []
+            }
+          }],
+          "name": "ProductWithReply"
         }
       ]
     },
@@ -752,6 +823,25 @@
             }]
           }],
           "delegationStrategy": "ALWAYS"
+        },
+        {
+          "name": "ReadReplies",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [{
+            "name": "product_with_reply",
+            "type": "ProductWithReply",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Slot.ReadReplies.Product"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Product"
+            }]
+          }],
+          "delegationStrategy": "ALWAYS"
         }
 
 
@@ -987,7 +1077,18 @@
           "type": "PlainText",
           "value": "Please answer with yes or no to make it clear."
         }]
+      },
+
+
+
+      {
+        "id": "Elicit.Slot.ReadReplies.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Okay you have replies regarding 3 devices. Please tell me the name of the Alexa compatible device you are referring to"
+        }]
       }
+
     ]
   },
   "version": "29"

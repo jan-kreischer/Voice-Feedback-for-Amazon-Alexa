@@ -141,8 +141,20 @@
             ]
           }],
           "samples": [
+            "New feature",
+            "new use case",
             "Feature request",
-            "I want to submit a feature request"
+            "New functionality",
+            "Request new feature",
+            "Request a new feature",
+            "I require a new feature",
+            "Request new functionality",
+            "I request new functionality",
+            "I require new functionality",
+            "I want to request a new feature",
+            "I want to propose a new feature",
+            "I want to submit a feature request",
+            "I want to request new functionality"
           ]
         },
 
@@ -184,8 +196,21 @@
             ]
           }],
           "samples": [
+            "request",
+            "inquiry",
             "question",
-            "I want to submit a question"
+            "ask question",
+            "submit question",
+            "I want to ask question",
+            "I want to ask a question",
+            "I want to submit a question",
+            "I would like to ask question",
+            "I would like to ask a question",
+            "I have a question about my {product}",
+            "I have a question regarding my {product}",
+            "I want to ask a question about my {product}",
+            "I want to ask a question about regarding {product}"
+
           ]
         },
 
@@ -276,7 +301,10 @@
             ]
           }],
           "samples": [
+            "feedback",
+            "I have feedback",
             "general feedback",
+            "I have general feedback",
             "I want to submit general feedback"
           ]
         },
@@ -284,8 +312,13 @@
           "name": "CheckReplies",
           "slots": [],
           "samples": [
+            "check replies",
+            "Are there new replies",
+            "I want to hear the replies",
             "I want to check for replies",
-            "check replies"
+            "Did someone reply to my feedback",
+            "Tell me the answers to my feedback",
+            "I want to hear the answers to my feedback"
           ]
         },
         {
@@ -415,50 +448,12 @@
         },
         {
           "values": [{
-              "id": "1",
-              "name": {
-                "value": "Amazon Echo Dot",
-                "synonyms": [
-                  "Echo Dot"
-                ]
-              }
-            },
-            {
-              "id": "2",
-              "name": {
-                "value": "Amazon Fire TV Stick",
-                "synonyms": [
-                  "Amazon TV Stick",
-                  "Amazon Fire TV",
-                  "Fire TV",
-                  "Fire TV Stick"
-                ]
-              }
-            },
-            {
-              "id": "3",
-              "name": {
-                "value": "Philips Hue Light",
-                "synonyms": [
-                  "Hue Light",
-                  "Hue",
-                  "Philips Hue"
-                ]
-              }
-            },
-            {
-              "id": "4",
-              "name": {
-                "value": "Xiaomi Mi Band",
-                "synonyms": [
-                  "Mi Band"
-                ]
-              }
+            "id": "1",
+            "name": {
+              "value": "Amazon Echo",
+              "synonyms": []
             }
-
-
-
-          ],
+          }],
           "name": "Product"
         }
       ]
@@ -516,7 +511,11 @@
               "confirmationRequired": false,
               "prompts": {
                 "elicitation": "Elicit.Slot.BugReport.Criticality"
-              }
+              },
+              "validations": [{
+                "type": "hasEntityResolutionMatch",
+                "prompt": "Slot.Validation.BugReport.Criticality"
+              }]
             },
             {
               "name": "contact_permission",
@@ -635,8 +634,12 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.Criticism.LikertScale"
-            }
+              "elicitation": "Elicit.Slot.Criticism.StarRating"
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Criticism.StarRating"
+            }]
           }, {
             "name": "contact_permission",
             "type": "BinaryAnswer",
@@ -665,7 +668,7 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.Product"
+              "elicitation": "Elicit.Slot.Question.Product"
             },
             "validations": [{
               "type": "hasEntityResolutionMatch",
@@ -687,7 +690,11 @@
             "confirmationRequired": false,
             "prompts": {
               "elicitation": "Elicit.Slot.Question.Importance"
-            }
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Question.Importance"
+            }]
           }, {
             "name": "contact_permission",
             "type": "BinaryAnswer",
@@ -716,7 +723,7 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.Product"
+              "elicitation": "Elicit.Slot.GeneralFeedback.Product"
             },
             "validations": [{
               "type": "hasEntityResolutionMatch",
@@ -738,7 +745,11 @@
             "confirmationRequired": false,
             "prompts": {
               "elicitation": "Elicit.Slot.Feedback.ContactPermission"
-            }
+            },
+            "validations": [{
+              "type": "hasEntityResolutionMatch",
+              "prompt": "Slot.Validation.Feedback.ContactPermission"
+            }]
           }],
           "delegationStrategy": "ALWAYS"
         }
@@ -808,7 +819,13 @@
           "value": "How critical would you rate your error on a scale from one to five. Five represents the most critical rating."
         }]
       },
-
+      {
+        "id": "Slot.Validation.BugReport.Criticality",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please rate by saying either one, two, three, four or five."
+        }]
+      },
 
 
 
@@ -851,29 +868,52 @@
 
 
       {
-        "id": "Elicit.Slot.Question.Content",
+        "id": "Elicit.Slot.Question.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Okay, I am listening. Please tell me your question."
+          "value": "So you want to ask a question. I am the right person to ask. Please tell me the name of the Alexa compatible device you have a question about."
         }]
       },
       {
-        "id": "Elicit.Slot.Question.Importance",
+        "id": "Elicit.Slot.Question.Content",
         "variations": [{
           "type": "PlainText",
-          "value": "Can you please rate on a scale from one to five, how important the question is to you. One means not very important and five means very important."
+          "value": "You have a question regarding your {product}. You can now tell me your question."
+        }, {
+          "type": "PlainText",
+          "value": "What is your question about your {product}?"
         }]
       },
       {
         "id": "Confirm.Slot.Question.Content",
         "variations": [{
           "type": "PlainText",
-          "value": "Did i get you right that your question is quote '{content}'"
+          "value": "Did I understand correctly that your question is '{content}'"
+        }]
+      },
+      {
+        "id": "Elicit.Slot.Question.Importance",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please rate on a scale from one to five, how important the question is to you. One means not very important and five means very important."
+        }]
+      },
+      {
+        "id": "Slot.Validation.Question.Importance",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please tell me how important your question is to you, on a scale from one to five. One means not very important and five means very important. Choose either one, two, three four or five."
         }]
       },
 
 
-
+      {
+        "id": "Elicit.Slot.Criticsm.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "So you want to ask a question. I am the right person to ask. Please tell me the name of the Alexa compatible device you have a question about."
+        }]
+      },
       {
         "id": "Elicit.Slot.Criticism.Content",
         "variations": [{
@@ -889,15 +929,28 @@
         }]
       },
       {
-        "id": "Elicit.Slot.Criticism.LikertScale",
+        "id": "Elicit.Slot.Criticism.StarRating",
         "variations": [{
           "type": "PlainText",
           "value": "On a scale from one to five"
         }]
       },
+      {
+        "id": "Slot.Validation.Criticism.StarRating",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Please rate how satisfied you are overall with the product on a scale from one to five. Say either one, two, three, four or five."
+        }]
+      },
 
 
-
+      {
+        "id": "Elicit.Slot.GeneralFeedback.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Your opinion is very important to us. Please tell me the name of the Alexa compatible device you have a question about."
+        }]
+      },
       {
         "id": "Elicit.Slot.GeneralFeedback.Content",
         "variations": [{

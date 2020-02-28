@@ -60,6 +60,43 @@ function getInformationFromAlexaApi(path, apiAccessToken) {
   });
 }
 
+function getProducts() {
+  let options = {
+    method: 'GET',
+
+    protocol: 'https:',
+    hostname: 'api.myfeedbackbot.com',
+    port: 443,
+    path: '/alexa/products',
+
+    headers: {
+      'Accept': 'application/json',
+    }
+  };
+
+  return new Promise((resolve, reject) => {
+    https.get(options, (response) => {
+      let chunks_of_data = [];
+
+      response.on('data', (fragments) => {
+        chunks_of_data.push(fragments);
+      });
+
+      response.on('end', () => {
+        let response_body = Buffer.concat(chunks_of_data);
+
+        // promise resolved on success
+        resolve(response_body.toString());
+      });
+
+      response.on('error', (error) => {
+        // promise rejected on error
+        reject(error);
+      });
+    });
+  });
+}
+
 /**
  * 
  */
@@ -115,7 +152,7 @@ function postFeedbacker(feedbacker) {
  */
 function postFeedback(feedback) {
   const data = JSON.stringify(feedback);
-  console.log(data);
+  console.log("DATA: " + data);
 
   const options = {
     hostname: hostUrl,
@@ -197,25 +234,26 @@ const LaunchRequest = {
     const requestAttributes = attributesManager.getRequestAttributes();
     var sessionAttributes = {};
 
-    const speechOutput = requestAttributes.t('SELECT_ACTION_STATE_ENTER');
-    sessionAttributes.botState = 'SELECT_ACTION_STATE';
-
-    const apiAccessToken = handlerInput.requestEnvelope.context.System.apiAccessToken;
-    var feedbacker_telephone_number = await getFeedbackerTelephoneNumber(apiAccessToken).then((response) => {
-      console.log("Feedbacker telephone number: " + response);
-      return response;
+    const speechOutput = requestAttributes.t('LAUNCH_MESSAGE');
+    //sessionAttributes.botState = 'SELECT_ACTION_STATE';
+    var products = await getProducts().then((response) => {
+      return JSON.parse(response);
     }).catch((error) => {
       console.log(error);
     });
-    console.log("Feedbacker telephone number: " + feedbacker_telephone_number);
+
+    const dynamicEntities = {
+      type: "Dialog.UpdateDynamicEntities",
+      updateBehavior: "REPLACE",
+      types: [{
+        "name": "Product",
+        "values": products
+      }]
+    };
+
     saveSessionAttributes(attributesManager, initialSessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
-      /*.addDelegateDirective({
-        name: 'SelectDevice',
-        confirmationStatus: 'NONE',
-        slots: {}
-      })*/
       .speak(speechOutput)
       .withAskForPermissionsConsentCard([
         "alexa::profile:name:read",
@@ -223,6 +261,7 @@ const LaunchRequest = {
         "alexa::profile:mobile_number:read"
       ])
       .reprompt(speechOutput)
+      .addDirective(dynamicEntities)
       .getResponse();
   },
 };
@@ -249,35 +288,50 @@ const FeedbackHandler = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
+    /*const product_name = Alexa.getSlotValue(handlerInput.requestEnvelope, 'product');
+    let product_id;
+    if (product_name != null) {
+      if (handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values != null) {
+        product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+      }
+      else if (handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[1].values != null) {
+        product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[1].values[0].value.id);
+      }
+      else {
+        product_id = 1;
+      }
+    }*/
     let feedback_contact_permission = parseInt(handlerInput.requestEnvelope.request.intent.slots.contact_permission.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     var feedbacker_id = 1;
+
     if (feedback_contact_permission == 1) {
       const apiAccessToken = handlerInput.requestEnvelope.context.System.apiAccessToken;
 
-      let feedbacker_name = await getFeedbackerName(apiAccessToken).then((response) => {
+      const feedbacker_name = await getFeedbackerName(apiAccessToken).then((response) => {
         console.log("feedbacker_name:" + response);
         return response;
       }).catch((error) => {
         console.log(error);
       });
 
-      var feedbacker_email_address = await getFeedbackerEmailAddress(apiAccessToken).then((response) => {
+      const feedbacker_email_address = await getFeedbackerEmailAddress(apiAccessToken).then((response) => {
         console.log("feedbacker_email_address:" + response);
         return response;
       }).catch((error) => {
         console.log(error);
       });
 
-      var feedbacker_telephone_number = await getFeedbackerTelephoneNumber(apiAccessToken).then((response) => {
+      const feedbacker_telephone_number = await getFeedbackerTelephoneNumber(apiAccessToken).then((response) => {
         console.log("feedbacker_telephone_number:" + response);
         return response;
       }).catch((error) => {
         console.log(error);
       });
 
-      let feedbacker = {
+      const feedbacker = {
         feedbacker_name: feedbacker_name,
-        feedbacker_email_address: feedbacker_email_address
+        feedbacker_email_address: feedbacker_email_address,
+        feedbacker_telephone_number: feedbacker_telephone_number
       };
 
       feedbacker_id = await postFeedbacker(feedbacker).then((response) => {
@@ -288,11 +342,23 @@ const FeedbackHandler = {
         console.log(error);
       });
     }
-    console.log("Feedbacker id:" + feedbacker_id);
 
-    const intent = Alexa.getIntentName(handlerInput.requestEnvelope);
-    const product_name = handlerInput.requestEnvelope.request.intent.slots.product.value;
-    const product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+
+
+    const product_name = Alexa.getSlotValue(handlerInput.requestEnvelope, 'product');
+    let product_id;
+    if (product_name != null) {
+      if (handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values != null) {
+        product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+      }
+      else if (handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[1].values != null) {
+        product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[1].values[0].value.id);
+      }
+      else {
+        product_id = 1;
+      }
+    }
+
     const feedback_content = Alexa.getSlotValue(handlerInput.requestEnvelope, 'content');
     const feedback_context = Alexa.getSlotValue(handlerInput.requestEnvelope, 'context');
     const feedback_steps_to_reproduce = Alexa.getSlotValue(handlerInput.requestEnvelope, 'steps_to_reproduce');
@@ -302,10 +368,28 @@ const FeedbackHandler = {
     const feedback_importance = Alexa.getSlotValue(handlerInput.requestEnvelope, 'importance');
     const feedback_star_rating = Alexa.getSlotValue(handlerInput.requestEnvelope, 'star_rating');
 
-    console.log("Product_id: " + product_id);
+    const allElements = {
+      product_id: product_id,
+      product_name: product_name,
+
+      feedbacker_id: feedbacker_id,
+
+      feedback_content: feedback_content,
+      feedback_context: feedback_context,
+      feedback_steps_to_reproduce: feedback_steps_to_reproduce,
+      feedback_criticality: feedback_criticality,
+      feedback_problem: feedback_problem,
+      feedback_solution: feedback_solution,
+      feedback_importance: feedback_importance,
+      feedback_star_rating: feedback_star_rating
+    }
+    
     let speechOutput = requestAttributes.t('FEEDBACK_SUBMIT_MESSAGE');
 
-    var feedback;
+    var feedback = {"empty": "help"};
+    
+    const intent = Alexa.getIntentName(handlerInput.requestEnvelope);
+    console.log(intent);
     switch (intent) {
       case 'SubmitBugReport':
         feedback = {
@@ -360,7 +444,7 @@ const FeedbackHandler = {
         speechOutput = requestAttributes.t('SUBMIT_CRITICISM_MESSAGE');
         break;
 
-      case 'GeneralFeedback':
+      case 'SubmitGeneralFeedback':
         feedback = {
           feedback_type_id: 5,
           feedbacker_id: feedbacker_id,
@@ -371,6 +455,7 @@ const FeedbackHandler = {
         speechOutput = requestAttributes.t('SUBMIT_GENERAL_FEEDBACK_MESSAGE');
         break;
     }
+    console.log("Feedback: " + feedback);
     await postFeedback(feedback).then((response) => {
       console.log(response);
     });
@@ -388,25 +473,12 @@ const CheckRepliesHandler = {
   canHandle(handlerInput) {
     console.log("CheckRepliesHandler > Tested");
 
-    let stateCanHandleIntent = false;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (sessionAttributes.botState) {
-      switch (sessionAttributes.botState) {
-        case 'SELECT_DEVICE_STATE':
-          stateCanHandleIntent = true;
-          break;
-      }
-    }
-
     return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'SelectDevice';
-
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'CheckReplies';
   },
 
   handle(handlerInput) {
-    console.log("SelectDeviceHandler > Used");
+    console.log("CheckRepliesHandler > Used");
     console.log(handlerInput);
     console.log(handlerInput.requestEnvelope);
 
@@ -537,12 +609,15 @@ const RestartIntentHandler = {
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
 
-    var speechOutput = requestAttributes.t('RESTART_MESSAGE') + requestAttributes.t('SELECT_ACTION_STATE_ENTER');
+    let speechOutput = requestAttributes.t('RESTART_MESSAGE');
+    let repromptText = requestAttributes.t('LAUNCH_MESSAGE');
+
     saveSessionAttributes(attributesManager, initialSessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .withShouldEndSession(false)
+      .reprompt()
       .getResponse();
   },
 };
@@ -698,7 +773,6 @@ exports.handler = skillBuilder
   .withPersistenceAdapter(getPersistenceAdapter())
   .addRequestHandlers(
     LaunchRequest,
-    //SelectDeviceHandler,
     FeedbackHandler,
     CheckRepliesHandler,
 

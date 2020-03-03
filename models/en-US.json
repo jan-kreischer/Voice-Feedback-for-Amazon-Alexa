@@ -64,6 +64,11 @@
             "Deficiency",
             "Glitch",
 
+            "report error",
+            "report an error",
+            "I want to report an error",
+            "I would like to report an error",
+
             "to report a bug",
             "to submit a bug report",
             "to report an error",
@@ -154,6 +159,7 @@
             "Request a new feature",
             "I require a new feature",
             "Request new functionality",
+            "Suggest new functionality",
             "I request new functionality",
             "I require new functionality",
             "I want to request a new feature",
@@ -264,9 +270,12 @@
             "Appreciation",
             "I have a praise",
             "I have critique",
+            "Share Criticism",
             "I want to comment on that",
             "I am unhappy with a device",
             "I want to submit criticism",
+            "I want to share my criticism",
+            "I want to submit my criticism",
             "I want to submit an appraisal",
             "I would like to leave a comment",
             "I would like to express my opinion",
@@ -304,9 +313,11 @@
             "Feedback",
             "I have feedback",
             "General feedback",
+            "Give General Feedback",
             "I want to give feedback",
             "I have general feedback",
             "I want to submit feedback",
+            "I want to give general feedback",
             "I want to submit general feedback"
           ]
         },
@@ -338,6 +349,7 @@
           }],
           "samples": [
             "{product_with_reply}",
+            "For {product_with_reply}",
             "For my {product_with_reply}",
             "Regarding my {product_with_reply}"
           ]
@@ -536,7 +548,9 @@
       "intents": [{
           "name": "SubmitBugReport",
           "confirmationRequired": false,
-          "prompts": {},
+          "prompts": {
+            "confirmation": "Confirm.Intent.BugReport"
+          },
           "slots": [{
               "name": "product",
               "type": "Product",
@@ -613,7 +627,9 @@
         {
           "name": "SubmitFeatureRequest",
           "confirmationRequired": false,
-          "prompts": {},
+          "prompts": {
+            "confirmation": "Confirm.Intent.FeatureRequest"
+          },
           "slots": [{
             "name": "product",
             "type": "Product",
@@ -680,7 +696,9 @@
         {
           "name": "SubmitCriticism",
           "confirmationRequired": false,
-          "prompts": {},
+          "prompts": {
+            "confirmation": "Confirm.Intent.Criticism"
+          },
           "slots": [{
             "name": "product",
             "type": "Product",
@@ -735,7 +753,9 @@
         {
           "name": "SubmitQuestion",
           "confirmationRequired": false,
-          "prompts": {},
+          "prompts": {
+            "confirmation": "Confirm.Intent.Question"
+          },
           "slots": [{
             "name": "product",
             "type": "Product",
@@ -790,7 +810,9 @@
         {
           "name": "SubmitGeneralFeedback",
           "confirmationRequired": false,
-          "prompts": {},
+          "prompts": {
+            "confirmation": "Confirm.Intent.GeneralFeedback"
+          },
           "slots": [{
             "name": "product",
             "type": "Product",
@@ -854,6 +876,12 @@
     },
 
     "prompts": [{
+        "id": "Confirm.Intent.BugReport",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did I understand correctly that you want to report an error?"
+        }]
+      }, {
         "id": "Elicit.Slot.BugReport.Product",
         "variations": [{
           "type": "PlainText",
@@ -918,18 +946,25 @@
       },
 
 
+
       {
+        "id": "Confirm.Intent.FeatureRequest",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did I understand correctly that you want to suggest new functionality?"
+        }]
+      }, {
         "id": "Elicit.Slot.FeatureRequest.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "So you want to ask a question. I am the right person to ask. Please tell me the name of the Alexa compatible device you have a question about."
+          "value": "Please tell me the name of the Alexa compatible device for which you would like to propose new functionality."
         }]
       },
       {
         "id": "Slot.Validation.FeatureRequest.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Sorry I dont know {product} device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
+          "value": "Sorry I dont know {product}. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
         }]
       },
       {
@@ -971,6 +1006,12 @@
 
 
       {
+        "id": "Confirm.Intent.Question",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did I understand correctly that you want to ask a question?"
+        }]
+      }, {
         "id": "Elicit.Slot.Question.Product",
         "variations": [{
           "type": "PlainText",
@@ -981,7 +1022,7 @@
         "id": "Slot.Validation.Question.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Sorry I dont know {product} device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
+          "value": "Sorry I dont know {product}. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
         }]
       },
       {
@@ -1019,17 +1060,23 @@
 
 
       {
+        "id": "Confirm.Intent.Criticism",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did I understand correctly that you want to share your criticism?"
+        }]
+      }, {
         "id": "Elicit.Slot.Criticism.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "So you want to ask a question. I am the right person to ask. Please tell me the name of the Alexa compatible device you have a question about."
+          "value": "So you want to share your opinion with us. I hope that it is positive, but I can also deal with criticism..Please tell me the name of the Alexa compatible device you want to talk about."
         }]
       },
       {
         "id": "Slot.Validation.Criticism.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Sorry I dont know {product} device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
+          "value": "Sorry I dont know {product}. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
         }]
       },
       {
@@ -1071,6 +1118,12 @@
 
 
       {
+        "id": "Confirm.Intent.GeneralFeedback",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Did I understand correctly that you want to give general feedback?"
+        }]
+      }, {
         "id": "Elicit.Slot.GeneralFeedback.Product",
         "variations": [{
           "type": "PlainText",
@@ -1081,7 +1134,7 @@
         "id": "Slot.Validation.GeneralFeedback.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Sorry I dont know {product} device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
+          "value": "Sorry I dont know {product}. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
         }]
       },
       {

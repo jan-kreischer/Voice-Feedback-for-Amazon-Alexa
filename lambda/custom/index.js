@@ -10,6 +10,12 @@ const languageStrings = {
 };
 const hostUrl = 'api.myfeedbackbot.com';
 
+const ListOfActions = require('./cards/list-of-actions.json');
+const ListOfProducts = require('./cards/list-of-products.json');
+
+const ACTION_LIST_TOKEN = 'actionlistToken';
+const PRODUCT_LIST_TOKEN = 'productlistToken';
+
 function getFeedbackerName(apiAccessToken) {
   return getInformationFromAlexaApi("/v2/accounts/~current/settings/Profile.name", apiAccessToken);
 }
@@ -77,22 +83,24 @@ function getProducts() {
   return new Promise((resolve, reject) => {
     https.get(options, (response) => {
       let chunks_of_data = [];
+      if (response.statusCode == 200) {
 
-      response.on('data', (fragments) => {
-        chunks_of_data.push(fragments);
-      });
+        response.on('data', (fragments) => {
+          chunks_of_data.push(fragments);
+        });
 
-      response.on('end', () => {
-        let response_body = Buffer.concat(chunks_of_data);
+        response.on('end', () => {
+          let response_body = Buffer.concat(chunks_of_data);
+          resolve(response_body.toString());
+        });
 
-        // promise resolved on success
-        resolve(response_body.toString());
-      });
-
-      response.on('error', (error) => {
-        // promise rejected on error
-        reject(error);
-      });
+        response.on('error', (error) => {
+          reject(error);
+        });
+      }
+      else {
+        reject(response);
+      }
     });
   });
 }
@@ -373,6 +381,9 @@ var initialSessionAttributes = {
 
 //========== CUSTOM INTENT HANDLER ==========
 
+/**
+ * 
+ */
 const LaunchRequest = {
   canHandle(handlerInput) {
     console.log("LaunchRequest > Tested");
@@ -384,6 +395,7 @@ const LaunchRequest = {
     console.log("LaunchRequest > Used");
     console.log(handlerInput);
     console.log(handlerInput.requestEnvelope);
+    let responseBuilder = handlerInput.responseBuilder;
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
@@ -393,24 +405,21 @@ const LaunchRequest = {
     const speechOutput = requestAttributes.t('LAUNCH_MESSAGE');
 
     const feedbacker_name = await getFeedbackerName(apiAccessToken).then((response) => {
-      console.log("feedbacker_name:" + response);
       return response;
     }).catch((error) => {
-      console.log(error);
+      console.log("ERROR @ getFeedbackerName:" + error);
     });
 
     const feedbacker_email_address = await getFeedbackerEmailAddress(apiAccessToken).then((response) => {
-      console.log("feedbacker_email_address:" + response);
       return response;
     }).catch((error) => {
-      console.log(error);
+      console.log("ERROR @ getFeedbackerEmailAddress:" + error);
     });
 
     const feedbacker_telephone_number = await getFeedbackerTelephoneNumber(apiAccessToken).then((response) => {
-      console.log("feedbacker_telephone_number:" + response);
       return response;
     }).catch((error) => {
-      console.log(error);
+      console.log("ERROR @ getFeedbackerTelephoneNumber:" + error);
     });
 
     const feedbacker = {
@@ -424,13 +433,15 @@ const LaunchRequest = {
       let feedbacker = JSON.parse(response);
       return feedbacker[0].feedbacker_id;
     }).catch((error) => {
-      console.log(error);
+      console.log("ERROR @ getFeedbackerId:" + error);
     });
 
     const products = await getProducts().then((response) => {
       return JSON.parse(response);
     }).catch((error) => {
-      console.log(error);
+      speechOutput = "Hey, I am your feedback bot. Sadly, I could not reach the feedback server. Please wait until it is reachable again.";
+      console.log("ERROR @ getProducts:" + error);
+      return [];
     });
 
     const dynamicEntities = {
@@ -442,19 +453,25 @@ const LaunchRequest = {
       }]
     };
 
+    if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
+      console.log("My device supports APL");
+      responseBuilder.addDirective({
+        type: 'Alexa.Presentation.APL.RenderDocument',
+        token: PRODUCT_LIST_TOKEN,
+        document: ListOfProducts
+      });
+    }
+
     initialSessionAttributes.feedbacker_id = feedbacker_id;
+    initialSessionAttributes.feedbacker = feedbacker;
+
     saveSessionAttributes(attributesManager, initialSessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .withSimpleCard(
         `What would you like to do?`,
-        `Report Error \n
-         Suggest new Functionality \n
-         Ask Question \n
-         Submit Criticism \n
-         Give General Feedback \n
-         Check Replies to given Feedback`
+        `\r\n- Report Error \r\n- Suggest new Functionality \r\n- Ask Question \r\n- Share Criticism \r\n- Give General Feedback \r\n- Check Replies to given Feedback`
       )
       /*.withAskForPermissionsConsentCard([
         "alexa::profile:name:read",
@@ -467,6 +484,9 @@ const LaunchRequest = {
   },
 };
 
+/**
+ * 
+ */
 const FeedbackHandler = {
 
   canHandle(handlerInput) {
@@ -537,7 +557,7 @@ const FeedbackHandler = {
 
     let speechOutput = requestAttributes.t('FEEDBACK_SUBMIT_MESSAGE');
 
-    var feedback = { "empty": "help" };
+    var feedback = {};
 
     const intent = Alexa.getIntentName(handlerInput.requestEnvelope);
     console.log(intent);
@@ -621,7 +641,7 @@ const FeedbackHandler = {
           product_id: product_id,
           feedback_content: feedback_content,
         };
-        
+
         if (feedback_contact_permission) {
           speechOutput = requestAttributes.t('SUBMIT_GENERAL_FEEDBACK');
         }
@@ -657,20 +677,14 @@ const CheckRepliesHandler = {
     console.log(handlerInput);
     console.log(handlerInput.requestEnvelope);
 
+
     const { attributesManager } = handlerInput;
+    let responseBuilder = handlerInput.responseBuilder;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    let replies = await getReplies(sessionAttributes.feedbacker_id).then((response) => {
+    const replies = await getReplies(sessionAttributes.feedbacker_id).then((response) => {
       console.log("Replies Response: " + response);
-      return JSON.parse(response);
-    }).catch((error) => {
-      console.log(error);
-    });
-
-
-    let feedbacker_id = sessionAttributes.feedbacker_id;
-    const products_with_answered_feedback = await getProductsWithAnsweredFeedback(feedbacker_id).then((response) => {
       if (response != []) {
         return JSON.parse(response);
       }
@@ -679,49 +693,98 @@ const CheckRepliesHandler = {
       }
     }).catch((error) => {
       console.log(error);
+      return [];
     });
 
-    const dynamicEntities = {
-      type: "Dialog.UpdateDynamicEntities",
-      updateBehavior: "REPLACE",
-      types: [{
-        "name": "ProductWithReply",
-        "values": products_with_answered_feedback
-      }]
-    };
-
-    let products_with_replies = replies.map(e => e.company_name + ' ' + e.product_name).join(', ');
-    let products_with_new_replies = replies.map(e => e.company_name + ' ' + e.product_name).join('\n');
-
     let speechOutput;
-    let card;
-    let next_intent_name;
+    let card_header;
+    let card_content;
 
-    let number_of_replies = replies.length;
-    if (number_of_replies > 0) {
-      next_intent_name = 'ReadReplies';
-      speechOutput = `Okay you have ${replies.length} new replies regarding feedback for ${products_with_replies}. What device do you want to select.`;
-      //card = new SimpleCard("heading", "body");
+    if (typeof replies !== 'undefined' && replies.length != 0) {
+
+      let feedbacker_id = sessionAttributes.feedbacker_id;
+      /*const products_with_answered_feedback = await getProductsWithAnsweredFeedback(feedbacker_id).then((response) => {
+        console.log("Products with answered feedback: " + response);
+        if (response != []) {
+          return JSON.parse(response);
+        }
+        else {
+          return [];
+        }
+      }).catch((error) => {
+        console.log(error);
+      });*/
+      var string_of_products = replies.map(e => e.company_name + ' ' + e.product_name).join(', ');
+      var list_of_products = replies.map(e => e.company_name + ' ' + e.product_name).join(' \r\n ');
+      var json_products = [];
+
+      replies.forEach(function(product) {
+        let product_id = product.product_id;
+        let product_name = product.company_name + ' ' + product.product_name;
+        let product_synonym = product.product_name;
+        
+        let json_product = {
+          "id": product_id,
+          "name": {
+            "value": product_name,
+            "synonyms": [product_synonym]
+          }
+        };
+        json_products.push(json_product);
+      });
+      console.log("JSON PRODUCTS: " + json_products);
+      console.log("STRING OF PRODUCTS: " + string_of_products);
+      console.log("LIST OF PRODUCTS: " + list_of_products);
+
+      const dynamicEntities = {
+        type: "Dialog.UpdateDynamicEntities",
+        updateBehavior: "REPLACE",
+        types: [{
+          "name": "ProductWithReply",
+          "values": json_products
+        }]
+      };
+
+      let products_with_replies = replies.map(e => e.company_name + ' ' + e.product_name).join(', ');
+      let products_with_new_replies = replies.map(e => e.company_name + ' ' + e.product_name).join('\n');
+
+      var next_intent_name;
+
+      let number_of_replies = replies.length;
+      console.log(number_of_replies);
+
+      if (number_of_replies > 0) {
+        next_intent_name = 'ReadReplies';
+        speechOutput = `Okay you have ${replies.length} new replies regarding feedback for ${products_with_replies}. What device do you want to select.`;
+        //card = new SimpleCard("heading", "body");
+      }
+      else {
+        next_intent_name = 'LaunchRequest';
+        speechOutput = `You have no replies`;
+      }
+      console.log("Next intent name" + next_intent_name);
+
+      sessionAttributes.botState = 'CHECK_REPLIES_STATE';
+      saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
     }
     else {
-      next_intent_name = 'LaunchRequest';
-      speechOutput = `You have no replies`;
+      speechOutput = "Sorry, you don't have any new replies";
+      card_header = "Check Replies"
+      card_content = "Sorry, you don't have any new replies";
     }
-
-    sessionAttributes.botState = 'CHECK_REPLIES_STATE';
-    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .withSimpleCard(
-        `Select a product`,
-        `${products_with_new_replies}`)
-      .addDirective(dynamicEntities)
+        card_header,
+        card_content
+      )
+      /*.addDirective(dynamicEntities)
       .addDelegateDirective({
         name: 'ReadReplies',
         confirmationStatus: 'NONE',
         slots: {}
-      })
+      })*/
       .reprompt(speechOutput)
       .getResponse();
   },

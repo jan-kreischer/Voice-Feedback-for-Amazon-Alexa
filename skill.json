@@ -72,12 +72,12 @@
       "locales": {
         "en-US": {
           "name": "My Feedback Bot",
-          "summary": "I will help you to give feedback regarding your smart home devices. Reporting errors and requesting new functionality will become easy and intuitive.",
-          "description": "Sample Full Description",
+          "summary": "Your Feedback Bot enables you to give feedback regarding your favorite smart home devices. Giving feedback will become easy and intuitive.",
+          "description": "Your Feedback Bot helps you to give feedback regarding your favorite smart home devices. Giving feedback will become as easy and intuitive as talking to a friend.",
           "examplePhrases": [
-            "Alexa, open my feedback bot",
-            "Alexa, tell my feedback bot that I want to give feedback",
-            "Alexa, tell my feedback bot that I want to report an error"
+            "Alexa, open My Feedback Bot",
+            "Alexa, tell My Feedback Bot that I want to give feedback",
+            "Alexa, tell My Feedback Bot that I want to report an error"
           ],
           "keywords": []
         }

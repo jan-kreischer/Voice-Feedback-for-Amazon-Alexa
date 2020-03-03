@@ -9,10 +9,15 @@
               "type": "Product",
               "samples": [
                 "{product}",
-                "regarding {product}",
-                "Regarding my {product}",
+                "About {product}",
+                "About a {product}",
+                "About my {product}",
+                "Regarding {product}",
                 "Regarding a {product}",
-                "Regarding an {product}"
+                "Regarding my {product}",
+                "Regarding an {product}",
+                "We are talking about {product}",
+                "We are talking about my {product}"
               ]
             }, {
               "name": "content",
@@ -210,7 +215,6 @@
             "I have a question regarding my {product}",
             "I want to ask a question about my {product}",
             "I want to ask a question about regarding {product}"
-
           ]
         },
 
@@ -249,29 +253,25 @@
             ]
           }],
           "samples": [
-            "criticism",
+            "Notice",
             "Praise",
-            "Critique",
             "Opinion",
+            "Critique",
+            "Criticism",
             "Appraisal",
-            "Appreciation",
+            "Evaluation",
             "Commentary",
-            "evaluation",
-            "examination",
-            "notice",
-            "I want to submit criticism",
+            "Appreciation",
             "I have a praise",
             "I have critique",
-            "I would like to express my opinion",
-            "I want to submit an appraisal",
-            "I would like to express appreciation",
-
             "I want to comment on that",
+            "I am unhappy with a device",
+            "I want to submit criticism",
+            "I want to submit an appraisal",
             "I would like to leave a comment",
-
-            "evaluation",
-            "examination",
-            "notice"
+            "I would like to express my opinion",
+            "I am unhappy with one of me devices",
+            "I would like to express appreciation"
           ]
         },
         {
@@ -301,10 +301,12 @@
             ]
           }],
           "samples": [
-            "feedback",
+            "Feedback",
             "I have feedback",
-            "general feedback",
+            "General feedback",
+            "I want to give feedback",
             "I have general feedback",
+            "I want to submit feedback",
             "I want to submit general feedback"
           ]
         },
@@ -335,8 +337,9 @@
             ]
           }],
           "samples": [
-            "Regarding my {product_with_reply}",
-            "For my {product_with_reply}"
+            "{product_with_reply}",
+            "For my {product_with_reply}",
+            "Regarding my {product_with_reply}"
           ]
         },
         {
@@ -540,11 +543,11 @@
               "elicitationRequired": true,
               "confirmationRequired": false,
               "prompts": {
-                "elicitation": "Elicit.Slot.Product"
+                "elicitation": "Elicit.Slot.BugReport.Product"
               },
               "validations": [{
                 "type": "hasEntityResolutionMatch",
-                "prompt": "Slot.Validation.Product"
+                "prompt": "Slot.Validation.BugReport.Product"
               }]
             }, {
               "name": "content",
@@ -617,11 +620,11 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.Product"
+              "elicitation": "Elicit.Slot.FeatureRequest.Product"
             },
             "validations": [{
               "type": "hasEntityResolutionMatch",
-              "prompt": "Slot.Validation.Product"
+              "prompt": "Slot.Validation.FeatureRequest.Product"
             }]
           }, {
             "name": "content",
@@ -684,11 +687,11 @@
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Slot.Product"
+              "elicitation": "Elicit.Slot.Criticism.Product"
             },
             "validations": [{
               "type": "hasEntityResolutionMatch",
-              "prompt": "Slot.Validation.Product"
+              "prompt": "Slot.Validation.Criticism.Product"
             }]
           }, {
             "name": "content",
@@ -743,7 +746,7 @@
             },
             "validations": [{
               "type": "hasEntityResolutionMatch",
-              "prompt": "Slot.Validation.Product"
+              "prompt": "Slot.Validation.Question.Product"
             }]
           }, {
             "name": "content",
@@ -798,7 +801,7 @@
             },
             "validations": [{
               "type": "hasEntityResolutionMatch",
-              "prompt": "Slot.Validation.Product"
+              "prompt": "Slot.Validation.GeneralFeedback.Product"
             }]
           }, {
             "name": "content",
@@ -838,7 +841,7 @@
             },
             "validations": [{
               "type": "hasEntityResolutionMatch",
-              "prompt": "Slot.Validation.Product"
+              "prompt": "Slot.Validation.ProductWithReply"
             }]
           }],
           "delegationStrategy": "ALWAYS"
@@ -851,27 +854,24 @@
     },
 
     "prompts": [{
-        "id": "Elicit.Slot.Product",
+        "id": "Elicit.Slot.BugReport.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Okay let's elicit the necessary information together. Please tell me the name of the Alexa compatible device you are referring to"
+          "value": "It is a pity to hear that you have an error with your device. We will make sure that this can be fixed. Please tell me which of your Alexa devices we are talking about."
         }]
       },
       {
-        "id": "Slot.Validation.Product",
+        "id": "Slot.Validation.BugReport.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Sorry I dont know this device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
+          "value": "You said you want to report an error regarding your {product}. Sadly, I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name one more time."
         }]
       },
-
-
-
       {
         "id": "Elicit.Slot.BugReport.Content",
         "variations": [{
           "type": "PlainText",
-          "value": "Please describe the error you encountered as precise as possible."
+          "value": "Please describe the error you encountered as precisely as possible."
         }]
       },
       {
@@ -918,7 +918,20 @@
       },
 
 
-
+      {
+        "id": "Elicit.Slot.FeatureRequest.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "So you want to ask a question. I am the right person to ask. Please tell me the name of the Alexa compatible device you have a question about."
+        }]
+      },
+      {
+        "id": "Slot.Validation.FeatureRequest.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Sorry I dont know {product} device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
+        }]
+      },
       {
         "id": "Elicit.Slot.FeatureRequest.Content",
         "variations": [{
@@ -965,6 +978,13 @@
         }]
       },
       {
+        "id": "Slot.Validation.Question.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Sorry I dont know {product} device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
+        }]
+      },
+      {
         "id": "Elicit.Slot.Question.Content",
         "variations": [{
           "type": "PlainText",
@@ -997,6 +1017,21 @@
       },
 
 
+
+      {
+        "id": "Elicit.Slot.Criticism.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "So you want to ask a question. I am the right person to ask. Please tell me the name of the Alexa compatible device you have a question about."
+        }]
+      },
+      {
+        "id": "Slot.Validation.Criticism.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Sorry I dont know {product} device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
+        }]
+      },
       {
         "id": "Elicit.Slot.Criticsm.Product",
         "variations": [{
@@ -1034,6 +1069,7 @@
       },
 
 
+
       {
         "id": "Elicit.Slot.GeneralFeedback.Product",
         "variations": [{
@@ -1042,10 +1078,21 @@
         }]
       },
       {
+        "id": "Slot.Validation.GeneralFeedback.Product",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Sorry I dont know {product} device. I either understood the name wrong or the device is not Alexa compatible. Can you please repeat the name."
+        }]
+      },
+      {
         "id": "Elicit.Slot.GeneralFeedback.Content",
         "variations": [{
             "type": "PlainText",
             "value": "I am waiting for your feedback"
+          },
+          {
+            "type": "PlainText",
+            "value": "What would you like to tell us about your Echo Dot?"
           },
           {
             "type": "PlainText",
@@ -1085,7 +1132,13 @@
         "id": "Elicit.Slot.ReadReplies.Product",
         "variations": [{
           "type": "PlainText",
-          "value": "Okay you have replies regarding 3 devices. Please tell me the name of the Alexa compatible device you are referring to"
+          "value": "Please tell me the name of the Alexa compatible device you are referring to."
+        }]
+      }, {
+        "id": "Slot.Validation.ProductWithReply",
+        "variations": [{
+          "type": "PlainText",
+          "value": "Sorry but there is no such product with a reply."
         }]
       }
 

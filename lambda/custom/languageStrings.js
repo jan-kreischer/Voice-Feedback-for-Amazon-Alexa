@@ -2,17 +2,21 @@ module.exports = {
   translation: {
     LAUNCH_MESSAGE: "Hey, I am your feedback bot. With me you can give feedback on your most popular smart devices. You can report errors, suggest new functionality, ask questions or share your criticism with me. I'll make sure that your feedback ends up in the right place. What would you like to do?",
 
+    SUBMIT_BUG_REPORT: 'Thank you very much for reporting your error. This helps to improve the service for you and for everyone. We will take a close look at your error and will contact you in case of questions.',
+    SUBMIT_ANONYMOUS_BUG_REPORT: 'Thank you very much for reporting your error. This helps to improve the service for you and for everyone. We will take a close look at your description and try to resolve it a fast as possible.',
 
-    SUBMIT_FEEDBACK: 'Thank you very much! Your feedback got submitted. We will process it as fast as possible and contact you then.',
-    SUBMIT_BUG_REPORT: 'Thank you very much for reporting the error. This helps to improve the service for you and for everyone.',
-    SUBMIT_FEATURE_REQUEST: 'Thank you very much for telling us your idea. ',
+    SUBMIT_FEATURE_REQUEST: 'Thank you very much for telling us your idea. We will look at your proposed functionality and maybe you will see it implemented in a future version.',
+    SUBMIT_ANONYMOUS_FEATURE_REQUEST: 'Thank you very much for telling us your idea. We will look at your proposed functionality and maybe you will see it implemented in a future version.',
+
     SUBMIT_QUESTION: 'Thank you very much, we received your question. We will reach out to you as soon as possible!',
     SUBMIT_ANONYMOUS_QUESTION: 'Thank you very much, we received your question.',
 
-    SUBMIT_CRITICISM_MESSAGE: 'Thank you very much!',
-    SUBMIT_GENERAL_FEEDBACK_MESSAGE: 'Thank you very much!',
-
-
+    SUBMIT_CRITICISM: 'Thank you very much!',
+    SUBMIT_ANONYMOUS_CRITICISM: 'Thank you very much!',
+    
+    SUBMIT_GENERAL_FEEDBACK: 'Thank you very much! Your feedback got submitted. We will process it as fast as possible and contact you then.',
+    SUBMIT_ANONYMOUS_GENERAL_FEEDBACK: 'Thank you very much! Your feedback got submitted. We will look at it closely.',
+    
     CHECK_REPLIES_STATE_ENTER: 'Okay, let me check. Alright, you have 3 new replies. One regarding your Xiaomi Mi Band, one regarding your Philips Hue Light and one regarding your Amazon Echo Dot. Which one do you want to hear?',
     CHECK_REPLIES_STATE_HELP: 'check replies state help',
 

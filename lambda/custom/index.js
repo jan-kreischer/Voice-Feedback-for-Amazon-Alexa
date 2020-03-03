@@ -97,6 +97,44 @@ function getProducts() {
   });
 }
 
+
+function getProductFeedbackReply(feedbacker_id, product_id) {
+  let options = {
+    method: 'GET',
+
+    protocol: 'https:',
+    hostname: 'api.myfeedbackbot.com',
+    port: 443,
+    path: `/feedbacker/${feedbacker_id}/product/${product_id}/replies`,
+
+    headers: {
+      'Accept': 'application/json',
+    }
+  };
+
+  return new Promise((resolve, reject) => {
+    https.get(options, (response) => {
+      let chunks_of_data = [];
+
+      response.on('data', (fragments) => {
+        chunks_of_data.push(fragments);
+      });
+
+      response.on('end', () => {
+        let response_body = Buffer.concat(chunks_of_data);
+
+        // promise resolved on success
+        resolve(response_body.toString());
+      });
+
+      response.on('error', (error) => {
+        // promise rejected on error
+        reject(error);
+      });
+    });
+  });
+}
+
 function getProductsWithAnsweredFeedback(feedbacker_id) {
   let options = {
     method: 'GET',
@@ -104,8 +142,8 @@ function getProductsWithAnsweredFeedback(feedbacker_id) {
     protocol: 'https:',
     hostname: 'api.myfeedbackbot.com',
     port: 443,
-    path: '/alexa/products/${feedbacker_id}/products',
-    
+    path: `/alexa/products/${feedbacker_id}/replied`,
+
     headers: {
       'Accept': 'application/json',
     }
@@ -141,7 +179,7 @@ function getReplies(feedbacker_id) {
     protocol: 'https:',
     hostname: 'api.myfeedbackbot.com',
     port: 443,
-    path: '/alexa/feedbacker/${feedbacker_id}/replies',
+    path: `/alexa/feedbacker/${feedbacker_id}/replies`,
 
     headers: {
       'Accept': 'application/json',
@@ -190,6 +228,48 @@ function postFeedbacker(feedbacker) {
       'Content-Length': data.length
     }
   };
+
+  return new Promise((resolve, reject) => {
+    var req = https.request(options, (response) => {
+      let chunks_of_data = [];
+
+      response.on('data', (fragments) => {
+        chunks_of_data.push(fragments);
+      });
+
+      response.on('end', () => {
+        let response_body = Buffer.concat(chunks_of_data);
+
+        // promise resolved on success
+        resolve(response_body.toString());
+      });
+
+      response.on('error', (error) => {
+        // promise rejected on error
+        reject(error);
+      });
+    });
+
+    req.on('error', error => {
+      console.error(error);
+    });
+
+    req.write(data)
+    req.end();
+  });
+}
+
+function acknowledgeReply(feedback_id) {
+  const options = {
+    hostname: hostUrl,
+    port: 443,
+    path: '/feedback',
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': data.length
+    }
+  }
 
   return new Promise((resolve, reject) => {
     var req = https.request(options, (response) => {
@@ -282,8 +362,9 @@ function saveSessionAttributes(attributesManager, sessionAttributes, speechOutpu
 
 //========== SETUP ==========
 
-const initialSessionAttributes = {
-  botState: 'SELECT_ACTION_STATE',
+var initialSessionAttributes = {
+  botState: 'LAUNCH_STATE',
+  feedbacker_id: 0,
   product_id: 0,
   product_name: '',
   feedbacker: {}
@@ -345,28 +426,12 @@ const LaunchRequest = {
     }).catch((error) => {
       console.log(error);
     });
-    
+
     const products = await getProducts().then((response) => {
       return JSON.parse(response);
     }).catch((error) => {
       console.log(error);
     });
-    console.log(products);
-    
-    /*const products_with_answered_feedback = await getProductsWithAnsweredFeedback(feedbacker_id).then((response) => {
-      if (response != []) {
-        console.log(JSON.parse(response));
-        return JSON.parse(response);
-      }
-      else {
-        return [];
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
-    console.log(products_with_answered_feedback);*/
-
-
 
     const dynamicEntities = {
       type: "Dialog.UpdateDynamicEntities",
@@ -374,21 +439,28 @@ const LaunchRequest = {
       types: [{
         "name": "Product",
         "values": products
-      }, {
-        "name": "ProductWithReply",
-        "values": []
       }]
     };
 
+    initialSessionAttributes.feedbacker_id = feedbacker_id;
     saveSessionAttributes(attributesManager, initialSessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
-      .withAskForPermissionsConsentCard([
+      .withSimpleCard(
+        `What would you like to do?`,
+        `Report Error \n
+         Suggest new Functionality \n
+         Ask Question \n
+         Submit Criticism \n
+         Give General Feedback \n
+         Check Replies to given Feedback`
+      )
+      /*.withAskForPermissionsConsentCard([
         "alexa::profile:name:read",
         "alexa::profile:email:read",
         "alexa::profile:mobile_number:read"
-      ])
+      ])*/
       .reprompt(speechOutput)
       .addDirective(dynamicEntities)
       .getResponse();
@@ -410,69 +482,19 @@ const FeedbackHandler = {
 
   async handle(handlerInput) {
     console.log("FeedbackHandler > Used");
-    console.log(handlerInput);
-    console.log(handlerInput.requestEnvelope);
+    console.log("handlerInput" + handlerInput);
+    console.log("handlerInput.requestEnvelope" + handlerInput.requestEnvelope);
 
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    /*const product_name = Alexa.getSlotValue(handlerInput.requestEnvelope, 'product');
-    let product_id;
-    if (product_name != null) {
-      if (handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values != null) {
-        product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-      }
-      else if (handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[1].values != null) {
-        product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[1].values[0].value.id);
-      }
-      else {
-        product_id = 1;
-      }
-    }*/
     let feedback_contact_permission = parseInt(handlerInput.requestEnvelope.request.intent.slots.contact_permission.resolutions.resolutionsPerAuthority[0].values[0].value.id);
     var feedbacker_id = 1;
 
     if (feedback_contact_permission == 1) {
-      const apiAccessToken = handlerInput.requestEnvelope.context.System.apiAccessToken;
-
-      const feedbacker_name = await getFeedbackerName(apiAccessToken).then((response) => {
-        console.log("feedbacker_name:" + response);
-        return response;
-      }).catch((error) => {
-        console.log(error);
-      });
-
-      const feedbacker_email_address = await getFeedbackerEmailAddress(apiAccessToken).then((response) => {
-        console.log("feedbacker_email_address:" + response);
-        return response;
-      }).catch((error) => {
-        console.log(error);
-      });
-
-      const feedbacker_telephone_number = await getFeedbackerTelephoneNumber(apiAccessToken).then((response) => {
-        console.log("feedbacker_telephone_number:" + response);
-        return response;
-      }).catch((error) => {
-        console.log(error);
-      });
-
-      const feedbacker = {
-        feedbacker_name: feedbacker_name,
-        feedbacker_email_address: feedbacker_email_address,
-        feedbacker_telephone_number: feedbacker_telephone_number
-      };
-
-      feedbacker_id = await postFeedbacker(feedbacker).then((response) => {
-        console.log(response);
-        let feedbacker = JSON.parse(response);
-        return feedbacker[0].feedbacker_id;
-      }).catch((error) => {
-        console.log(error);
-      });
+      feedbacker_id = sessionAttributes.feedbacker_id;
     }
-
-
 
     const product_name = Alexa.getSlotValue(handlerInput.requestEnvelope, 'product');
     let product_id;
@@ -530,10 +552,14 @@ const FeedbackHandler = {
           feedback_steps_to_reproduce: feedback_steps_to_reproduce,
           feedback_criticality: feedback_criticality
         };
-        console.log("Bug report: " + JSON.stringify(feedback));
-        speechOutput = requestAttributes.t('SUBMIT_BUG_REPORT_MESSAGE');
-        break;
 
+        if (feedback_contact_permission) {
+          speechOutput = requestAttributes.t('SUBMIT_BUG_REPORT');
+        }
+        else {
+          speechOutput = requestAttributes.t('SUBMIT_ANONYMOUS_BUG_REPORT');
+        }
+        break;
 
       case 'SubmitFeatureRequest':
         feedback = {
@@ -545,8 +571,13 @@ const FeedbackHandler = {
           feedback_problem: feedback_problem,
           feedback_solution: feedback_solution
         };
-        console.log("Feature Request: " + JSON.stringify(feedback));
-        speechOutput = requestAttributes.t('SUBMIT_FEATURE_REQUEST_MESSAGE');
+
+        if (feedback_contact_permission) {
+          speechOutput = requestAttributes.t('SUBMIT_FEATURE_REQUEST');
+        }
+        else {
+          speechOutput = requestAttributes.t('SUBMIT_ANONYMOUS_FEATURE_REQUEST');
+        }
         break;
 
       case 'SubmitQuestion':
@@ -557,8 +588,13 @@ const FeedbackHandler = {
           feedback_content: feedback_content,
           feedback_importance: feedback_importance,
         };
-        console.log("Question: " + JSON.stringify(feedback));
-        speechOutput = requestAttributes.t('SUBMIT_QUESTION_MESSAGE');
+
+        if (feedback_contact_permission) {
+          speechOutput = requestAttributes.t('SUBMIT_QUESTION');
+        }
+        else {
+          speechOutput = requestAttributes.t('SUBMIT_ANONYMOUS_QUESTION');
+        }
         break;
 
       case 'SubmitCriticism':
@@ -569,8 +605,13 @@ const FeedbackHandler = {
           feedback_content: feedback_content,
           feedback_star_rating: feedback_star_rating,
         };
-        console.log("Criticism: " + JSON.stringify(feedback));
-        speechOutput = requestAttributes.t('SUBMIT_CRITICISM_MESSAGE');
+
+        if (feedback_contact_permission) {
+          speechOutput = requestAttributes.t('SUBMIT_CRITICISM');
+        }
+        else {
+          speechOutput = requestAttributes.t('SUBMIT_ANONYMOUS_CRITICISM');
+        }
         break;
 
       case 'SubmitGeneralFeedback':
@@ -580,8 +621,13 @@ const FeedbackHandler = {
           product_id: product_id,
           feedback_content: feedback_content,
         };
-        console.log("GeneralFeedback: " + JSON.stringify(feedback));
-        speechOutput = requestAttributes.t('SUBMIT_GENERAL_FEEDBACK_MESSAGE');
+        
+        if (feedback_contact_permission) {
+          speechOutput = requestAttributes.t('SUBMIT_GENERAL_FEEDBACK');
+        }
+        else {
+          speechOutput = requestAttributes.t('SUBMIT_ANONYMOUS_GENERAL_FEEDBACK');
+        }
         break;
     }
     console.log("Feedback: " + feedback);
@@ -615,65 +661,62 @@ const CheckRepliesHandler = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    /*const apiAccessToken = handlerInput.requestEnvelope.context.System.apiAccessToken;
-    
-    const feedbacker_name = await getFeedbackerName(apiAccessToken).then((response) => {
-      console.log("feedbacker_name:" + response);
-      return response;
-    }).catch((error) => {
-      console.log(error);
-    });
-
-    const feedbacker_email_address = await getFeedbackerEmailAddress(apiAccessToken).then((response) => {
-      console.log("feedbacker_email_address:" + response);
-      return response;
-    }).catch((error) => {
-      console.log(error);
-    });
-
-    const feedbacker_telephone_number = await getFeedbackerTelephoneNumber(apiAccessToken).then((response) => {
-      console.log("feedbacker_telephone_number:" + response);
-      return response;
-    }).catch((error) => {
-      console.log(error);
-    });
-
-    const feedbacker = {
-      feedbacker_name: feedbacker_name,
-      feedbacker_email_address: feedbacker_email_address,
-      feedbacker_telephone_number: feedbacker_telephone_number
-    };
-
-    const feedbacker_id = await postFeedbacker(feedbacker).then((response) => {
-      console.log(response);
-      let feedbacker = JSON.parse(response);
-      return feedbacker[0].feedbacker_id;
-    }).catch((error) => {
-      console.log(error);
-    });
-    let replies = await getReplies(feedbacker_id).then((response) => {
+    let replies = await getReplies(sessionAttributes.feedbacker_id).then((response) => {
       console.log("Replies Response: " + response);
       return JSON.parse(response);
     }).catch((error) => {
       console.log(error);
     });
 
-    console.log(replies);
+
+    let feedbacker_id = sessionAttributes.feedbacker_id;
+    const products_with_answered_feedback = await getProductsWithAnsweredFeedback(feedbacker_id).then((response) => {
+      if (response != []) {
+        return JSON.parse(response);
+      }
+      else {
+        return [];
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
+
+    const dynamicEntities = {
+      type: "Dialog.UpdateDynamicEntities",
+      updateBehavior: "REPLACE",
+      types: [{
+        "name": "ProductWithReply",
+        "values": products_with_answered_feedback
+      }]
+    };
+
+    let products_with_replies = replies.map(e => e.company_name + ' ' + e.product_name).join(', ');
+    let products_with_new_replies = replies.map(e => e.company_name + ' ' + e.product_name).join('\n');
+
+    let speechOutput;
+    let card;
+    let next_intent_name;
+
     let number_of_replies = replies.length;
-        console.log("Replies length" + replies.length);
-*/
-    var speechOutput = `Okay you have 3 new replies regarding feedback for Echo Dot, Echo Show. What device do you want to select.`;
-    const card = '';
+    if (number_of_replies > 0) {
+      next_intent_name = 'ReadReplies';
+      speechOutput = `Okay you have ${replies.length} new replies regarding feedback for ${products_with_replies}. What device do you want to select.`;
+      //card = new SimpleCard("heading", "body");
+    }
+    else {
+      next_intent_name = 'LaunchRequest';
+      speechOutput = `You have no replies`;
+    }
 
-    var reply_content = "Glad to hear";
-
+    sessionAttributes.botState = 'CHECK_REPLIES_STATE';
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
-      /*.withSimpleCard(
-        "Reply",
-        `Product: ${product}.\r\n ${reply_content}`)*/
+      .withSimpleCard(
+        `Select a product`,
+        `${products_with_new_replies}`)
+      .addDirective(dynamicEntities)
       .addDelegateDirective({
         name: 'ReadReplies',
         confirmationStatus: 'NONE',
@@ -687,14 +730,14 @@ const CheckRepliesHandler = {
 const ReadRepliesHandler = {
 
   canHandle(handlerInput) {
-    console.log("CheckRepliesHandler > Tested");
+    console.log("ReadRepliesHandler > Tested");
 
     return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === 'CheckReplies';
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'ReadReplies';
   },
 
-  handle(handlerInput) {
-    console.log("CheckRepliesHandler > Used");
+  async handle(handlerInput) {
+    console.log("ReadRepliesHandler > Used");
     console.log(handlerInput);
     console.log(handlerInput.requestEnvelope);
 
@@ -702,22 +745,53 @@ const ReadRepliesHandler = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
+    /*let replies = await getReplies(sessionAttributes.feedbacker_id).then((response) => {
+      console.log("Replies Response: " + response);
+      return JSON.parse(response);
+    }).catch((error) => {
+      console.log(error);
+    });*/
 
-    const product = handlerInput.requestEnvelope.request.intent.slots.product.value;
+    const product_name = Alexa.getSlotValue(handlerInput.requestEnvelope, 'product');
+    let product_id;
+    if (product_name != null) {
+      if (handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values != null) {
+        product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+      }
+      else if (handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[1].values != null) {
+        product_id = parseInt(handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[1].values[0].value.id);
+      }
+      else {
+        product_id = 1;
+      }
+    }
 
-    var speechOutput = ``;
+    let replies = await getProductFeedbackReply(sessionAttributes.feedbacker_id, product_id).then((response) => {
+      console.log("Single reply: " + response);
+      return JSON.parse(response);
+    }).catch((error) => {
+      console.log(error);
+    });
+
+    let feedback_content = '';
+    let reply_content = '';
+    if (replies.length > 0) {
+      reply_content = replies[0].reply_content;
+      feedback_content = replies[0].feedback_content;
+    }
+
+    var speechOutput = `The reply to your feedback quote "${feedback_content}" is quote "${reply_content}"`;
     const card = '';
 
-    var reply_content = "Glad to hear";
-    product = 'Amazon Echo Dot';
+
 
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
-      .withSimpleCard(
+      /*.withSimpleCard(
         "Reply",
-        `Product: ${product}.\r\n ${reply_content}`)
+        `Product: ${product}.\r\n ${reply_content}`)*/
       .reprompt(speechOutput)
       .getResponse();
   },
@@ -835,7 +909,7 @@ const RestartIntentHandler = {
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .withShouldEndSession(false)
-      .reprompt()
+      .reprompt(repromptText)
       .getResponse();
   },
 };

@@ -106,7 +106,7 @@ function getProducts() {
 }
 
 
-function getProductFeedbackReply(feedbacker_id, product_id) {
+/*function getProductFeedbackReply(feedbacker_id, product_id) {
   let options = {
     method: 'GET',
 
@@ -141,44 +141,7 @@ function getProductFeedbackReply(feedbacker_id, product_id) {
       });
     });
   });
-}
-
-function getProductsWithAnsweredFeedback(feedbacker_id) {
-  let options = {
-    method: 'GET',
-
-    protocol: 'https:',
-    hostname: 'api.myfeedbackbot.com',
-    port: 443,
-    path: `/alexa/products/${feedbacker_id}/replied`,
-
-    headers: {
-      'Accept': 'application/json',
-    }
-  };
-
-  return new Promise((resolve, reject) => {
-    https.get(options, (response) => {
-      let chunks_of_data = [];
-
-      response.on('data', (fragments) => {
-        chunks_of_data.push(fragments);
-      });
-
-      response.on('end', () => {
-        let response_body = Buffer.concat(chunks_of_data);
-
-        // promise resolved on success
-        resolve(response_body.toString());
-      });
-
-      response.on('error', (error) => {
-        // promise rejected on error
-        reject(error);
-      });
-    });
-  });
-}
+}*/
 
 function getReplies(feedbacker_id) {
   let options = {
@@ -683,7 +646,9 @@ const CheckRepliesHandler = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const replies = await getReplies(sessionAttributes.feedbacker_id).then((response) => {
+    let feedbacker_id = sessionAttributes.feedbacker_id;
+
+    const replies = await getReplies(feedbacker_id).then((response) => {
       console.log("Replies Response: " + response);
       if (response != []) {
         return JSON.parse(response);
@@ -702,18 +667,6 @@ const CheckRepliesHandler = {
 
     if (typeof replies !== 'undefined' && replies.length != 0) {
 
-      let feedbacker_id = sessionAttributes.feedbacker_id;
-      /*const products_with_answered_feedback = await getProductsWithAnsweredFeedback(feedbacker_id).then((response) => {
-        console.log("Products with answered feedback: " + response);
-        if (response != []) {
-          return JSON.parse(response);
-        }
-        else {
-          return [];
-        }
-      }).catch((error) => {
-        console.log(error);
-      });*/
       var string_of_products = replies.map(e => e.company_name + ' ' + e.product_name).join(', ');
       var list_of_products = replies.map(e => e.company_name + ' ' + e.product_name).join(' \r\n ');
       var json_products = [];
@@ -722,7 +675,7 @@ const CheckRepliesHandler = {
         let product_id = product.product_id;
         let product_name = product.company_name + ' ' + product.product_name;
         let product_synonym = product.product_name;
-        
+
         let json_product = {
           "id": product_id,
           "name": {
@@ -744,22 +697,22 @@ const CheckRepliesHandler = {
           "values": json_products
         }]
       };
+      responseBuilder.addDirective(dynamicEntities);
 
       let products_with_replies = replies.map(e => e.company_name + ' ' + e.product_name).join(', ');
       let products_with_new_replies = replies.map(e => e.company_name + ' ' + e.product_name).join('\n');
 
       var next_intent_name;
 
-      let number_of_replies = replies.length;
-      console.log(number_of_replies);
 
-      if (number_of_replies > 0) {
-        next_intent_name = 'ReadReplies';
-        speechOutput = `Okay you have ${replies.length} new replies regarding feedback for ${products_with_replies}. What device do you want to select.`;
-        //card = new SimpleCard("heading", "body");
-      }
+
+
+      next_intent_name = 'ReadReplies';
+      speechOutput = `Okay you have ${replies.length} new replies regarding feedback for ${string_of_products}. What device do you want to select?`;
+      responseBuilder.withSimpleCard("Select Device", list_of_products);
+
       else {
-        next_intent_name = 'LaunchRequest';
+
         speechOutput = `You have no replies`;
       }
       console.log("Next intent name" + next_intent_name);
@@ -769,16 +722,12 @@ const CheckRepliesHandler = {
     }
     else {
       speechOutput = "Sorry, you don't have any new replies";
-      card_header = "Check Replies"
-      card_content = "Sorry, you don't have any new replies";
+      responseBuilder.withSimpleCard("Check Replies", "Sorry, you don't have any new replies");
+      next_intent_name = 'LaunchRequest';
     }
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
-      .withSimpleCard(
-        card_header,
-        card_content
-      )
       /*.addDirective(dynamicEntities)
       .addDelegateDirective({
         name: 'ReadReplies',

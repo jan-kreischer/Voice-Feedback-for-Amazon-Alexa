@@ -73,7 +73,7 @@ function getProducts() {
     protocol: 'https:',
     hostname: 'api.myfeedbackbot.com',
     port: 443,
-    path: '/alexa/products',
+    path: '/products/json',
 
     headers: {
       'Accept': 'application/json',
@@ -105,44 +105,6 @@ function getProducts() {
   });
 }
 
-
-/*function getProductFeedbackReply(feedbacker_id, product_id) {
-  let options = {
-    method: 'GET',
-
-    protocol: 'https:',
-    hostname: 'api.myfeedbackbot.com',
-    port: 443,
-    path: `/feedbacker/${feedbacker_id}/product/${product_id}/replies`,
-
-    headers: {
-      'Accept': 'application/json',
-    }
-  };
-
-  return new Promise((resolve, reject) => {
-    https.get(options, (response) => {
-      let chunks_of_data = [];
-
-      response.on('data', (fragments) => {
-        chunks_of_data.push(fragments);
-      });
-
-      response.on('end', () => {
-        let response_body = Buffer.concat(chunks_of_data);
-
-        // promise resolved on success
-        resolve(response_body.toString());
-      });
-
-      response.on('error', (error) => {
-        // promise rejected on error
-        reject(error);
-      });
-    });
-  });
-}*/
-
 function getReplies(feedbacker_id) {
   let options = {
     method: 'GET',
@@ -150,7 +112,7 @@ function getReplies(feedbacker_id) {
     protocol: 'https:',
     hostname: 'api.myfeedbackbot.com',
     port: 443,
-    path: `/alexa/feedbacker/${feedbacker_id}/replies`,
+    path: `/feedbacker/${feedbacker_id}/replies`,
 
     headers: {
       'Accept': 'application/json',
@@ -231,10 +193,11 @@ function postFeedbacker(feedbacker) {
 }
 
 function acknowledgeReply(feedback_id) {
+  const data = '';
   const options = {
     hostname: hostUrl,
     port: 443,
-    path: '/feedback',
+    path: `/feedback/${feedback_id}/reply/acknowledge`,
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -319,10 +282,6 @@ function postFeedback(feedback) {
     req.end();
   });
 
-}
-
-function getUnacknowledgedReplies() {
-  /*httpGet('/alexa/new-replies', (data) => { "DATA" + console.log(data) });*/
 }
 
 function saveSessionAttributes(attributesManager, sessionAttributes, speechOutput) {
@@ -640,7 +599,6 @@ const CheckRepliesHandler = {
     console.log(handlerInput);
     console.log(handlerInput.requestEnvelope);
 
-
     const { attributesManager } = handlerInput;
     let responseBuilder = handlerInput.responseBuilder;
     const requestAttributes = attributesManager.getRequestAttributes();
@@ -662,13 +620,11 @@ const CheckRepliesHandler = {
     });
 
     let speechOutput;
-    let card_header;
-    let card_content;
 
     if (typeof replies !== 'undefined' && replies.length != 0) {
 
       var string_of_products = replies.map(e => e.company_name + ' ' + e.product_name).join(', ');
-      var list_of_products = replies.map(e => e.company_name + ' ' + e.product_name).join(' \r\n ');
+      var list_of_products = replies.map(e => '- ' + e.company_name + ' ' + e.product_name).join('\r\n');
       var json_products = [];
 
       replies.forEach(function(product) {
@@ -685,9 +641,6 @@ const CheckRepliesHandler = {
         };
         json_products.push(json_product);
       });
-      console.log("JSON PRODUCTS: " + json_products);
-      console.log("STRING OF PRODUCTS: " + string_of_products);
-      console.log("LIST OF PRODUCTS: " + list_of_products);
 
       const dynamicEntities = {
         type: "Dialog.UpdateDynamicEntities",
@@ -697,54 +650,43 @@ const CheckRepliesHandler = {
           "values": json_products
         }]
       };
+
       responseBuilder.addDirective(dynamicEntities);
 
-      let products_with_replies = replies.map(e => e.company_name + ' ' + e.product_name).join(', ');
-      let products_with_new_replies = replies.map(e => e.company_name + ' ' + e.product_name).join('\n');
-
-      var next_intent_name;
-
-
-
-
-      next_intent_name = 'ReadReplies';
       speechOutput = `Okay you have ${replies.length} new replies regarding feedback for ${string_of_products}. What device do you want to select?`;
       responseBuilder.withSimpleCard("Select Device", list_of_products);
 
-      else {
-
-        speechOutput = `You have no replies`;
-      }
-      console.log("Next intent name" + next_intent_name);
+      /*responseBuilder.addDelegateDirective({
+        name: 'ReadReplies',
+        confirmationStatus: 'NONE',
+        slots: {}
+      });*/
 
       sessionAttributes.botState = 'CHECK_REPLIES_STATE';
-      saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
     }
     else {
       speechOutput = "Sorry, you don't have any new replies";
       responseBuilder.withSimpleCard("Check Replies", "Sorry, you don't have any new replies");
-      next_intent_name = 'LaunchRequest';
+
+      sessionAttributes = initialSessionAttributes;
     }
 
+    saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
     return handlerInput.responseBuilder
       .speak(speechOutput)
-      /*.addDirective(dynamicEntities)
-      .addDelegateDirective({
-        name: 'ReadReplies',
-        confirmationStatus: 'NONE',
-        slots: {}
-      })*/
       .reprompt(speechOutput)
       .getResponse();
   },
 };
 
 const ReadRepliesHandler = {
-
   canHandle(handlerInput) {
     console.log("ReadRepliesHandler > Tested");
+    const { attributesManager } = handlerInput;
+    const sessionAttributes = attributesManager.getSessionAttributes();
 
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+    return sessionAttributes.botState == 'CHECK_REPLIES_STATE' &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
       Alexa.getIntentName(handlerInput.requestEnvelope) === 'ReadReplies';
   },
 
@@ -756,15 +698,12 @@ const ReadRepliesHandler = {
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
+    let responseBuilder = handlerInput.responseBuilder;
 
-    /*let replies = await getReplies(sessionAttributes.feedbacker_id).then((response) => {
-      console.log("Replies Response: " + response);
-      return JSON.parse(response);
-    }).catch((error) => {
-      console.log(error);
-    });*/
+    var speechOutput;
+    var repromptText;
 
-    const product_name = Alexa.getSlotValue(handlerInput.requestEnvelope, 'product');
+    let product_name = Alexa.getSlotValue(handlerInput.requestEnvelope, 'product');
     let product_id;
     if (product_name != null) {
       if (handlerInput.requestEnvelope.request.intent.slots.product.resolutions.resolutionsPerAuthority[0].values != null) {
@@ -778,33 +717,54 @@ const ReadRepliesHandler = {
       }
     }
 
-    let replies = await getProductFeedbackReply(sessionAttributes.feedbacker_id, product_id).then((response) => {
-      console.log("Single reply: " + response);
+    let replies = await getReplies(sessionAttributes.feedbacker_id).then((response) => {
       return JSON.parse(response);
     }).catch((error) => {
       console.log(error);
+      return [];
     });
 
-    let feedback_content = '';
-    let reply_content = '';
-    if (replies.length > 0) {
-      reply_content = replies[0].reply_content;
-      feedback_content = replies[0].feedback_content;
+    if (typeof replies !== 'undefined' && replies.length > 0) {
+      let product_replies = replies.filter(reply => reply.product_id == product_id);
+      if (typeof product_replies !== 'undefined' && product_replies.length > 0) {
+        console.log(product_replies);
+
+        let feedback_id = product_replies[0].feedback_id;
+        let reply_content = product_replies[0].reply_content;
+        let feedback_content = product_replies[0].feedback_content;
+
+        console.log("Feedback id:" + feedback_id);
+        responseBuilder.withSimpleCard(
+          "Reply",
+          `\rProduct: \r\n${product_name} 
+           \rFeedback: \r\n${feedback_content}
+           \rReply: \r\n${reply_content}`
+        );
+
+        let replies = await acknowledgeReply(feedback_id).then((response) => {
+          return 1;
+        }).catch((error) => {
+          console.log(error);
+          return 0;
+        });
+
+        speechOutput = `The reply to your feedback quote "${feedback_content}" is quote "${reply_content}"`;
+
+      }
+      else {
+        speechOutput = `Sorry, there is no reply for this device.`;
+        repromptText = `What would you like to do next?`;
+      }
+    }
+    else {
+      speechOutput = `Sorry, there is no reply for this device`;
+      repromptText = `What would you like to do next?`;
     }
 
-    var speechOutput = `The reply to your feedback quote "${feedback_content}" is quote "${reply_content}"`;
-    const card = '';
-
-
-
     saveSessionAttributes(attributesManager, sessionAttributes, speechOutput);
-
     return handlerInput.responseBuilder
       .speak(speechOutput)
-      /*.withSimpleCard(
-        "Reply",
-        `Product: ${product}.\r\n ${reply_content}`)*/
-      .reprompt(speechOutput)
+      .reprompt("What would you like to do next?")
       .getResponse();
   },
 };

@@ -326,6 +326,8 @@ const LaunchRequest = {
 
     let speechOutput = requestAttributes.t('LAUNCH_MESSAGE');
     let shouldSessionEnd = false;
+    let card_title = `What would you like to do?`;
+    let card_content = `\r\n- Report Error \r\n- Suggest new Functionality \r\n- Ask Question \r\n- Share Criticism \r\n- Give General Feedback \r\n- Check Replies to given Feedback`;
 
     const feedbacker_name = await getFeedbackerName(apiAccessToken).then((response) => {
       return response;
@@ -364,6 +366,8 @@ const LaunchRequest = {
     }).catch((error) => {
       speechOutput = "Hey, I am your feedback bot. Sadly, I could not reach the feedback server. Please wait until it is reachable again.";
       shouldSessionEnd = true;
+      card_title = `I could not reach the feedback server`;
+      card_content = `\r\n Please wait until it is reachable again.`;
       return [];
     });
 
@@ -376,15 +380,6 @@ const LaunchRequest = {
       }]
     };
 
-    if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
-      console.log("My device supports APL");
-      responseBuilder.addDirective({
-        type: 'Alexa.Presentation.APL.RenderDocument',
-        token: PRODUCT_LIST_TOKEN,
-        document: ListOfProducts
-      });
-    }
-
     initialSessionAttributes.feedbacker_id = feedbacker_id;
     initialSessionAttributes.feedbacker = feedbacker;
 
@@ -393,14 +388,9 @@ const LaunchRequest = {
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .withSimpleCard(
-        `What would you like to do?`,
-        `\r\n- Report Error \r\n- Suggest new Functionality \r\n- Ask Question \r\n- Share Criticism \r\n- Give General Feedback \r\n- Check Replies to given Feedback`
+        card_title,
+        card_content
       )
-      /*.withAskForPermissionsConsentCard([
-        "alexa::profile:name:read",
-        "alexa::profile:email:read",
-        "alexa::profile:mobile_number:read"
-      ])*/
       .reprompt(speechOutput)
       .withShouldEndSession(shouldSessionEnd)
       .addDirective(dynamicEntities)

@@ -324,7 +324,8 @@ const LaunchRequest = {
 
     const apiAccessToken = handlerInput.requestEnvelope.context.System.apiAccessToken;
 
-    const speechOutput = requestAttributes.t('LAUNCH_MESSAGE');
+    let speechOutput = requestAttributes.t('LAUNCH_MESSAGE');
+    let shouldSessionEnd = false;
 
     const feedbacker_name = await getFeedbackerName(apiAccessToken).then((response) => {
       return response;
@@ -362,7 +363,7 @@ const LaunchRequest = {
       return JSON.parse(response);
     }).catch((error) => {
       speechOutput = "Hey, I am your feedback bot. Sadly, I could not reach the feedback server. Please wait until it is reachable again.";
-      console.log("ERROR @ getProducts:" + error);
+      shouldSessionEnd = true;
       return [];
     });
 
@@ -401,6 +402,7 @@ const LaunchRequest = {
         "alexa::profile:mobile_number:read"
       ])*/
       .reprompt(speechOutput)
+      .withShouldEndSession(shouldSessionEnd)
       .addDirective(dynamicEntities)
       .getResponse();
   },

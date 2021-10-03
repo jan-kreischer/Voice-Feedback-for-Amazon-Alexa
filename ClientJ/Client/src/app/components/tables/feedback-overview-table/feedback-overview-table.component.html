@@ -1,0 +1,45 @@
+<tr>
+    <td style="vertical-align:top;">
+        <b>
+            Regarding:
+        </b>
+    </td>
+    <td>
+        {{feedback.company_name}} - {{feedback.product_name}}
+    </td>
+</tr>
+<tr>
+    <td style="vertical-align:top">
+        <b>By:</b>
+    </td>
+    <td>
+        {{feedback.feedbacker_name}}
+    </td>
+</tr>
+
+<hr>
+
+<tr>
+    <td style="vertical-align:top"><b>Recceived:</b></td>
+    <td>{{feedback.feedback_receiving_time | date:'HH:mm @ dd.MM.y'}}</td>
+
+</tr>
+
+<tr>
+    <td style="vertical-align:top"><b>Content:</b></td>
+    <td>{{feedback.feedback_content}}</td>
+</tr>
+
+<tr>
+    <td style="vertical-align:top"><b>Status:</b></td>
+    <td>
+        <ng-container *ngIf="feedback.feedback_is_processed">
+            Processed
+        </ng-container>
+        <ng-container *ngIf="!feedback.feedback_is_processed">
+            Open
+        </ng-container>
+    </td>
+</tr>
+
+            

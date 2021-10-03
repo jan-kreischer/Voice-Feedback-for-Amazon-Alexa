@@ -1,0 +1,15 @@
+<p *ngIf="feedback.feedback_is_processed" style="background-color: blue">
+  <button mat-icon-button color="primary">
+        <mat-icon>
+            check_circle
+        </mat-icon>
+  </button>
+</p>
+
+<p *ngIf="!feedback.feedback_is_processed">
+    <button mat-icon-button color="primary" (click)="markFeedbackAsProcessed(feedback.feedback_id)">
+        <mat-icon>
+            check_circle_outline
+        </mat-icon>
+    </button>
+</p>

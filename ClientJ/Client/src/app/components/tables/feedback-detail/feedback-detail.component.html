@@ -1,0 +1,108 @@
+<tr>
+    <td style="vertical-align:top;">
+        <b>
+            Regarding:
+        </b>
+    </td>
+    <td>
+        {{feedback.company_name}} - {{feedback.product_name}}
+    </td>
+</tr>
+
+
+<tr style="display:block" *ngIf="feedback.feedbacker_name">
+    <td style="vertical-align:top">
+        <b>By:</b>
+    </td>
+    <td>
+        {{feedback.feedbacker_name}}
+    </td>
+</tr>
+<tr style="display:block" *ngIf="feedback.feedbacker_email">
+    <td style="vertical-align:top">
+        <b>Email:</b>
+    </td>
+    <td>
+        {{feedback.feedbacker_email}}
+    </td>
+</tr>
+<tr style="display:block" *ngIf="feedback.feedbacker_telephone_number">
+    <td style="vertical-align:top">
+        <b>Telephone:</b>
+    </td>
+    <td>
+        {{feedback.feedbacker_telephone_number}}
+    </td>
+</tr>
+
+
+
+<hr>
+
+
+<tr style="display:block" *ngIf="feedback.feedback_receiving_time">
+    <td style="vertical-align:top"><b>Recceived:</b></td>
+    <td>{{feedback.feedback_receiving_time | date:'HH:mm @ dd.MM.y'}}</td>
+
+</tr>
+
+
+
+<tr style="display:block" *ngIf="feedback.feedback_content">
+    <td style="vertical-align:top"><b>Content:</b></td>
+    <td>{{feedback.feedback_content}}</td>
+</tr>
+
+<tr style="display:block" *ngIf="feedback.feedback_context">
+    <td style="vertical-align:top"><b>Context:</b></td>
+    <td>{{feedback.feedback_context}}</td>
+
+</tr>
+
+<tr style="display:block" *ngIf="feedback.feedback_problem">
+    <td style="vertical-align:top"><b>Problem:</b></td>
+    <td>{{feedback.feedback_problem}}</td>
+</tr>
+
+<tr style="display:block" *ngIf="feedback.feedback_steps_to_reproduce">
+    <td style="vertical-align:top"><b>Steps to reproduce:</b></td>
+    <td>{{feedback.feedback_steps_to_reproduce}}</td>
+</tr>
+
+
+<tr style="display:block" *ngIf="feedback.feedback_solution">
+    <td style="vertical-align:top"><b>Solution:</b></td>
+    <td>{{feedback.feedback_solution}}</td>
+</tr>
+
+
+<tr style="display:block" *ngIf="feedback.feedback_criticality">
+    <td style="vertical-align:top"><b>Criticallity:</b></td>
+    <td>{{feedback.feedback_criticality}}/5</td>
+</tr>
+
+
+
+<tr style="display:block" *ngIf="feedback.feedback_importance">
+    <td style="vertical-align:top"><b>Importance:</b></td>
+    <td>{{feedback.feedback_importance}}/5</td>
+
+</tr>
+
+<tr style="display:block" *ngIf="feedback.feedback_star_rating">
+    <td style="vertical-align:top"><b>Star-Rating:</b></td>
+    <td>{{feedback.feedback_star_rating}}/5</td>
+</tr>
+
+
+<tr>
+    <td style="vertical-align:top"><b>Status:</b></td>
+    <td>
+        <ng-container *ngIf="feedback.feedback_is_processed">
+            Processed
+        </ng-container>
+        <ng-container *ngIf="!feedback.feedback_is_processed">
+            Open
+        </ng-container>
+    </td>
+</tr>

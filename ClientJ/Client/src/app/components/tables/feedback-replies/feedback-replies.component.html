@@ -1,0 +1,34 @@
+<ng-container *ngIf="!feedback.reply_content">
+    <tr style="width: 100%">
+        <td style="width: 100%">
+            <form #replyForm="ngForm" (ngSubmit)="onSubmit()">
+                <!--{{diagnostic}}-->
+                <div class="md-form" style="margin-bottom: 4px;">
+                    <label for="reply_content"><b>Your reply:</b></label>
+                    <textarea type="text"  [(ngModel)]="reply.reply_content" name="reply_content" id="reply_content" class="md-textarea form-control" placeholder="..." required="required" mdbInput></textarea>
+                </div>
+                <!--TODO: remove this: {{reply.reply_content}}-->
+                <button mat-flat-button color="primary" type="submit" class="float-right">
+                Reply 
+                <mat-icon>
+                    reply
+                </mat-icon>
+                </button>
+
+            </form>
+        </td>
+        <td>
+
+        </td>
+    </tr>
+</ng-container>
+<ng-container *ngIf="feedback.reply_content">
+    <tr>
+        <td>
+            <b>Reply: </b>
+        </td>
+        <td>
+            {{feedback.reply_content}}
+        </td>
+    </tr>
+</ng-container>

@@ -1,0 +1,32 @@
+<div class="card" style="margin-top: 15px">
+    <div class="card-header" style="background-color: #E9E9E9">
+        <span *ngIf="feedback.feedback_type_id == 1" class="float-left">
+            <img src="https://api.myfeedbackbot.com/images/bug-report.png"  height="23" class="d-inline-block align-top" alt="">
+        </span>
+        <span *ngIf="feedback.feedback_type_id == 2" class="float-left">
+            <img src="https://api.myfeedbackbot.com/images/feature-request.png"  height="23" class="d-inline-block align-top" alt="">
+        </span>
+        <span *ngIf="feedback.feedback_type_id == 3" class="float-left">
+            <img src="https://api.myfeedbackbot.com/images/question.png"  height="23" class="d-inline-block align-top" alt="">
+        </span>
+        <span *ngIf="feedback.feedback_type_id == 4">
+            <img src="https://api.myfeedbackbot.com/images/praise.png" width="32" height="32" class="d-inline-block align-top" alt="">
+        </span>
+        <span *ngIf="feedback.feedback_type_id == 5">
+            <img src="https://api.myfeedbackbot.com/images/review.png" width="32" height="32" class="d-inline-block align-top" alt="">
+        </span> &nbsp;
+        <h5 class="card-title" style="display: inline">{{feedback.feedback_type_name}}</h5>
+    </div>
+
+    <div class="card-body">
+        <app-feedback-overview-table [feedback]=feedback></app-feedback-overview-table>
+
+        <a class="float-right" routerLink="/feedback/{{feedback.feedback_id}}" routerLinkActive="active">
+            <button mat-icon-button color="primary" aria-label="More" aria-labelledby="More" title="Show details">
+                <mat-icon>
+                    chevron_right
+                </mat-icon>
+            </button>
+        </a>
+    </div>
+</div>

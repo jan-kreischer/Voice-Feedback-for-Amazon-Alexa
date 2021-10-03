@@ -1,0 +1,58 @@
+<div class="row">
+  <ng-template #no_feedback>
+    <div class="col-12">
+      <div class="text-center">
+        The feedback could not be loaded. <br/>Please wait until the server can be reached again.
+      </div>
+    </div>
+  </ng-template>
+  <ng-container *ngIf="feedback; else no_feedback">
+    <div class="col-10 offset-1 col-sm-10 offset-sm-1 col-md-6 offset-md-3 col-lg-4 offset-lg-4 col-xl-4 offset-xl-4">
+      <div class="text-center">
+        <app-back-button></app-back-button>
+        <h2 style="display: inline-block">Feedback Details</h2>
+        <button class="float-right" mat-icon-button color="primary" title="Reload">
+        <mat-icon>
+            refresh
+        </mat-icon>
+      </button>
+      </div>
+    </div>
+    <div class="col-10 offset-1 col-sm-10 offset-sm-1 col-md-6 offset-md-3 col-lg-4 offset-lg-4 col-xl-4 offset-xl-4">
+      <div class="card" style="">
+        <div class="card-header">
+          <div class="clearfix">
+            <div class="float-left">
+              <span *ngIf="feedback.feedback_type_id == 1" class="float-left">
+              <img src="https://api.myfeedbackbot.com/images/bug-report.png"  height="23" class="d-inline-block align-top" alt="">
+            </span>
+              <span *ngIf="feedback.feedback_type_id == 2" class="float-left">
+              <img src="https://api.myfeedbackbot.com/images/feature-request.png"  height="23" class="d-inline-block align-top" alt="">
+            </span>
+              <span *ngIf="feedback.feedback_type_id == 3" class="float-left">
+              <img src="https://api.myfeedbackbot.com/images/question.png"  height="23" class="d-inline-block align-top" alt="">
+            </span>
+              <span *ngIf="feedback.feedback_type_id == 4">
+              <img src="https://api.myfeedbackbot.com/images/praise.png" width="32" height="32" class="d-inline-block align-top" alt="">
+            </span>
+              <span *ngIf="feedback.feedback_type_id == 5">
+              <img src="https://api.myfeedbackbot.com/images/review.png" width="32" height="32" class="d-inline-block align-top" alt="">
+            </span> &nbsp;
+              <h5 class="card-title" style="display: inline">{{feedback.feedback_type_name}}</h5>
+            </div>
+            <app-process-feedback-button [feedback]=feedback class="float-right"></app-process-feedback-button>
+            <app-delete-feedback-button [feedback]=feedback class="float-right"></app-delete-feedback-button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table style="width:100%">
+            <app-feedback-contact-table [feedback]=feedback></app-feedback-contact-table>
+            <app-feedback-detail [feedback]=feedback></app-feedback-detail>
+            <hr/>
+            <app-feedback-replies [feedback]=feedback></app-feedback-replies>
+          </table>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

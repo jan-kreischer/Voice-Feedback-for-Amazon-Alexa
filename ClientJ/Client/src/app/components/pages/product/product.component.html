@@ -1,0 +1,78 @@
+<div class="row">
+    <ng-template #no_product>
+        <div class="col-12">
+            <div class="text-center">
+                The product could not be loaded. <br/> Please wait until the server can be reached again.
+            </div>
+        </div>
+    </ng-template>
+    <ng-container *ngIf="product; else no_product">
+        <div class="col-12">
+            <div class="text-center">
+                <h2 style="display: inline-block">
+                    {{product.company_name}} - {{product.product_name}}
+                </h2>
+                <button class="float-right" mat-icon-button color="primary" title="Reload">
+                <mat-icon>
+                    refresh
+                </mat-icon>
+            </button>
+            </div>
+        </div>
+    </ng-container>
+</div>
+<ng-container *ngIf="product">
+    <div class="row bg-grey">
+        <div class="col-3 text-center">
+            <h3>
+                Bug Reports
+            </h3>
+        </div>
+        <div class="col-3 text-center">
+            <h3>
+                Feature Requests
+            </h3>
+        </div>
+        <div class="col-3 text-center">
+            <h3>
+                Questions
+            </h3>
+        </div>
+        <div class="col-3 text-center">
+            <h3>
+                Praise and Criticism
+            </h3>
+        </div>
+        <ng-template #noFeedback>Content to render when condition is false.</ng-template>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <div *ngFor="let feedback of feedbacks">
+                <ng-container *ngIf="feedback.feedback_type_id == 1">
+                    <app-feedback-overview [feedback]=feedback></app-feedback-overview>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-3">
+            <div *ngFor="let feedback of feedbacks">
+                <ng-container *ngIf="feedback.feedback_type_id == 2">
+                    <app-feedback-overview [feedback]=feedback></app-feedback-overview>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-3">
+            <div *ngFor="let feedback of feedbacks">
+                <ng-container *ngIf="feedback.feedback_type_id == 3">
+                    <app-feedback-overview [feedback]=feedback></app-feedback-overview>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-3">
+            <div *ngFor="let feedback of feedbacks">
+                <ng-container *ngIf="feedback.feedback_type_id == 4">
+                    <app-feedback-overview [feedback]=feedback></app-feedback-overview>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-container>

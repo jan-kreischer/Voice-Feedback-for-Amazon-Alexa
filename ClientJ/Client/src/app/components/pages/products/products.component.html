@@ -1,0 +1,31 @@
+<div class="row">
+  <ng-template #no_products>
+    <div class="col-12">
+      <div class="text-center">
+        The products could not be loaded. <br/>Please wait until the server can be reached again.
+      </div>
+    </div>
+  </ng-template>
+  <ng-container *ngIf="products; else no_products">
+    <div class="col-4 offset-4 col-sm-4 col-md-4 offset-md-4 col-lg-4  offset-lg-4 col-xl-4  offset-xl-4">
+      <div class="text-center">
+        <h2>Products</h2>
+      </div>
+    </div>
+    <div class="col-4 offset-4 col-sm-4 col-md-4 offset-md-4 col-lg-4  offset-lg-4 col-xl-4  offset-xl-4 bg-light" style="padding-top: 13px; padding-bottom: 13px">
+      <div class="card" *ngIf="products; else no_products">
+
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" *ngFor="let product of products">
+            <span style="margin-top: auto; margin-bottom: auto;">&nbsp;{{product.company_name}} {{product.product_name}}</span>
+            <button mat-icon-button color="primary" aria-label="More" aria-labelledby="More" routerLink="/product/{{product.product_id}}" routerLinkActive="active" class="float-right" title="Show details">
+            <mat-icon>
+                chevron_right
+            </mat-icon>
+        </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -1,4 +1,5 @@
-# MyFeedbackBot - Skill
+# FeedbackBot
+## Skill
 
 Deploy skill into AWS Lambda function  
 *ask deploy*

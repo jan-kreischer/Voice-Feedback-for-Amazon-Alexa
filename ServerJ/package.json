@@ -1,0 +1,26 @@
+{
+  "name": "myfeedbackbot_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "serve",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "prod": "forever server.js"
+  },
+  "author": "Jan Bauer",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http": "0.0.0",
+    "multer": "^1.4.2",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
